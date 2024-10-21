@@ -31,6 +31,26 @@
   <section class="informative">
     <h2>Introduction</h2>
     <p>...</p>
+    <p>Unless otherwise specified, the techniques described below can be used with any Activity Streams 2.0 types. The best-defined groups of AS2 types for HTML discovery are actor types:</p>
+    <ul>
+      <li><code>Person</code></li>
+      <li><code>Application</code></li>
+      <li><code>Service</code></li>
+      <li><code>Group</code></li>
+      <li><code>Organization</code></li>
+    </ul>
+    <p>
+      and digital content types:
+    </p>
+    <ul>
+      <li><code>Note</code></li>
+      <li><code>Article</code></li>
+      <li><code>Image</code></li>
+      <li><code>Video</code></li>
+      <li><code>Audio</code></li>
+      <li><code>Document</code></li>
+      <li><code>Page</code></li>
+    </ul>
     <section>
       <h3>Motivating user stories</h3>
       <p>
@@ -229,6 +249,79 @@
     </section>
     <section>
       <h3>HTML &lt;link&gt; element</h3>
+      <p>The <a href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element">link</a> element is a metadata element used in the <code>&lt;head&gt;</code> section of an HTML document. It provides
+      links for the whole document, using a number of different link relations.</p>
+      <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/watch/video-1.html</code> could include the following link element:</p>
+      <pre class="HTML">
+        &lt;!doctype html&gt;
+        &lt;html&gt;
+          &lt;head&gt;
+            &lt;title&gt;Video 1&lt;/title&gt;
+            &lt;link
+              rel="alternate"
+              type="application/activity+json"
+              href="https://ap.example/api/descriptors/video-1.jsonld" /&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+            &lt;!-- rest of the page --&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;
+      </pre>
+      <p>Consumers need to parse the HTML to find the <code>link</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be slow and complicated.</p>
+      <section>
+        <h4>Link element failure</h4>
+        <p>Some servers may include a <code>link</code> element with an
+          <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Video 1&lt;/title&gt;
+              &lt;link
+                rel="alternate"
+                type="application/json"
+                href="https://api.example/unrelated/videodescriptor.json" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+      </section>
+    </section>
+    <section>
+      <h3>HTML &lt;a&gt; element</h3>
+      <p>The <a href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element">a</a> element is an element used in the <code>&lt;body&gt;</code> section of an HTML document. It can be used to define relationships with other documents, with the benefit that the link is (usually) visible and clickable by a reader.</p>
+      <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/profiles/person-1.html</code> could include the following <code>a</code> element:</p>
+      <pre class="HTML">
+        &lt;!doctype html&gt;
+        &lt;html&gt;
+          &lt;head&gt;
+            &lt;title&gt;Person 1&lt;/title&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+            &lt;a
+              rel="alternate"
+              type="application/activity+json"
+              href="https://ap.example/users/person-1.jsonld" &gt;
+              Actor data for Person 1
+            &lt;/a&gt;
+            &lt;!-- rest of the page --&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;
+      </pre>
+      <p>Consumers will need to parse the HTML to find the <code>a</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be even more slow and complicated than with the <code>link</code> header. The <code>link</code> header is usually in the first few kilobytes of a document, and will usually be nested only 2 levels below the document in the DOM tree. An <code>a</code> element may be anywhere in the <code>body</code>, maybe nested very deep in the tree.</p>
+      <section>
+        <h4>a element failure</h4>
+        <p>As with the <code>link</code> element, some servers may include an   <code>a</code> element with an
+          <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.
+        </p>
+        <p>
+          In addition, many content management systems allow end users to set
+          <code>rel</code> and other properties on <code>a</code> elements, which may result in false matches. Even more than with other methods, using the <code>a</code> element for discovery requires reverse discovery for confirmation (see <a href="#best-practices-for-consumers">Best practices for consumers</a>).
+        </p>
+        </pre>
+      </section>
     </section>
     <section>
       <h3>Embedded JSON-LD</h3>
