@@ -43,10 +43,10 @@
       <h3>Example URL formats</h3>
       <p>This document uses a consistent format for example URLs:
       <pre>
-          <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
-        </pre>
+        <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
+      </pre>
       </p>
-      <p>Where:
+      <p>Where:</p>
       <ul>
         <li><code>{name}</code> is the domain name of the server. There are three default domain names used:
           <ul>
@@ -73,7 +73,6 @@
           Extensions may be left off of the URL, especially if the same URL will be used for multiple media types.
         </li>
       </ul>
-      </p>
     </section>
   </section>
   <section>
@@ -90,24 +89,24 @@
         could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
       </p>
       <pre class="HTTP">
-                    GET /some/path/to/note-1 HTTP/1.1
-                    Host: mixed.example
-                    Accept: application/activity+json; application/ld+json; application/json
-                  </pre>
+        GET /some/path/to/note-1 HTTP/1.1
+        Host: mixed.example
+        Accept: application/activity+json; application/ld+json; application/json
+      </pre>
       <p>
         A compliant server may respond with the ActivityPub JSON-LD object in the body of the response:
       </p>
       <pre class="HTTP">
-              HTTP/1.1 200 OK
-              Content-Type: application/activity+json
+        HTTP/1.1 200 OK
+        Content-Type: application/activity+json
 
-              {
-                "@context": "https://www.w3.org/ns/activitystreams",
-                "id": "https://mixed.example/some/path/to/note-1",
-                "type": "Article",
-                "content": "This is a note."
-              }
-            </pre>
+        {
+          "@context": "https://www.w3.org/ns/activitystreams",
+          "id": "https://mixed.example/some/path/to/note-1",
+          "type": "Article",
+          "content": "This is a note."
+        }
+      </pre>
       <p>
         This is typically used when the ActivityPub server and the HTML server are implemented in the same software package.
         Because this has historically been the case for many implementations, some consumers expect this behavior to be the
@@ -118,9 +117,9 @@
         representation.
       </p>
       <pre class="HTTP">
-                    HTTP/1.1 308 Permanent Redirect
-                    Location: https://mixed.example/different/path/to/note-1.jsonld
-                  </pre>
+        HTTP/1.1 308 Permanent Redirect
+        Location: https://mixed.example/different/path/to/note-1.jsonld
+      </pre>
       <section>
         <h4>Content negotiation failure</h4>
 
@@ -129,37 +128,37 @@
           code.
         </p>
         <pre>
-              HTTP/1.1 406 Not Acceptable
-              Content-Type: text/plain
+          HTTP/1.1 406 Not Acceptable
+          Content-Type: text/plain
 
-              No representation matching this request could be found.
-            </pre>
+          No representation matching this request could be found.
+        </pre>
         <p>Less compliant servers may ignore the <code>Accept</code> header altogether and return the HTML content regardless:
         </p>
         <pre class="HTTP">
-              HTTP/1.1 200 OK
-              Content-Type: text/html
+          HTTP/1.1 200 OK
+          Content-Type: text/html
 
-              &lt;html&gt;
-              &lt;h ead&gt;
-              &lt;title&gt;Article 1&lt;/title&gt;
-              &lt;/head&gt;
-              &lt;body&gt;
-              &lt;p&gt;This is a note.&lt;/p&gt;
-            </pre>
+          &lt;html&gt;
+          &lt;h ead&gt;
+          &lt;title&gt;Article 1&lt;/title&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+          &lt;p&gt;This is a note.&lt;/p&gt;
+        </pre>
         <p>
           A more difficult failure mode to detect arises when the server does not support ActivityPub, but does support content negotiation for another JSON format. Such a server returns a <code>200 OK</code> status code with a JSON
           object that does not use JSON-LD, or JSON-LD object that does not use the Activity Streams 2.0 vocabulary:
         </p>
         <pre class="HTTP">
-              HTTP/1.1 200 OK
-              Content-Type: application/json
+          HTTP/1.1 200 OK
+          Content-Type: application/json
 
-              {
-                "property": "value",
-                "otherProperty": "otherValue"
-              }
-            </pre>
+          {
+            "property": "value",
+            "otherProperty": "otherValue"
+          }
+        </pre>
       </section>
     </section>
     <section>
@@ -175,16 +174,16 @@
         <code>Link</code> header:
       </p>
       <pre class="HTTP">
-                                                  HEAD /user/test1/article-1 HTTP/1.1
-                                                  Host: html.example
-                                                </pre>
+        HEAD /user/test1/article-1 HTTP/1.1
+        Host: html.example
+      </pre>
       <p>
         A compliant server will respond with the headers for the resource:
       </p>
       <pre class="HTTP">
-                              HTTP/1.1 200 OK
-                              Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
-                              </pre>
+      HTTP/1.1 200 OK
+      Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
+      </pre>
       <p>
         The link header with the <code>alternate</code> relation type, and an ActivityPub-compatible media type, indicates
         that the ActivityPub JSON-LD object is available at the linked URL.
@@ -197,21 +196,21 @@
         Servers may also include the <code>Link</code> header in the response to a <code>GET</code> request for the HTML page.
       </p>
       <pre class="HTTP">
-                              GET /user/test1/article-1 HTTP/1.1
-                              Host: html.example
-                              </pre>
+        GET /user/test1/article-1 HTTP/1.1
+        Host: html.example
+        </pre>
       <p>
         A compliant server will respond with the headers for the resource:
       </p>
       <pre class="HTTP">
-                              HTTP/1.1 200 OK
-                              Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
-                              Content-type: text/html
+      HTTP/1.1 200 OK
+      Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
+      Content-type: text/html
 
-                              &lt;html&gt;
-                              &lt;head&gt;
-                              ...
-                              </pre>
+      &lt;html&gt;
+      &lt;head&gt;
+      ...
+      </pre>
       <section>
         <h4>Link header failure</h4>
         <p>
@@ -219,13 +218,13 @@
           including a <code>Link</code> header.
         </p>
         <pre class="HTTP">
-                HTTP/1.1 200 OK
-                Content-type: text/html
+        HTTP/1.1 200 OK
+        Content-type: text/html
 
-                &lt;html&gt;
-                &lt;head&gt;
-                ...
-                </pre>
+        &lt;html&gt;
+        &lt;head&gt;
+        ...
+        </pre>
       </section>
     </section>
     <section>
