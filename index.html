@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>ActivityPub Discovery</title>
+  <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
+  <script class="remove">
+    // All config options at https://respec.org/docs/
+    var respecConfig = {
+      specStatus: "CG-DRAFT",
+      editors: [{ name: "Evan Prodromou", url: "acct:evanp@socialwebfoundation.org" }],
+      github: "swicg/activitypub-html-discovery",
+      shortName: "apdisco",
+      xref: "web-platform",
+      group: "socialcg",
+      noRecTrack: true
+    };
+  </script>
+</head>
+
+<body>
+  <section id="abstract">
+    <p>ActivityPub is a standard for publishing structured social network data on the Web in JSON-LD format. This
+      document describes various methods for discovering the ActivityPub object described by an HTML page, and
+      conversely the HTML page for an ActivityPub object.</p>
+  </section>
+  <section id="sotd">
+    <p>This is a draft of the Social Web Incubator Group (SocialCG) Discovery Task Force.</p>
+  </section>
+  <section class="informative">
+    <h2>Introduction</h2>
+    <p>...</p>
+    <section>
+      <h3>Motivating user stories</h3>
+      <p>
+      <ul>
+        <li>...</li>
+      </ul>
+      </p>
+    </section>
+    <section>
+      <h3>Example URL formats</h3>
+      <p>This document uses a consistent format for example URLs:
+      <pre>
+          <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
+        </pre>
+      </p>
+      <p>Where:
+      <ul>
+        <li><code>{name}</code> is the domain name of the server. There are three default domain names used:
+          <ul>
+            <li><code>ap.example</code> - A server that primarily provides ActivityPub JSON-LD documents.</li>
+            <li><code>html.example</code> - A server that primarily provides HTML documents.</li>
+            <li><code>mixed.example</code> - A server that provides both ActivityPub JSON-LD and HTML documents.</li>
+          </ul>
+          Other names may be used when additional examples are required.
+        </li>
+        <li><code>{path}</code> is the path to the object. It should be opaque; none of the paths in this document have
+          semantic meaning unless otherwise specified.</li>
+        <li><code>{type}</code> is the general content type of object. This will usually be the lowercase version of the
+          ActivityPub object type, such as <code>Note</code>, <code>Person</code>, or <code>Image</code>.</li>
+        </li>
+        <li><code>{ordinal}</code> is an ordinal number, when multiple objects are being described in the same
+          discussion.</li>
+        <li><code>{ext}</code> is an optional extension that indicates the Internet media type of the resource,
+          including:
+          <ul>
+            <li><code>.jsonld</code> for JSON-LD objects</li>
+            <li><code>.html</code> for HTML documents</li>
+            <li><code>.png</code>, <code>.jpg</code>, etc. for PNG images</li>
+          </ul>
+          Extensions may be left off of the URL, especially if the same URL will be used for multiple media types.
+        </li>
+      </ul>
+      </p>
+    </section>
+  </section>
+  <section>
+    <h2>Discovering equivalent ActivityPub objects from HTML</h2>
+    <section>
+      <h3>Content negotiation</h3>
+    </section>
+    <section>
+      <h3>HTTP Link header</h3>
+    </section>
+    <section>
+      <h3>HTML &gt;link&lt; element</h3>
+    </section>
+    <section>
+      <h3>Embedded JSON-LD</h3>
+    </section>
+    <section>
+      <h3>OpenGraph</h3>
+    </section>
+    <section>
+      <h3>Webfinger</h3>
+    </section>
+    <section>
+      <h3>LRDD</h3>
+    </section>
+  </section>
+  <section>
+    <h2>Discovering ActivityPub authors from HTML</h2>
+    <section>
+      <h3>Discover equivalent object</h3>
+    </section>
+    <section>
+      <h3>HTTP Link header</h3>
+    </section>
+    <section>
+      <h3>HTML &gt;link&lt; element</h3>
+    </section>
+    <section>
+      <h3>Embedded JSON-LD</h3>
+    </section>
+    <section>
+      <h3>OpenGraph</h3>
+    </section>
+  </section>
+  <section>
+    <h2>Discovering HTML pages from ActivityPub objects</h2>
+    <section>
+      <h3><code>url</code> property</h3>
+    </section>
+    <section>
+      <h3>Content negotiation</h3>
+    </section>
+    <section>
+      <h3>HTTP Link header</h3>
+    </section>
+    <section>
+      <h3>Webfinger</h3>
+    </section>
+  </section>
+  <section>
+    <h2>Best practices for consumers</h2>
+    <section>
+      <h3>Two-way confirmation</h3>
+    </section>
+    <section>
+      <h3>Order of discovery techniques</h3>
+      <section>
+        <h4>Discovering ActivityPub objects</h4>
+      </section>
+      <section>
+        <h4>Discovering authors</h4>
+      </section>
+      <section>
+        <h4>Discovering HTML pages</h4>
+      </section>
+    </section>
+    <section>
+      <h3>Handling multiple results</h3>
+    </section>
+  </section>
+  <section>
+    <h2>Best practices for publishers</h2>
+    <section>
+      <h3>Two-way confirmation</h3>
+    </section>
+    <section>
+      <h3>Discovery techniques to support</h3>
+    </section>
+    <section>
+      <h3>Multiple results</h3>
+    </section>
+  </section>
+  <section id="conformance">
+    <p>
+      This is required for specifications that contain normative material.
+    </p>
+  </section>
+</body>
+
+</html>
