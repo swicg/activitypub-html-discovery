@@ -80,6 +80,82 @@
     <h2>Discovering equivalent ActivityPub objects from HTML</h2>
     <section>
       <h3>Content negotiation</h3>
+      <p><a href="https://en.wikipedia.org/wiki/Content_negotiation">Content negotiation</a> is a catch-all term for
+        ways of negotiating the representation of a resource through the HTTP protocol. In this document, it will
+        specifically cover <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-3.4.1">proactive negotiation</a>
+        using the <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.2">Accept</a> header.
+      </p>
+      <p>
+        Given the URL for an HTML document, such as <code>https://mixed.example/some/path/to/note-1</code>, a consumer
+        could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
+      </p>
+      <pre class="HTTP">
+                    GET /some/path/to/note-1 HTTP/1.1
+                    Host: mixed.example
+                    Accept: application/activity+json; application/ld+json; application/json
+                  </pre>
+      <p>
+        A compliant server may respond with the ActivityPub JSON-LD object in the body of the response:
+      </p>
+      <pre class="HTTP">
+              HTTP/1.1 200 OK
+              Content-Type: application/activity+json
+
+              {
+                "@context": "https://www.w3.org/ns/activitystreams",
+                "id": "https://mixed.example/some/path/to/note-1",
+                "type": "Article",
+                "content": "This is a note."
+              }
+            </pre>
+      <p>
+        Alternately, the server may respond with a <code>308 Permanent Redirect</code> to indicate the location of the JSON-LD
+        representation.
+      </p>
+      <pre class="HTTP">
+                    HTTP/1.1 308 Permanent Redirect
+                    Location: https://mixed.example/different/path/to/note-1.jsonld
+                  </pre>
+      <section>
+        <h4>Content negotiation failure</h4>
+
+        <p>
+          If the server does not support content negotiation, it may respond with a <code>406 Not Acceptable</code> status
+          code.
+        </p>
+        <pre>
+              HTTP/1.1 406 Not Acceptable
+              Content-Type: text/plain
+
+              No representation matching this request could be found.
+            </pre>
+        <p>Less compliant servers may ignore the <code>Accept</code> header altogether and return the HTML content regardless:
+        </p>
+        <pre class="HTTP">
+              HTTP/1.1 200 OK
+              Content-Type: text/html
+
+              &lt;html&gt;
+              &lt;h ead&gt;
+              &lt;title&gt;Article 1&lt;/title&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+              &lt;p&gt;This is a note.&lt;/p&gt;
+            </pre>
+        <p>
+          A more difficult failure mode to detect arises when the server does not support ActivityPub, but does support content negotiation for another JSON format. Such a server returns a <code>200 OK</code> status code with a JSON
+          object that does not use JSON-LD, or JSON-LD object that does not use the Activity Streams 2.0 vocabulary:
+        </p>
+        <pre class="HTTP">
+              HTTP/1.1 200 OK
+              Content-Type: application/json
+
+              {
+                "property": "value",
+                "otherProperty": "otherValue"
+              }
+            </pre>
+      </section>
     </section>
     <section>
       <h3>HTTP Link header</h3>
