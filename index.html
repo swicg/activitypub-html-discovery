@@ -54,9 +54,17 @@
     </ul>
     <section>
       <h3>Motivating user stories</h3>
+      <p>These are some of the user stories</p>
       <p>
       <ul>
-        <li>...</li>
+        <li><em>As a Web user, when viewing a Web page, I want to <code>Like</code> the contents, so that I can share it with my followers, let the author know I appreciated it, and save it to my <code>liked</code> collection.</em> A browser-based ActivityPub API client could submit a <code>Like</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
+        <li><em>As a Web user, when viewing a Web page, I want to <code>Announce</code> the contents, so that I can share it with my followers.</em> A browser-based ActivityPub API client could submit a <code>Announce</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
+        <li><em>As a Web user, when viewing an actor's profile, I want to <code>Follow</code> the actor, so that I can get updates about their activities in my inbox.</em> A browser-based ActivityPub API client could submit a <code>Follow</code> activity to the user's ActivityPub server, but it would need to know the actor ID of the actor whose profile is being viewed.</li>
+        <li><em>As a Web user, when viewing an actor's profile, I want to send them a direct message, to share information or make a connection.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the profile actor's ID in the <code>to</code> property, but the API client would need to know the actor ID of the actor whose profile is being viewed.</li>
+        <li><em>As a Web user, when viewing an image page in my browser, I want to send a direct message to the author, to share information or give feedback.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the image's author's actor ID in the <code>to</code> property, but the API client would need to know the actor ID of the author of the image.</li>
+        <li><em>As a social network client user, when I see a link in the content of a social media post, I want to load the resource for that link into my social media client without launching an external browser, so that I have a smooth user experience and can fully interact with the content.</em> Given a link like <code>https://html.example/blog/page-1.html</code>, an ActivityPub API client could discover the related ActivityPub ID <code>https://ap.example/api/page-1.jsonld</code>, retrieve it with machine-readable metadata, and provide affordances for interacting with the object, such as liking, sharing, or replying.</li>
+        <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to follow a link to the actor's profile page, so I can learn more about them.</em> Converting a Webfinger address into an ActivityPub actor ID is well-covered in the ActivityPub and Webfinger report, but the next step of converting an actor ID to a profile page is not.</li>
+        <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to load the actor's profile into my social network client, so I can interact directly with it.</em> If the link in the <code>content</code> is to the actor's profile page, it's necessary to be able to turn that link into an actor ID to allow more inspection of the actor and affordances like following or blocking.</li>
       </ul>
       </p>
     </section>
