@@ -325,16 +325,36 @@
       </section>
     </section>
     <section>
-      <h3>Embedded JSON-LD</h3>
-    </section>
-    <section>
-      <h3>OpenGraph</h3>
-    </section>
-    <section>
       <h3>Webfinger</h3>
-    </section>
-    <section>
-      <h3>LRDD</h3>
+      <p><a href="https://datatracker.ietf.org/doc/html/rfc7033">Webfinger</a>
+      is a standard for discovering metadata about a resource identified with an URL. Finding the ActivityPub URL for an actor identified with an <code>acct:</code> URL is well documented in the <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/">ActivityPub and Webfinger</a> report. However, Webfinger can be used to find metadata about other resources, including HTML pages with <code>https:</code> URLs.</p>
+      <p>Given an URL for a document, like <code>https://html.example/group-1.html</code>, a GET request can be made to an URL in the <code>/.well-known/</code> path of the domain for the URL, as follows:</p>
+      <pre class="HTTP">
+        GET /.well-known/webfinger?resource=https%3A%2F%2Fhtml.example%2Fgroup-1.html HTTP/1.1
+        Host: html.example
+      </pre>
+      <p>A compliant server will respond with the metadata for the resource:</p>
+      <pre class="HTTP">
+        HTTP/1.1 200 OK
+        Content-Type: application/jrd+json
+
+        {
+          "subject": "https://html.example/group-1.html",
+          "links": [
+            {
+              "rel": "alternate",
+              "type": "application/activity+json",
+              "href": "https://ap.example/api/groups/group-1.jsonld"
+            }
+          ]
+        }
+      </pre>
+      <p>The JRD JSON format includes <a href="https://datatracker.ietf.org/doc/html/rfc7033#section-4.4">a number of properties</a>, as defined in the Webfinger RFC 7033. The relevant data structure in this example is the object in the <code>links</code> array with the <code>rel</code> property set to <code>alternate</code> and the <code>type</code> property set to <code>application/activity+json</code>, an ActivityPub-compatible media type. The <code>href</code> property of this link is URL of the ActivityPub equivalent for the HTML page.</p>
+      <section>
+        <h4>Webfinger failure</h4>
+        <p>Not all Webfinger-aware servers return JRD documents for <code>https</code> URLs. Others might only return JRD documents for URLs that represent actors, such as registered users.</p>
+        <p>As with other link-relation-based discovery mechanisms, like the HTTP Link header or the &lt;link&gt; element, a JSON or JSON-LD media in the link's <code>type</code> property might not indicate an ActivityPub URL, but some other JSON or JSON-LD object.</p>
+      </section>
     </section>
   </section>
   <section>
