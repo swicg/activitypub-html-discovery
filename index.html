@@ -364,6 +364,48 @@
         <p>As with other link-relation-based discovery mechanisms, like the HTTP Link header or the &lt;link&gt; element, a JSON or JSON-LD media in the link's <code>type</code> property might not indicate an ActivityPub URL, but some other JSON or JSON-LD object.</p>
       </section>
     </section>
+    <section>
+      <h3>Embedded JSON-LD</h3>
+      <p>HTML documents can include <a href="https://www.w3.org/TR/json-ld11/">JSON-LD</a> data in a <code>&lt;script&gt;</code> element in the <code>&lt;head&gt;</code> section of the document. This data can be used to provide metadata about the document, including its equivalent ActivityPub object.</p>
+      <p>Given a page that shows an image at <code>https://html.example/gallery/image-17.html</code>, the HTML for the page could look like this:</p>
+      <pre>
+        &lt;!DOCTYPE html&gt;
+        &lt;html lang=&quot;en&quot;&gt;
+          &lt;head&gt;
+            &lt;title&gt;Image 17&lt;/title&gt;
+            &lt;script type=&quot;application/ld+json&quot;&gt;
+            {
+              &quot;@context&quot;: &quot;https://www.w3.org/ns/activitystreams&quot;,
+              &quot;type&quot;: &quot;Image&quot;,
+              &quot;id&quot;: &quot;https://ap.example/api/images/image-17.jsonld&quot;,
+              &quot;url&quot;: [
+                {
+                  &quot;type&quot;: &quot;Link&quot;,
+                  &quot;mediaType&quot;: &quot;text/html&quot;,
+                  &quot;href&quot;: &quot;https://html.example/gallery/image-17.html&quot;
+                }
+              ]
+            }
+            &lt;/script&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+              &lt;h1&gt;Image 17&lt;/h1&gt;
+              &lt;p&gt;&lt;img src=&quot;https://html.example/images/image-17.png&quot;&gt;&lt;/p&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;
+      </pre>
+      <p>This embedded JSON-LD specifies that an ActivityPub object with the ID <code>https://ap.example/api/images/image-17.jsonld</code> exists, and that it has an HTML page <code>url</code> at <code>https://html.example/gallery/image-17.html</code>, that is, the current page's URL. This is a roundabout, but clear, way to specify the ActivityPub ID of the current page.</p>
+      <p>Consumers need to parse the HTML page, and the embedded JSON-LD, to extract the ActivityPub object ID. An advantage to this technique is that other properties of the ActivityPub object can be embedded as well; however, to confirm those properties, the consumer will need to fetch the object from its canonical URL, the ID, anyways.</p>
+      <section>
+        <h4>Embedded JSON-LD failure</h4>
+        <p>
+          Complicated structures for the <code>url</code> property may make it hard to confirm that the object's URL is the same as the current page's.
+        </p>
+        <p>
+          Embedded JSON-LD is very popular for embedding <a href="https://schema.org/">Schema.org</a> metadata. This can lead to false positives when looking for ActivityPub objects.
+        </p>
+      </section>
+    </section>
   </section>
   <section>
     <h2>Discovering ActivityPub authors from HTML</h2>
