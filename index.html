@@ -106,6 +106,7 @@
   </section>
   <section>
     <h2>Discovering equivalent ActivityPub objects from HTML</h2>
+    <p>This form of discovery, <dfn>forward discovery</dfn>, will identify an ActivityPub JSON-LD resource based on the HTML representation of the object.</p>
     <section>
       <h3>Content negotiation</h3>
       <p><a href="https://en.wikipedia.org/wiki/Content_negotiation">Content negotiation</a> is a catch-all term for
@@ -120,7 +121,7 @@
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
-        Accept: application/activity+json; application/ld+json; application/json
+        Accept: application/activity+json, application/ld+json, application/json
       </pre>
       <p>
         A compliant server may respond with the ActivityPub JSON-LD object in the body of the response:
@@ -170,7 +171,7 @@
 
           &lt;html&gt;
           &lt;head&gt;
-          &lt;title&gt;Article 1&lt;/title&gt;
+          &lt;title&gt;Note 1&lt;/title&gt;
           &lt;/head&gt;
           &lt;body&gt;
           &lt;p&gt;This is a note.&lt;/p&gt;
@@ -408,6 +409,157 @@
     </section>
   </section>
   <section>
+    <h2>Discovering HTML pages from ActivityPub objects</h2>
+    <p>
+        <dfn>Reverse discovery</dfn>, in this report, means identifying the HTML
+        page that represents the same object as an ActivityPub JSON-LD object. This is necessary for user stories like creating a link to an actor in microsyntax.
+    </p>
+    <section>
+      <h3><code>url</code> property</h3>
+      <p>ActivityPub objects can have an optional <code>url</code> property, which "[i]dentifies one or more links to representations of the object." The property is the preferred way to indicate a corresponding HTML page for an ActivityPub object.
+      </p>
+      <p>As with many Activity Vocabulary properties, this can have several formats:
+      </p>
+      <ul>
+        <li>A string. In this case, the string is the URL itself.</li>
+        <li>A <code>Link</code> object. This structure is used to provide additional information about the link, including the <code>mediaType</code>. For an equivalent HTML representation, the <code>mediaType</code> property will be "text/html". The <code>href</code> property of the <code>Link</code> object is the URL.</li>
+        <li>An array: One or more strings and/or <code>Link</code> objects.</li>
+      </ul>
+      <p>In this example, the <code>url</code> property is only a string.</p>
+      <pre class="HTTP">
+      {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": "https://ap.example/some/path/person-1.jsonld",
+        "type": "Person",
+        "name": "Person One",
+        "url": "https://html.example/profile/person-1.html"
+      }
+      </pre>
+      <p>In the next example, the <code>url</code> property is a full <code>Link</code>-type object with <code>mediaType</code> property
+      equal to "text/html".</p>
+      <pre class="HTTP">
+      {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": "https://ap.example/geo/place-17.jsonld",
+        "type": "Place",
+        "nameMap": {
+          "en": "Berlin"
+        },
+        "url": {
+          "type": "Link",
+          "mediaType": "text/html",
+          "href": "https://html.example/map/de/ber/ber.html"
+        }
+      }
+      </pre>
+      <p>
+        In this final example, the <code>url</code> property is an array of <code>Link</code>-type objects with different <code>mediaType</code> properties.
+      </p>
+      <pre class="HTTP">
+      {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": "https://ap.example/photos/gallery/image-3.jsonld",
+        "type": "Image",
+        "summary": "Jason and Carol at the lake house",
+        "url": [
+          {
+            "type": "Link",
+            "mediaType": "text/html",
+            "href": "https://html.example/gallery/3.html"
+          },
+          {
+            "type": "Link",
+            "mediaType": "image/webp",
+            "href": "https://upload.example/files/08/17/2021/lakehouse.webp"
+          }
+        ]
+      }
+    </pre>
+      <section>
+        <h4><code>url</code> property failure</h4>
+        <p>
+          When the <code>url</code> property is only a string, it may not
+          represent an HTML page. Especially for objects with binary content types, like <code>Image</code>, <code>Video</code>, and <code>Audio</code>, the <code>url</code> property is often used for the URL of the respective binary representation of the object.
+        </p>
+        <p>
+          The <code>mediaType</code> of <code>Link</code>-type objects in the <code>url</code> property is not always defined, and when it is defined, it is not always "text/html".
+        </p>
+        <p>
+          The property is defined only for representations of the current object. However, the <code>Link</code>-type object can have a link relation property, <code>rel</code>. Publishers may misuse the <code>url</code> property to including links that aren't a representation of the object, but instead a related object, like "next" or "author".
+        </p>
+      </section>
+    </section>
+    <section>
+      <h3>Content negotiation</h3>
+      <p>As with forward discovery, it's possible for the HTML and JSON-LD representations of an object to be found at the same URL.</p>
+      <p>
+        Given the URL for an ActivityPub object, such as <code>https://mixed.example/some/path/to/note-1</code>, a consumer
+        could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
+      </p>
+      <pre class="HTTP">
+        GET /some/path/to/note-1 HTTP/1.1
+        Host: mixed.example
+        Accept: text/html
+      </pre>
+      <p>
+        A compliant server may respond with the HTML document in the body of the response:
+      </p>
+      <pre class="HTTP">
+        HTTP/1.1 200 OK
+        Content-Type: text/html
+
+        &lt;html&gt;
+        &lt;head&gt;
+        &lt;title&gt;Note 1&lt;/title&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+        &lt;p&gt;This is a note.&lt;/p&gt;
+      </pre>
+      <p>
+        Alternately, the server may respond with a <code>308 Permanent Redirect</code> to indicate the location of the HTML
+        representation.
+      </p>
+      <pre class="HTTP">
+        HTTP/1.1 308 Permanent Redirect
+        Location: https://mixed.example/different/path/to/note-1.html
+      </pre>
+      <section>
+        <h4>Content negotiation failure</h4>
+
+        <p>
+          If the server does not support content negotiation, it may respond with a <code>406 Not Acceptable</code> status
+          code.
+        </p>
+        <pre>
+          HTTP/1.1 406 Not Acceptable
+          Content-Type: text/plain
+
+          No representation matching this request could be found.
+        </pre>
+        <p>Less compliant servers may ignore the <code>Accept</code> header altogether and return the JSON-LD content regardless:
+        </p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: application/activity+json
+
+          {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://mixed.example/some/path/to/note-1",
+            "type": "Note",
+            "content": "This is a note."
+          }
+        </pre>
+        <p>
+      </section>
+    </section>
+    <section>
+      <h3>HTTP Link header</h3>
+    </section>
+    <section>
+      <h3>Webfinger</h3>
+    </section>
+  </section>
+  <section>
     <h2>Discovering ActivityPub authors from HTML</h2>
     <section>
       <h3>Discover equivalent object</h3>
@@ -423,21 +575,6 @@
     </section>
     <section>
       <h3>OpenGraph</h3>
-    </section>
-  </section>
-  <section>
-    <h2>Discovering HTML pages from ActivityPub objects</h2>
-    <section>
-      <h3><code>url</code> property</h3>
-    </section>
-    <section>
-      <h3>Content negotiation</h3>
-    </section>
-    <section>
-      <h3>HTTP Link header</h3>
-    </section>
-    <section>
-      <h3>Webfinger</h3>
     </section>
   </section>
   <section>
