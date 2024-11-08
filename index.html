@@ -212,7 +212,7 @@
       </p>
       <pre class="HTTP">
       HTTP/1.1 200 OK
-      Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
+      Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
       </pre>
       <p>
         The link header with the <code>alternate</code> relation type, and an ActivityPub-compatible media type, indicates
@@ -234,7 +234,7 @@
       </p>
       <pre class="HTTP">
       HTTP/1.1 200 OK
-      Link: <https://ap.example/api/articles/article-1.jsonld>; rel="alternate"; type="application/activity+json"
+      Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
       Content-type: text/html
 
       &lt;html&gt;
@@ -567,7 +567,7 @@
       <pre class="HTTP">
         HTTP/1.1 200 OK
         Content-Type: application/activity+json
-        Link: <https://html.example/profiles/person-1.html>; rel="alternate"; type="text/html"
+        Link: &lt;https://html.example/profiles/person-1.html&gt;; rel="alternate"; type="text/html"
       </pre>
       </section>
       <section>
@@ -704,8 +704,8 @@
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: text/html
-          Link: <https://ap.example/api/videos/video-33.jsonld>; rel="alternate"; type="application/activity+json"
-          Link: <https://ap.example/profiles/person-7.jsonld>; rel="author"; type="application/activity+json"
+          Link: &lt;https://ap.example/api/videos/video-33.jsonld&gt;; rel="alternate"; type="application/activity+json"
+          Link: &lt;https://ap.example/profiles/person-7.jsonld&gt;; rel="author"; type="application/activity+json"
         </pre>
         <p>Note that there are two <code>Link</code> headers in the result; one represents the <code>Video</code>, and the other represents the <code>Person</code> that authored the video. The <code>rel</code> value of "author" distinguishes the author link.</p>
       </section>
