@@ -494,7 +494,7 @@
       <p>As with forward discovery, it's possible for the HTML and JSON-LD representations of an object to be found at the same URL.</p>
       <p>
         Given the URL for an ActivityPub object, such as <code>https://mixed.example/some/path/to/note-1</code>, a consumer
-        could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
+        could attempt to retrieve the corresponding HTML resource using this HTTP request:
       </p>
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
@@ -554,9 +554,89 @@
     </section>
     <section>
       <h3>HTTP Link header</h3>
+      <p>As with forward discovery, it is possible to use the <code>Link</code> header to identify an HTML page related to a given ActivityPub JSON-LD resource. A <code>Link</code> header with the <code>alternate</code> link relation and a <code>type</code> equal to <code>text/html</code> indicates an HTML page representing the same object.</p>
+      <p>The advantage of this technique is that it does not require downloading and parsing the JSON-LD content of the ActivityPub object. The <code>Link</code> header has fewer options for formatting than other methods such as the <code>url</code> property, for example, making it slightly easier for consumers.</p>
+      <section>
+      <h4>Example</h4>
+      <p>Given an ActivityPub JSON-LD object at <code>https://ap.example/some/path/person-1.jsonld</code>, a consumer could use a <code>HEAD</code> HTTP request to get the relevant headers for the resource:</p>
+      <pre class="HTTP">
+        HEAD /some/path/person-1.jsonld HTTP/1.1
+        Host: ap.example
+      </pre>
+      <p>The publisher would respond with the HTTP headers, including a <code>Link</code> header:</p>
+      <pre class="HTTP">
+        HTTP/1.1 200 OK
+        Content-Type: application/activity+json
+        Link: <https://html.example/profiles/person-1.html>; rel="alternate"; type="text/html"
+      </pre>
+      </section>
+      <section>
+        <h4>HTTP Link header failure</h4>
+        <p>Some non-compliant HTTP servers will send the full body of the resource in the response to the <code>HEAD</code> request.</p>
+      </section>
     </section>
     <section>
       <h3>Webfinger</h3>
+      <p>The Webfinger protocol can be used to find an HTML page related to an ActivityPub object in a number of ways.</p>
+      <p>The consumer can identify the resource for the a Webfinger query in two ways. First, the <code>id</code> property, usually an <code>https</code> URL, can be passed as the <code>resource</code> parameter for the Webfinger query. Alternately, if the ActivityPub object is an <a href="https://www.w3.org/TR/activitypub/#actors">actor</a>, an <code>acct</code> URL in the format <code>acct:username@domain.example</code> can be constructed using the technique for <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">Webfinger reverse discovery</a>. This <code>acct</code> URL can be used as the <code>resource</code> parameter for the Webfinger query.</p>
+      <p>The publisher can provide a link to the HTML representation of the object in the JRD output of the Webfinger query in at least two ways.
+      </p>
+      <p>
+       First, the <code>links</code> property of the output object can contain a link object with a <code>rel</code> property set to <code>alternate</code> and the <code>type</code> property set to <code>text/html</code>. If such a link exists, its <code>href</code> property is the URL of the related HTML page.
+      </p>
+      <p>Second, the <code>links</code> property of the JRD output object may include an object with a <code>rel</code> property set to <code>http://webfinger.net/rel/profile-page</code>. This is defined to be "the main home/profile page that a human should visit when getting info about that webfinger account." (<a href="https://webfinger.net/rel/">https://webfinger.net/rel/</a>) It is not guaranteed to be HTML, but a <code>type</code> property can further define that. Per the definition, "it&apos;s likely text/html if it&apos;s for users."</p>
+      <p>An advantage of using Webfinger for discovery is that it is widely implemented by ActivityPub publishers to enable using <code>acct</code> URLs as identities.</p>
+      <section>
+        <h4>Examples</h4>
+        <p>
+          Given an ActivityPub <code>Place</code> object at <code>https://ap.example/geo/place-7.jsonld</code>, a consumer could use a Webfinger query to find the HTML page for the object:
+        </p>
+        <pre class="HTTP">
+          GET /.well-known/webfinger?resource=https%3A%2F%2Fap.example%2Fgeo%2Fplace-7.jsonld HTTP/1.1
+          Host: ap.example
+        </pre>
+        <p>The publisher could return the following JRD output:</p>
+        <pre class="JSON">
+          {
+            "subject": "https://ap.example/geo/place-7.jsonld",
+            "links": [
+              {
+                "rel": "alternate",
+                "type": "text/html",
+                "href": "https://html.example/map/nl/ams/17921.html"
+              }
+            ]
+          }
+        </pre>
+        <p>
+          In this example, the <code>links</code> property of the JRD object contains a single object with a <code>rel</code> property set to <code>alternate</code> and a <code>type</code> property set to <code>text/html</code>. The <code>href</code> property of this object is the URL of the HTML page representing the object.
+        </p>
+        <p>
+          Alternately, given an ActivityPub <code>Person</code> object at <code>https://ap.example/profiles/person-19.jsonld</code>, the consumer could construct an <code>acct</code> URL as <code>acct:person-19@ap.example</code> and use it as the <code>resource</code> parameter for the Webfinger query:
+        </p>
+        <pre class="HTTP">
+          GET /.well-known/webfinger?resource=acct%3Aperson-19%40ap.example HTTP/1.1
+          Host: ap.example
+        </pre>
+        <p>The publisher could return the following JRD output:</p>
+        <pre class="JSON">
+          {
+            "subject": "acct:person-19@ap.example",
+            "links": [
+              {
+                "rel": "http://webfinger.net/rel/profile-page",
+                "type": "text/html",
+                "href": "https://html.example/profiles/person-19.html"
+              }
+            ]
+          }
+        </pre>
+        <p>In this output, the <code>http://webfinger.net/rel/profile-page</code> relationship identifies an HTML page for the <code>Person</code> object.</p>
+      </section>
+      <section>
+        <h4>Webfinger failure</h4>
+        <p>Some servers may not return JRD documents for <code>https</code> URLs. Others might only return JRD documents for URLs that represent actors, such as registered users.</p>
+      </section>
     </section>
   </section>
   <section>
