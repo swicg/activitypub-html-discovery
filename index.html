@@ -105,7 +105,7 @@
     </section>
   </section>
   <section>
-    <h2>Discovering equivalent ActivityPub objects from HTML</h2>
+    <h2 id="discovery">Discovering equivalent ActivityPub objects from HTML</h2>
     <p>This form of discovery, <dfn>forward discovery</dfn>, will identify an ActivityPub JSON-LD resource based on the HTML representation of the object.</p>
     <section>
       <h3>Content negotiation</h3>
@@ -409,7 +409,7 @@
     </section>
   </section>
   <section>
-    <h2>Discovering HTML pages from ActivityPub objects</h2>
+    <h2 id="reverse-discovery">Discovering HTML pages from ActivityPub objects</h2>
     <p>
         <dfn>Reverse discovery</dfn>, in this report, means identifying the HTML
         page that represents the same object as an ActivityPub JSON-LD object. This is necessary for user stories like creating a link to an actor in microsyntax.
@@ -640,12 +640,79 @@
     </section>
   </section>
   <section>
-    <h2>Discovering ActivityPub authors from HTML</h2>
+    <h2 id="author-discovery">Discovering ActivityPub authors from HTML</h2>
+    <p>This section describes various methods for determining the ActivityPub ID of the author of an object represented by an HTML page.</p>
     <section>
       <h3>Discover equivalent object</h3>
+      <p>One way to discover the author of an object represented by an HTML page is to first discover the object's ActivityPub JSON-LD representation, then use that information to determine the author.</p>
+      <p>Any of the methods in the <a href="#discovery">forward discovery</a> section can be used to find the URL of the ActivityPub JSON-LD resource. Fetching the resource will retrieve the full JSON-LD representation of the object.</p>
+      <p>Three main properties are used, in ActivityPub, to identify the author of an object:</p>
+      <ul>
+        <li><a href="https://www.w3.org/TR/activitystreams-vocabulary/#dfn-attributedto">attributedTo</a>. This is the primary property for defining the author of an object. It is primarily used for content-type objects, such as <code>Note</code>, <code>Image</code> or <code>Video</code>, but can also be used for other object types.</li>
+        <li><a href="https://www.w3.org/TR/activitystreams-vocabulary/#dfn-actor">actor</a>. This identifies the actor who performed activity-type objects, such as a <code>Like</code> or <code>Question</code> activity.</li>
+        <li><a href="https://w3c-ccg.github.io/security-vocab/#owner">owner</a>. This property is almost exclusively used for <a href="https://w3c-ccg.github.io/security-vocab/#publicKey">publicKey</a> objects.</li>
+      </ul>
+      <p>Each of these properties can have values that are a string, a JSON object, or a JSON array consisting of strings and/or JSON objects. If the value is a string, it is the URL of the author object. If the value is an object, its <code>id</code> property is the URL of the ActivityPub JSON-LD object. For an array, each item can be resolved as either a string or an object.</p>
+      <p>The advantage of this method is that it does not require a separate discovery path for authors.</p>
+      <section>
+        <h3>Example</h3>
+        <p>Given an HTML page at <code>https://html.example/note-1.html</code> that represents a <code>Note</code> object, the consumer can use an HTML &lt;link&gt; header to identify the URL of the ActivityPub note:</p>
+        <pre class="HTML">
+          &lt;link
+            rel="alternate"
+            type="application/activity+json"
+            href="https://ap.example/api/notes/note-1.jsonld" /&gt;
+        </pre>
+        <p>Fetching the content at <code>https://ap.example/api/notes/note-1.jsonld</code> will return the JSON-LD representation of the note:</p>
+        <pre class="JSON">
+          {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://ap.example/api/notes/note-1.jsonld",
+            "type": "Note",
+            "content": "This is a note.",
+            "attributedTo": {
+              "id": "https://ap.example/profiles/person-1.jsonld",
+              "type": "Person",
+              "name": "Person One"
+            }
+          }
+        </pre>
+        <p>
+          In this example, the <code>attributedTo</code> property is an object with an <code>id</code> property that is the URL of the author object.
+        </p>
+      </section>
+      <section>
+        <h3>Object discovery failure</h3>
+        <p>This discovery method can fail if the ActivityPub object requires authentication to be fetched -- which is often the case for content that was not made available to the public by the author. A simple consumer may not have the context necessary to use OAuth 2.0, HTTP Signature, or other authentication methods.</p>
+        <p>Not all ActivityPub implementations include the <code>attributedTo</code> or <code>actor</code> property for an object in its default representation.</p>
+      </section>
     </section>
     <section>
       <h3>HTTP Link header</h3>
+      <p>The <code>Link</code> header can also be used to identify the author of an HTML page. The <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-author">author</a> link type identifies the author of a resource. So, a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to "application/activity+json" will link to the ActivityPub representation of the author of the object.</p>
+      <p>This technique has the advantage of requiring a minimum amount of data transfer and complicated parsing of data structures.</p>
+      <section>
+        <h4>Example</h4>
+        <p>
+          Given an HTML page at <code>https://html.example/files/video-33.html</code> that represents a <code>Video</code> object, the consumer can use an HTTP <code>HEAD</code> request to identify the URL of the ActivityPub video:
+        </p>
+        <pre class="HTTP">
+          HEAD /files/video-33.html HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>The publisher would respond with the HTTP headers:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: text/html
+          Link: <https://ap.example/api/videos/video-33.jsonld>; rel="alternate"; type="application/activity+json"
+          Link: <https://ap.example/profiles/person-7.jsonld>; rel="author"; type="application/activity+json"
+        </pre>
+        <p>Note that there are two <code>Link</code> headers in the result; one represents the <code>Video</code>, and the other represents the <code>Person</code> that authored the video. The <code>rel</code> value of "author" distinguishes the author link.</p>
+      </section>
+      <section>
+        <h4>Link header failure</h4>
+        <p>Some non-compliant publishers will respond to a <code>HEAD</code> request with the full body of the HTML document.</p>
+      </section>
     </section>
     <section>
       <h3>HTML &lt;link&gt; element</h3>
