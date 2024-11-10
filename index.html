@@ -744,7 +744,70 @@
       </section>
     </section>
     <section>
-      <h3>OpenGraph</h3>
+      <h3>OpenGraph Protocol</h3>
+      <p>
+        The <a href="https://ogp.me/">OpenGraph Protocol</a> is a set of metadata properties that can be included in an HTML document to provide information about the document. Several of these properties can be used to identify the author of the document; usually with the URL of an HTML page that has a <a href="https://ogp.me/#type_profile">profile</a> type.
+      </p>
+      <ul>
+        <li><code>music:musician</code> identifies the creator of a song or album.</li>
+        <li><code>music:creator</code> identifies the creator of a playlist or station.</li>
+        <li><code>video:actor</code> identifies the actor in a video.</li>
+        <li><code>video:director</code> identifies the director of a video.</li>
+        <li><code>video:writer</code> identifies the writer of a video.</li>
+        <li><code>article:author</code> identifies the author of an article.</li>
+        <li><code>book:author</code> identifies the author of a book.</li>
+      </ul>
+      <p>
+        For these properties, the most likely discovery path is to follow the property's URL value to an HTML page for the profile, and then use <a href="#discovery">forward discovery</a> to find the ActivityPub object corresponding to that profile.
+      </p>
+      <p>
+        Another option is the <code>fediverse:creator</code> property, <a href="https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">developed by Mastodon</a>. This property is used to identify the creator of a document. Its value is the Webfinger ID of the creator, prefixed with an <code>@</code> character, not an <code>acct:</code> URL. The consumer can use the Webfinger protocol to find the ActivityPub object corresponding to the creator.
+      </p>
+      <p>The advantage of using OGP for metadata is that it is widely implemented by Web publishing systems.</p>
+      <section>
+        <h4>Example</h4>
+        <p>
+          Given an HTML page at <code>https://html.example/files/article-40.html</code> that represents a <code>Article</code> object, the consumer can use the OpenGraph metadata to identify the URL of HTML profile for the author of the article:
+        </p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Article 40&lt;/title&gt;
+              &lt;meta property="article:author" content="https://html.example/profiles/person-7.html" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>
+          In this example, the <code>article:author</code> property is the author of the document.
+        </p>
+        <p>
+          Given an HTML page at <code>https://html.example/files/video-40.html</code> that represents a <code>Video</code> object, the consumer can use OpenGraph metadata to identify the Webfinger ID of the creator of the video:
+        </p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Video 40&lt;/title&gt;
+              &lt;meta property="fediverse:creator" content="@person-22@ap.example" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>
+          In this example, the <code>fediverse:creator</code> property is the Webfinger ID of the creator of the video, prefixed with the <code>@</code> symbol. The Webfinger ID can be used to find the ActivityPub object corresponding to the creator.
+        </p>
+      </section>
+      <section>
+        <h4>OpenGraph Protocol failure</h4>
+        <p>
+          The OpenGraph Protocol is not widely used for identifying authors of documents. When it is used, the profile page may not support discovery of an ActivityPub object.
+        </p>
     </section>
   </section>
   <section id="consumers">
