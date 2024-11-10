@@ -73,6 +73,10 @@
     </ul>
 
     <p>
+      Note that a resource may have an author resource with an ActivityPub representation, but not have its own ActivityPub representation. An example is an article published in a content-management system (CMS) that is ascribed to an actor with an ActivityPub account who wants to receive credit and/or feedback for the work.
+    </p>
+
+    <p>
     For some kinds of resources, especially ActivityPub actors, a Webfinger is a more readable alternative to the ActivityPub representation's URL. In these cases, the forward discovery process and author discovery process might include the Webfinger discovery process as an intermediate step:
     </p>
 
@@ -871,6 +875,94 @@
         <p>
           The OpenGraph Protocol is not widely used for identifying authors of documents. When it is used, the profile page may not support discovery of an ActivityPub object.
         </p>
+    </section>
+    </section>
+  </section>
+  <section id="verification">
+    <h2>Verification</h2>
+    <p>Verification is a process of confirming that an HTML page and an ActivityPub object represent the same resource. This is necessary to ensure that the publisher of one representation is not falsely connecting two unrelated resources.</p>
+    <section>
+      <h3>Two-way discovery</h3>
+      <p>The most reliable verification method is two-way discovery. This consists of first doing discovery in one direction, and then doing discovery in the other direction with the results. For example, doing forward discovery from an HTML page to an ActivityPub object, and then doing reverse discovery from the ActivityPub object to, hopefully, the same HTML page.</p>
+      <section>
+        <h4>Example</h4>
+        <p>Given an HTML page with the URL <code>https://html.example/downloads/image-14.html</code>, the consumer could discover the ActivityPub JSON-LD URL using the <code>Link</code> header method:</p>
+        <pre class="HTTP">
+          HEAD /downloads/image-14.html HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>The publisher would respond with the HTTP headers:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: text/html
+          Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
+        </pre>
+        <p>Then, the consumer could fetch the ActivityPub object at <code>https://ap.example/api/images/image-14.jsonld</code> and look for the URL of the HTML page in the <code>url</code> property:</p>
+        <pre class="JSON">
+          {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://ap.example/api/images/image-14.jsonld",
+            "name": "Image 14",
+            "type": "Image",
+            "url": "https://html.example/downloads/image-14.html"
+          }
+        </pre>
+        <p>By comparing the URL in the ActivityPub object with the original HTML page URL, the consumer can confirm that the two representations relate to the same resource.</p>
+      </section>
+      <section>
+        <h4>Two-way discovery failure</h4>
+        <p>Two-way discovery can fail if the discovered representation does not have a path back to the origin representation.</p>
+        <p>Two-way discovery can become complicated if more than one discovered representation is found, which may connect back to more than one original representation. Verifying multiple relationships, and ignoring those that cannot be verified, complicates this process for the consumer.</p>
+    </section>
+    <section>
+      <h3>Same origin</h3>
+      <p>
+        Another mechanism for verifying a discovery process is to compare the <a href="https://url.spec.whatwg.org/#concept-url-origin">origins</a> of the original representation's URL and the discovered representation's URL. The origin is the combination of the scheme, host, and port of a URL. If the origins are the same, the two representations can be considered related.
+      </p>
+      <p>
+        Content negotiation without a redirect will always have the same origin, as the URL of the HTML page and the URL of the JSON-LD representation are the same.
+      </p>
+      <section>
+        <h4>Example</h4>
+        <p>Given an HTML page with the URL <code>https://mixed.example/profiles/person-3</code>, the consumer could discover the ActivityPub JSON-LD URL using the &lt;link&gt; element method:</p>
+        <pre class="HTML">
+          &lt;link
+            rel="alternate"
+            type="application/activity+json"
+            href="https://mixed.example/api/person/person-3" /&gt;
+        </pre>
+        <p>The <code>href</code> property of the &lt;link&gt; element is the URL of the ActivityPub JSON-LD representation. The origin of the URL of the HTML page is <code>https://mixed.example</code>, and the origin of the URL of the ActivityPub JSON-LD representation is <code>https://mixed.example</code>, so the origins match and the discovery is verified.</p>
+      </section>
+      <section>
+        <h4>Same origin failure</h4>
+        <p>Same origin verification assumes that a single publisher controls an entire domain. Although this is often true for machine-readable formats like JSON-LD, having multiple publishers in control of parts of a domain is more common for HTML documents. For example, documents with URLs starting with <code>https://html.example/home/user1/</code> might be created by one user, and those starting with <code>https://html.example/home/user2/</code> might be created by another. A carefully crafted &lt;link&gt; or other mechanism could be used by one user to link their HTML page to an ActivityPub object created by another.</p>
+        <p>Same origin verification will give a false negative if the publisher is using different domains for HTML pages and ActivityPub JSON-LD objects. This can happen if ActivityPub features are added on to an existing published Web site, or if the publisher needs to keep the domains separate for implementation reasons. If same origin verification gives a negative result, other methods such as two-way verification should be used.</p>
+    </section>
+    <section>
+      <h3>Allowlist</h3>
+      <p>Another means of verification, or more precisely an excuse for   skipping verification, is an allowlist. This is a list of origins or, possibly, other properties of the representation that can be used to confirm trust in the publisher and skip verification.</p>
+      <p>Assuming that each origin is controlled by a single publisher, if the consumer trusts the publisher, they can skip verification of discovery when the original representation has an URL with that origin.</p>
+      <section>
+        <h4>Example</h4>
+        <p>Given an HTML page with the URL <code>https://html.example/profiles/person-3</code>, the consumer could discover the ActivityPub JSON-LD URL using the Embedded JSON-LD method:</p>
+        <pre class="HTML">
+          &lt;script type="application/ld+json"&gt;
+          {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://ap.example/api/person/person-3",
+            "type": "Person",
+            "name": "Person Three"
+            "url": "https://html.example/profiles/person-3"
+          }
+          &lt;/script&gt;
+        </pre>
+        <p>Given that the consumer trusts the publisher of <code>https://html.example</code>, they can skip verification of the discovery process, and accept <code>https://ap.example/api/person/person-3</code> as the ActivityPub JSON-LD representation's URL.</p>
+      </section>
+      <section>
+        <h4>Allowlist failure</h4>
+        <p>Maintaining an allowlist is time-consuming. The number of domains with Web sites is in the hundreds of millions; identifying even a tiny fraction to be trusted takes a lot of human effort.</p>
+        <p>Depending on allowlists as the only means of verification severely limits the number of domains that can be interacted with.</p>
+      </section>
     </section>
   </section>
   <section id="consumers">
