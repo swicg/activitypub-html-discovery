@@ -690,7 +690,7 @@
     <section>
       <h3>HTTP Link header</h3>
       <p>The <code>Link</code> header can also be used to identify the author of an HTML page. The <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-author">author</a> link type identifies the author of a resource. So, a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to "application/activity+json" will link to the ActivityPub representation of the author of the object.</p>
-      <p>This technique has the advantage of requiring a minimum amount of data transfer and complicated parsing of data structures.</p>
+      <p>This technique has the advantage of requiring a minimum amount of data transfer and complicated parsing of data structures. It can also be used with different media types than just HTML; for example, a JPEG image.</p>
       <section>
         <h4>Example</h4>
         <p>
@@ -716,9 +716,32 @@
     </section>
     <section>
       <h3>HTML &lt;link&gt; element</h3>
-    </section>
-    <section>
-      <h3>Embedded JSON-LD</h3>
+      <p>The ActivityPub id of the author of an object represented by an HTML document can also be found using the HTML &lt;link&gt; element. As with the HTTP <code>Link</code> header, if a &lt;link&gt; element has a <code>rel</code> attribute equal to "author" and a <code>type</code> attribute equal to "application/activity+json", its <code>href</code> property is the URL of the ActivityPub object representing the author.</p>
+      <p>This technique is useful when the HTML page is already downloaded and available, such as within a browser environment.</p>
+      <section>
+        <h4>Example</h4>
+        <p>Given an HTML page at <code>https://html.example/files/document-40.html</code> that represents a <code>Document</code> object, the consumer can use the following HTML to identify the URL of the ActivityPub representation of the document:</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Document 33&lt;/title&gt;
+              &lt;link
+                rel="author"
+                type="application/activity+json"
+                href="https://ap.example/profiles/person-7.jsonld" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>In this example, the &lt;link&gt; element with the <code>rel</code> attribute set to "author" and the <code>type</code> attribute set to "application/activity+json" is the author of the document.</p>
+      </section>
+      <section>
+        <h4>Link element failure</h4>
+        <p>Some servers may include a &lt;link&gt; element with an <code>author</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+      </section>
     </section>
     <section>
       <h3>OpenGraph</h3>
