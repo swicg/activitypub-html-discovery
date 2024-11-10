@@ -937,6 +937,7 @@
         <h4>Same origin failure</h4>
         <p>Same origin verification assumes that a single publisher controls an entire domain. Although this is often true for machine-readable formats like JSON-LD, having multiple publishers in control of parts of a domain is more common for HTML documents. For example, documents with URLs starting with <code>https://html.example/home/user1/</code> might be created by one user, and those starting with <code>https://html.example/home/user2/</code> might be created by another. A carefully crafted &lt;link&gt; or other mechanism could be used by one user to link their HTML page to an ActivityPub object created by another.</p>
         <p>Same origin verification will give a false negative if the publisher is using different domains for HTML pages and ActivityPub JSON-LD objects. This can happen if ActivityPub features are added on to an existing published Web site, or if the publisher needs to keep the domains separate for implementation reasons. If same origin verification gives a negative result, other methods such as two-way verification should be used.</p>
+      </section>
     </section>
     <section>
       <h3>Allowlist</h3>
