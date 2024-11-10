@@ -31,27 +31,90 @@
   </section>
   <section class="informative">
     <h2>Introduction</h2>
-    <p>...</p>
-    <p>Unless otherwise specified, the techniques described below can be used with any Activity Streams 2.0 types. The best-defined groups of AS2 types for HTML discovery are actor types:</p>
-    <ul>
-      <li><code>Person</code></li>
-      <li><code>Application</code></li>
-      <li><code>Service</code></li>
-      <li><code>Group</code></li>
-      <li><code>Organization</code></li>
-    </ul>
+
+    <p>ActivityPub is a standard for publishing structured social network data on the Web in JSON-LD format and sharing that data from client to server and from server to server. This document describes several methods for discovering the ActivityPub object described by an HTML page, and conversely the HTML page for an ActivityPub object.</p>
+
     <p>
-      and digital content types:
+      Social data in the ActivityPub model is a "resource" like a person, image, or place. That resource has an ActivityPub JSON-LD representation (if it doesn't, it's not covered by this document!) and may have an HTML representation. The ActivityPub representation and the HTML representations each have an URL -- possibly the same URL.
     </p>
+
+    <p>
+    "Forward discovery" is any process that, given the resource's HTML representation's URL, will return the resource's ActivityPub representation's URL.
+    </p>
+
     <ul>
-      <li><code>Note</code></li>
-      <li><code>Article</code></li>
-      <li><code>Image</code></li>
-      <li><code>Video</code></li>
-      <li><code>Audio</code></li>
-      <li><code>Document</code></li>
-      <li><code>Page</code></li>
+      <li>resource HTML &rarr; resource ActivityPub</li>
     </ul>
+
+    <p>
+    "Reverse discovery" is any process that, given the resource's ActivityPub representation's URL, will return the resource's HTML representation's URL.
+    </p>
+
+    <ul>
+      <li>resource ActivityPub &rarr; resource HTML</li>
+    </ul>
+
+    <p>
+      Some resources have a relationship to another resource, which is its <dfn>author</dfn> or creator. The author resource has an ActivityPub JSON-LD representation (again, if it doesn't, it's not covered by this document!) and may have an HTML representation.
+    </p>
+
+    <p>
+    "Author discovery" is any process that, given the resource's HTML representation's URL, will return the author resource's ActivityPub representation's URL. Author discovery is important because many ActivityPub processes require delivering activities to the author.
+    </p>
+
+    <p>
+    There are a few paths for author discovery:
+    </p>
+
+    <ul>
+      <li>resource HTML &rarr; resource ActivityPub &rarr; author ActivityPub</li>
+      <li>resource HTML &rarr; author HTML &rarr; author ActivityPub</li>
+      <li>resource HTML &rarr; author ActivityPub</li>
+    </ul>
+
+    <p>
+    For some kinds of resources, especially ActivityPub actors, a Webfinger is a more readable alternative to the ActivityPub representation's URL. In these cases, the forward discovery process and author discovery process might include the Webfinger discovery process as an intermediate step:
+    </p>
+
+    <ul>
+      <li>resource HTML &rarr; resource Webfinger &rarr; resource ActivityPub</li>
+      <li>resource HTML &rarr; author Webfinger &rarr; author ActivityPub</li>
+    </ul>
+
+    <p>
+      In this document, we describe several methods of forward discovery, reverse discovery, and author discovery.
+    </p>
+
+    <section>
+      <h3>Applicable resource types</h3>
+      <p>Unless otherwise specified, the techniques described below can be used with any Activity Streams 2.0 types. The best-defined groups of AS2 types for HTML discovery are actor types:</p>
+      <ul>
+        <li><code>Person</code></li>
+        <li><code>Application</code></li>
+        <li><code>Service</code></li>
+        <li><code>Group</code></li>
+        <li><code>Organization</code></li>
+      </ul>
+      <p>
+        and digital content types:
+      </p>
+      <ul>
+        <li><code>Note</code></li>
+        <li><code>Article</code></li>
+        <li><code>Image</code></li>
+        <li><code>Video</code></li>
+        <li><code>Audio</code></li>
+        <li><code>Document</code></li>
+        <li><code>Page</code></li>
+      </ul>
+      <p>
+        Other ActivityPub types are less likely to have their own HTML representations, such as activity types.
+      </p>
+      <p>
+        <code>Collection</code> types are often better represented by an object they are closely related to. For example, an actor's <code>outbox</code>
+        collection is often provided on the actor's profile page, which is a representation of the actor. Similarly, the <code>likes</code> or <code>replies</code> of an <code>Image</code> object are often provided on the object's page, and don't have an independent HTML representation. That said, this document does not preclude the possibility of HTML representations for collection types.
+      </p>
+    </section>
     <section>
       <h3>Motivating user stories</h3>
       <p>These are some of the user stories that motivate this work.</p>
