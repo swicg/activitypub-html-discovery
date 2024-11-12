@@ -89,6 +89,10 @@
       In this document, we describe several methods of forward discovery, reverse discovery, and author discovery.
     </p>
 
+    <p>
+      In this document, the terms "<a href="https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>" and "<a href="https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>" are used as  in Activity Streams 2.0 Core. The terms are extended to include implementations that publish or consume HTML representations of resources with ActivityPub representations.
+    </p>
+
     <section>
       <h3>Applicable resource types</h3>
       <p>Unless otherwise specified, the techniques described below can be used with any Activity Streams 2.0 types. The best-defined groups of AS2 types for HTML discovery are actor types:</p>
@@ -968,41 +972,75 @@
   </section>
   <section id="consumers">
     <h2>Best practices for consumers</h2>
+    <p>This section describes some best practices for consumers.</p>
     <section>
-      <h3>Two-way confirmation</h3>
-    </section>
-    <section>
-      <h3>Order of discovery techniques</h3>
+      <h3>Discovery techniques</h3>
       <section>
-        <h4>Discovering ActivityPub objects</h4>
+        <h4>Forward discovery</h4>
+        <ul>
+          <li><strong>HTTP Link</strong>. If the consumer is starting with an URL, this is a fast and easy way to identify a related ActivityPub object. It will work whether the HTML and ActivityPub representations are on the same server or on different ones. It will also work with binary media types like images or videos.</li>
+          <li><strong>Content negotiation</strong>. For servers that implement both the HTML and ActivityPub representations of the object, this is an easy method to use. It will not work for ActivityPub implementations assembled from different server systems, so it should be supplemented with other methods.</li>
+          <li><strong>HTML &lt;link&gt;</strong>. If the consumer is starting with an HTML document -- for example, in a browser environment -- this method saves any extra HTTP requests. If the consumer is starting with an URL, this requires downloading the document and parsing it, which can require a lot of resources.</li>
+          <li><strong>HTML &lt;a&gt;</strong>. Another option for consumers starting with an HTML document.</li>
+        </ul>
+        <p>Consumers with rigourous discovery requirements, like indexers or search engines, can try additional discovery methods like Webfinger or embedded JSON-LD. However, it's unlikely that publishers that haven't implemented one of the above methods would implement more obscure methods.</p>
       </section>
       <section>
-        <h4>Discovering authors</h4>
+        <h4>Author discovery</h4>
+        <ul>
+          <li><strong>HTTP Link</strong>. Similar to forward discovery, this is a very quick and easy way to identify a related author when an URL is available. It will work for several types of server configuration.</li>
+          <li>HTML &lt;link&gt;</li>
+          <li>HTML &lt;a&gt;</li>
+          <li>OpenGraph</li>
+        </ul>
       </section>
       <section>
-        <h4>Discovering HTML pages</h4>
+        <h4>Reverse discovery</h4>
+        <ul>
+          <li>url property</li>
+          <li>HTTP Link</li>
+          <li>Webfinger</li>
+        </ul>
       </section>
     </section>
     <section>
       <h3>Handling multiple results</h3>
     </section>
+    <section>
+      <h3>Verification</h3>
+      <ul>
+        <li>Two-way discovery</li>
+        <li>Same origin</li>
+        <li>Allowlist</li>
+      </ul>
+    </section>
   </section>
   <section id="publishers">
     <h2>Best practices for publishers</h2>
     <section>
-      <h3>Two-way confirmation</h3>
+      <h3>Publishing ActivityPub JSON-LD</h3>
+      <ul>
+        <li>url</li>
+        <li>attributedTo</li>
+        <li>HTTP Link</li>
+        <li>content negotiation</li>
+        <li>Webfinger</li>
+      </ul>
     </section>
     <section>
-      <h3>Discovery techniques to support</h3>
+      <h3>Publishing HTML</h3>
+      <ul>
+        <li>HTTP Link</li>
+        <li>HTML &lt;link&gt;</li>
+        <li>HTML &lt;a&gt;</li>
+        <li>content negotiation</li>
+        <li>OpenGraph</li>
+        <li>Embedded JSON-LD</li>
+      </ul>
     </section>
     <section>
       <h3>Multiple results</h3>
     </section>
-  </section>
-  <section id="conformance">
-    <p>
-      This is required for specifications that contain normative material.
-    </p>
   </section>
 </body>
 
