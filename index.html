@@ -39,7 +39,7 @@
     </p>
 
     <p>
-    "Forward discovery" is any process that, given the resource's HTML representation's URL, will return the resource's ActivityPub representation's URL.
+    "Forward discovery" is any process that, given the resource's HTML representation, will return the resource's ActivityPub representation.
     </p>
 
     <ul>
@@ -47,11 +47,47 @@
     </ul>
 
     <p>
-    "Reverse discovery" is any process that, given the resource's ActivityPub representation's URL, will return the resource's HTML representation's URL.
+      There are multiple techniques for forward discovery which will be documented in this report. Some discovery techniques require the full HTML document -- its markup and content. Others only need the URL of the HTML representation.
+    </p>
+
+    <ul>
+      <li>resource HTML document &rarr; resource ActivityPub</li>
+      <li>resource HTML URL &rarr; resource ActivityPub</li>
+    </ul>
+
+    <p>
+      When a consumer is doing discovery, it can start with the input it has -- document or URL -- and convert to the other input if it needs to.Converting an HTML document to an HTML URL usually requires access to the document's context, like a browser environment. Converting an HTML URL to a document requires fetching the document and parsing it.
+    </p>
+
+    <ul>
+      <li>resource HTML document &rarr; resource HTML URL &rarr; resource ActivityPub</li>
+      <li>resource HTML URL &rarr; resource HTML document &rarr; resource ActivityPub</li>
+    </ul>
+
+    <p>
+    "Reverse discovery" is any process that, given the resource's ActivityPub representation, will return the resource's HTML representation.
     </p>
 
     <ul>
       <li>resource ActivityPub &rarr; resource HTML</li>
+    </ul>
+
+    <p>
+      As with forward discovery, some reverse discovery techniques require the full ActivityPub document -- its JSON properties and content. Others only need the URL of the ActivityPub representation.
+    </p>
+
+    <ul>
+      <li>resource ActivityPub document &rarr; resource HTML</li>
+      <li>resource ActivityPub URL &rarr; resource HTML</li>
+    </ul>
+
+    <p>
+      When a consumer is doing reverse discovery, it can start with techniques that use the input it has -- document or URL -- and switch to techniques that use the other input only if needed. Converting an ActivityPub document to an ActivityPub URL requires extracting the <code>id</code> property of the object. Converting an ActivityPub URL to a document requires fetching the document and parsing it.
+    </p>
+
+    <ul>
+      <li>resource ActivityPub document &rarr; resource ActivityPub URL &rarr; resource HTML</li>
+      <li>resource ActivityPub URL &rarr; resource ActivityPub document &rarr; resource HTML</li>
     </ul>
 
     <p>
@@ -86,11 +122,11 @@
     </ul>
 
     <p>
-      In this document, we describe several methods of forward discovery, reverse discovery, and author discovery.
+      In this document, the terms "<a href="https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>" and "<a href="https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>" are used as  in Activity Streams 2.0 Core. The terms are extended to include implementations that publish or consume HTML representations of resources with ActivityPub representations.
     </p>
 
     <p>
-      In this document, the terms "<a href="https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>" and "<a href="https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>" are used as  in Activity Streams 2.0 Core. The terms are extended to include implementations that publish or consume HTML representations of resources with ActivityPub representations.
+      In this document, we describe several methods of forward discovery, reverse discovery, and author discovery. Different methods are implemented by different publishers and consumers, and have different trade-offs in terms of complexity, performance, and reliability. The final sections define best practices for publishers and consumers to maximize interoperability and minimize development effort.
     </p>
 
     <section>
