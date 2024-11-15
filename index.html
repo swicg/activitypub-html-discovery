@@ -215,180 +215,199 @@
     <h2>Discovering equivalent ActivityPub objects from HTML</h2>
     <p>This form of discovery, <dfn>forward discovery</dfn>, will identify an ActivityPub JSON-LD resource based on the HTML representation of the object.</p>
     <section>
-      <h3>Content negotiation</h3>
-      <p><a href="https://en.wikipedia.org/wiki/Content_negotiation">Content negotiation</a> is a catch-all term for
-        ways of negotiating the representation of a resource through the HTTP protocol. In this document, it will
-        specifically cover <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-3.4.1">proactive negotiation</a>
-        using the <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.2">Accept</a> header.
-      </p>
-      <p>
-        Given the URL for an HTML document, such as <code>https://mixed.example/some/path/to/note-1</code>, a consumer
-        could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
-      </p>
-      <pre class="HTTP">
-        GET /some/path/to/note-1 HTTP/1.1
-        Host: mixed.example
-        Accept: application/activity+json, application/ld+json, application/json
-      </pre>
-      <p>
-        A compliant server may respond with the ActivityPub JSON-LD object in the body of the response:
-      </p>
-      <pre class="HTTP">
-        HTTP/1.1 200 OK
-        Content-Type: application/activity+json
-
-        {
-          "@context": "https://www.w3.org/ns/activitystreams",
-          "id": "https://mixed.example/some/path/to/note-1",
-          "type": "Article",
-          "content": "This is a note."
-        }
-      </pre>
-      <p>
-        This is typically used when the ActivityPub server and the HTML server are implemented in the same software package.
-        Because this has historically been the case for many implementations, some consumers expect this behavior to be the
-        default.
-        </p>
-        <p>
-        Alternately, the server may respond with a <code>308 Permanent Redirect</code> to indicate the location of the JSON-LD
-        representation.
-      </p>
-      <pre class="HTTP">
-        HTTP/1.1 308 Permanent Redirect
-        Location: https://mixed.example/different/path/to/note-1.jsonld
-      </pre>
+      <h3>URL as input</h3>
+      <p>These discovery techniques require an URL as input. Consumers may start with URLs if they are extracting links from RSS feeds or microblogging content, or when converting from other social networking platform content.</p>
       <section>
-        <h4>Content negotiation failure</h4>
-
-        <p>
-          If the server does not support content negotiation, it may respond with a <code>406 Not Acceptable</code> status
-          code.
+        <h4>Content negotiation</h4>
+        <p><a href="https://en.wikipedia.org/wiki/Content_negotiation">Content negotiation</a> is a catch-all term for
+          ways of negotiating the representation of a resource through the HTTP protocol. In this document, it will
+          specifically cover <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-3.4.1">proactive negotiation</a>
+          using the <a href="https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.2">Accept</a> header.
         </p>
-        <pre>
-          HTTP/1.1 406 Not Acceptable
-          Content-Type: text/plain
-
-          No representation matching this request could be found.
+        <p>
+          Given the URL for an HTML document, such as <code>https://mixed.example/some/path/to/note-1</code>, a consumer
+          could attempt to retrieve the corresponding ActivityPub JSON-LD object using this HTTP request:
+        </p>
+        <pre class="HTTP">
+          GET /some/path/to/note-1 HTTP/1.1
+          Host: mixed.example
+          Accept: application/activity+json, application/ld+json, application/json
         </pre>
-        <p>Less compliant servers may ignore the <code>Accept</code> header altogether and return the HTML content regardless:
+        <p>
+          A compliant server may respond with the ActivityPub JSON-LD object in the body of the response:
         </p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
-          Content-Type: text/html
-
-          &lt;html&gt;
-          &lt;head&gt;
-          &lt;title&gt;Note 1&lt;/title&gt;
-          &lt;/head&gt;
-          &lt;body&gt;
-          &lt;p&gt;This is a note.&lt;/p&gt;
-        </pre>
-        <p>
-          A more difficult failure mode to detect arises when the server does not support ActivityPub, but does support content negotiation for another JSON format. Such a server returns a <code>200 OK</code> status code with a JSON
-          object that does not use JSON-LD, or JSON-LD object that does not use the Activity Streams 2.0 vocabulary:
-        </p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: application/json
+          Content-Type: application/activity+json
 
           {
-            "property": "value",
-            "otherProperty": "otherValue"
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://mixed.example/some/path/to/note-1",
+            "type": "Article",
+            "content": "This is a note."
           }
         </pre>
-      </section>
-    </section>
-    <section>
-      <h3>HTTP Link header</h3>
-      <p>
-        The <a href="https://datatracker.ietf.org/doc/html/rfc8288">HTTP Link header</a> can be used to indicate an
-        alternative representation of a resource. A consumer can use this header to discover the ActivityPub JSON-LD object
-        for an HTML page.
-      </p>
-      <p>
-        Given the URL for an HTML document, such as <code>https://html.example/user/test1/article-1</code>, the consumer can
-        use a HTTP <code>HEAD</code> request to get the headers for the resource, which will hopefully include the
-        <code>Link</code> header:
-      </p>
-      <pre class="HTTP">
-        HEAD /user/test1/article-1 HTTP/1.1
-        Host: html.example
-      </pre>
-      <p>
-        A compliant server will respond with the headers for the resource:
-      </p>
-      <pre class="HTTP">
-      HTTP/1.1 200 OK
-      Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
-      </pre>
-      <p>
-        The link header with the <code>alternate</code> relation type, and an ActivityPub-compatible media type, indicates
-        that the ActivityPub JSON-LD object is available at the linked URL.
-      </p>
-      <p>
-        This can be a very efficient method of discovery, since the consumer does not need to download the entire HTML
-        document and parse its contents.
-      </p>
-      <p>
-        Servers may also include the <code>Link</code> header in the response to a <code>GET</code> request for the HTML page.
-      </p>
-      <pre class="HTTP">
-        GET /user/test1/article-1 HTTP/1.1
-        Host: html.example
-        </pre>
-      <p>
-        A compliant server will respond with the headers for the resource:
-      </p>
-      <pre class="HTTP">
-      HTTP/1.1 200 OK
-      Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
-      Content-type: text/html
-
-      &lt;html&gt;
-      &lt;head&gt;
-      ...
-      </pre>
-      <section>
-        <h4>Link header failure</h4>
         <p>
-          Some servers may return the full body of the HTML document in response to a <code>HEAD</code> request, without
-          including a <code>Link</code> header.
+          This is typically used when the ActivityPub server and the HTML server are implemented in the same software package.
+          Because this has historically been the case for many implementations, some consumers expect this behavior to be the
+          default.
+          </p>
+          <p>
+          Alternately, the server may respond with a <code>308 Permanent Redirect</code> to indicate the location of the JSON-LD
+          representation.
+        </p>
+        <pre class="HTTP">
+          HTTP/1.1 308 Permanent Redirect
+          Location: https://mixed.example/different/path/to/note-1.jsonld
+        </pre>
+        <section>
+          <h5>Content negotiation failure</h5>
+
+          <p>
+            If the server does not support content negotiation, it may respond with a <code>406 Not Acceptable</code> status
+            code.
+          </p>
+          <pre>
+            HTTP/1.1 406 Not Acceptable
+            Content-Type: text/plain
+
+            No representation matching this request could be found.
+          </pre>
+          <p>Less compliant servers may ignore the <code>Accept</code> header altogether and return the HTML content regardless:
+          </p>
+          <pre class="HTTP">
+            HTTP/1.1 200 OK
+            Content-Type: text/html
+
+            &lt;html&gt;
+            &lt;head&gt;
+            &lt;title&gt;Note 1&lt;/title&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+            &lt;p&gt;This is a note.&lt;/p&gt;
+          </pre>
+          <p>
+            A more difficult failure mode to detect arises when the server does not support ActivityPub, but does support content negotiation for another JSON format. Such a server returns a <code>200 OK</code> status code with a JSON
+            object that does not use JSON-LD, or JSON-LD object that does not use the Activity Streams 2.0 vocabulary:
+          </p>
+          <pre class="HTTP">
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+
+            {
+              "property": "value",
+              "otherProperty": "otherValue"
+            }
+          </pre>
+        </section>
+      </section>
+      <section>
+        <h4>HTTP Link header</h4>
+        <p>
+          The <a href="https://datatracker.ietf.org/doc/html/rfc8288">HTTP Link header</a> can be used to indicate an
+          alternative representation of a resource. A consumer can use this header to discover the ActivityPub JSON-LD object
+          for an HTML page.
+        </p>
+        <p>
+          Given the URL for an HTML document, such as <code>https://html.example/user/test1/article-1</code>, the consumer can
+          use a HTTP <code>HEAD</code> request to get the headers for the resource, which will hopefully include the
+          <code>Link</code> header:
+        </p>
+        <pre class="HTTP">
+          HEAD /user/test1/article-1 HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>
+          A compliant server will respond with the headers for the resource:
         </p>
         <pre class="HTTP">
         HTTP/1.1 200 OK
+        Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
+        </pre>
+        <p>
+          The link header with the <code>alternate</code> relation type, and an ActivityPub-compatible media type, indicates
+          that the ActivityPub JSON-LD object is available at the linked URL.
+        </p>
+        <p>
+          This can be a very efficient method of discovery, since the consumer does not need to download the entire HTML
+          document and parse its contents.
+        </p>
+        <p>
+          Servers may also include the <code>Link</code> header in the response to a <code>GET</code> request for the HTML page.
+        </p>
+        <pre class="HTTP">
+          GET /user/test1/article-1 HTTP/1.1
+          Host: html.example
+          </pre>
+        <p>
+          A compliant server will respond with the headers for the resource:
+        </p>
+        <pre class="HTTP">
+        HTTP/1.1 200 OK
+        Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
         Content-type: text/html
 
         &lt;html&gt;
         &lt;head&gt;
         ...
         </pre>
+        <section>
+          <h5>Link header failure</h5>
+          <p>
+            Some servers may return the full body of the HTML document in response to a <code>HEAD</code> request, without
+            including a <code>Link</code> header.
+          </p>
+          <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-type: text/html
+
+          &lt;html&gt;
+          &lt;head&gt;
+          ...
+          </pre>
+        </section>
+      </section>
+      <section>
+        <h3>Webfinger</h3>
+        <p><a href="https://datatracker.ietf.org/doc/html/rfc7033">Webfinger</a>
+        is a standard for discovering metadata about a resource identified with an URL. Finding the ActivityPub URL for an actor identified with an <code>acct:</code> URL is well documented in the <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/">ActivityPub and Webfinger</a> report. However, Webfinger can be used to find metadata about other resources, including HTML pages with <code>https:</code> URLs.</p>
+        <p>Given an URL for a document, like <code>https://html.example/group-1.html</code>, a GET request can be made to an URL in the <code>/.well-known/</code> path of the domain for the URL, as follows:</p>
+        <pre class="HTTP">
+          GET /.well-known/webfinger?resource=https%3A%2F%2Fhtml.example%2Fgroup-1.html HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>A compliant server will respond with the metadata for the resource:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: application/jrd+json
+
+          {
+            "subject": "https://html.example/group-1.html",
+            "links": [
+              {
+                "rel": "alternate",
+                "type": "application/activity+json",
+                "href": "https://ap.example/api/groups/group-1.jsonld"
+              }
+            ]
+          }
+        </pre>
+        <p>The JRD JSON format includes <a href="https://datatracker.ietf.org/doc/html/rfc7033#section-4.4">a number of properties</a>, as defined in the Webfinger RFC 7033. The relevant data structure in this example is the object in the <code>links</code> array with the <code>rel</code> property set to <code>alternate</code> and the <code>type</code> property set to <code>application/activity+json</code>, an ActivityPub-compatible media type. The <code>href</code> property of this link is URL of the ActivityPub equivalent for the HTML page.</p>
+        <section>
+          <h4>Webfinger failure</h4>
+          <p>Not all Webfinger-aware servers return JRD documents for <code>https</code> URLs. Others might only return JRD documents for URLs that represent actors, such as registered users.</p>
+          <p>As with other link-relation-based discovery mechanisms, like the HTTP Link header or the &lt;link&gt; element, a JSON or JSON-LD media in the link's <code>type</code> property might not indicate an ActivityPub URL, but some other JSON or JSON-LD object.</p>
+        </section>
       </section>
     </section>
     <section>
-      <h3>HTML &lt;link&gt; element</h3>
-      <p>The <a href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element">link</a> element is a metadata element used in the <code>&lt;head&gt;</code> section of an HTML document. It provides
-      links for the whole document, using a number of different link relations.</p>
-      <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/watch/video-1.html</code> could include the following link element:</p>
-      <pre class="HTML">
-        &lt;!doctype html&gt;
-        &lt;html&gt;
-          &lt;head&gt;
-            &lt;title&gt;Video 1&lt;/title&gt;
-            &lt;link
-              rel="alternate"
-              type="application/activity+json"
-              href="https://ap.example/api/descriptors/video-1.jsonld" /&gt;
-          &lt;/head&gt;
-          &lt;body&gt;
-            &lt;!-- rest of the page --&gt;
-          &lt;/body&gt;
-        &lt;/html&gt;
-      </pre>
-      <p>Consumers need to parse the HTML to find the <code>link</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be slow and complicated.</p>
+      <h3>Document as input</h3>
+      <p>Alternately, a consumer may start with the full contents of an HTML document, including markup and other content. For example, a browser-based application may have access to the HTML loaded in the browser window. It's also usually possible to extract the URL from the environment -- for example, using the <code>document.location</code> property in a JavaScript environment. But using the document content for discovery can return the ActivityPub equivalent without the HTTP requests that discovery by URL requires, saving some time and network traffic.</p>
       <section>
-        <h4>Link element failure</h4>
-        <p>Some servers may include a <code>link</code> element with an
-          <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+        <h4>HTML &lt;link&gt; element</h4>
+        <p>The <a href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element">link</a> element is a metadata element used in the <code>&lt;head&gt;</code> section of an HTML document. It provides
+        links for the whole document, using a number of different link relations.</p>
+        <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/watch/video-1.html</code> could include the following link element:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -396,122 +415,112 @@
               &lt;title&gt;Video 1&lt;/title&gt;
               &lt;link
                 rel="alternate"
-                type="application/json"
-                href="https://api.example/unrelated/videodescriptor.json" /&gt;
+                type="application/activity+json"
+                href="https://ap.example/api/descriptors/video-1.jsonld" /&gt;
             &lt;/head&gt;
             &lt;body&gt;
               &lt;!-- rest of the page --&gt;
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
+        <p>Consumers need to parse the HTML to find the <code>link</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be slow and complicated.</p>
+        <section>
+          <h5>Link element failure</h5>
+          <p>Some servers may include a <code>link</code> element with an
+            <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+          <pre class="HTML">
+            &lt;!doctype html&gt;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;Video 1&lt;/title&gt;
+                &lt;link
+                  rel="alternate"
+                  type="application/json"
+                  href="https://api.example/unrelated/videodescriptor.json" /&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;!-- rest of the page --&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          </pre>
+        </section>
       </section>
-    </section>
-    <section>
-      <h3>HTML &lt;a&gt; element</h3>
-      <p>The <a href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element">a</a> element is an element used in the <code>&lt;body&gt;</code> section of an HTML document. It can be used to define relationships with other documents, with the benefit that the link is (usually) visible and clickable by a reader.</p>
-      <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/profiles/person-1.html</code> could include the following <code>a</code> element:</p>
-      <pre class="HTML">
-        &lt;!doctype html&gt;
-        &lt;html&gt;
-          &lt;head&gt;
-            &lt;title&gt;Person 1&lt;/title&gt;
-          &lt;/head&gt;
-          &lt;body&gt;
-            &lt;a
-              rel="alternate"
-              type="application/activity+json"
-              href="https://ap.example/users/person-1.jsonld" &gt;
-              Actor data for Person 1
-            &lt;/a&gt;
-            &lt;!-- rest of the page --&gt;
-          &lt;/body&gt;
-        &lt;/html&gt;
-      </pre>
-      <p>Consumers will need to parse the HTML to find the <code>a</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be even more slow and complicated than with the <code>link</code> header. The <code>link</code> header is usually in the first few kilobytes of a document, and will usually be nested only 2 levels below the document in the DOM tree. An <code>a</code> element may be anywhere in the <code>body</code>, maybe nested very deep in the tree.</p>
       <section>
-        <h4>a element failure</h4>
-        <p>As with the <code>link</code> element, some servers may include an   <code>a</code> element with an
-          <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.
-        </p>
-        <p>
-          In addition, many content management systems allow end users to set
-          <code>rel</code> and other properties on <code>a</code> elements, which may result in false matches. Even more than with other methods, using the <code>a</code> element for discovery requires reverse discovery for confirmation (see <a href="#best-practices-for-consumers">Best practices for consumers</a>).
-        </p>
+        <h3>HTML &lt;a&gt; element</h3>
+        <p>The <a href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element">a</a> element is an element used in the <code>&lt;body&gt;</code> section of an HTML document. It can be used to define relationships with other documents, with the benefit that the link is (usually) visible and clickable by a reader.</p>
+        <p>To indicate its equivalent ActivityPub object, the HTML page at <code>https://html.example/profiles/person-1.html</code> could include the following <code>a</code> element:</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Person 1&lt;/title&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;a
+                rel="alternate"
+                type="application/activity+json"
+                href="https://ap.example/users/person-1.jsonld" &gt;
+                Actor data for Person 1
+              &lt;/a&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
         </pre>
+        <p>Consumers will need to parse the HTML to find the <code>a</code> element with the <code>alternate</code> relation and an ActivityPub-compatible media type as <code>type</code>. This can be even more slow and complicated than with the <code>link</code> header. The <code>link</code> header is usually in the first few kilobytes of a document, and will usually be nested only 2 levels below the document in the DOM tree. An <code>a</code> element may be anywhere in the <code>body</code>, maybe nested very deep in the tree.</p>
+        <section>
+          <h4>a element failure</h4>
+          <p>As with the <code>link</code> element, some servers may include an   <code>a</code> element with an
+            <code>alternate</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.
+          </p>
+          <p>
+            In addition, many content management systems allow end users to set
+            <code>rel</code> and other properties on <code>a</code> elements, which may result in false matches. Even more than with other methods, using the <code>a</code> element for discovery requires reverse discovery for confirmation (see <a href="#best-practices-for-consumers">Best practices for consumers</a>).
+          </p>
+          </pre>
+        </section>
       </section>
-    </section>
-    <section>
-      <h3>Webfinger</h3>
-      <p><a href="https://datatracker.ietf.org/doc/html/rfc7033">Webfinger</a>
-      is a standard for discovering metadata about a resource identified with an URL. Finding the ActivityPub URL for an actor identified with an <code>acct:</code> URL is well documented in the <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/">ActivityPub and Webfinger</a> report. However, Webfinger can be used to find metadata about other resources, including HTML pages with <code>https:</code> URLs.</p>
-      <p>Given an URL for a document, like <code>https://html.example/group-1.html</code>, a GET request can be made to an URL in the <code>/.well-known/</code> path of the domain for the URL, as follows:</p>
-      <pre class="HTTP">
-        GET /.well-known/webfinger?resource=https%3A%2F%2Fhtml.example%2Fgroup-1.html HTTP/1.1
-        Host: html.example
-      </pre>
-      <p>A compliant server will respond with the metadata for the resource:</p>
-      <pre class="HTTP">
-        HTTP/1.1 200 OK
-        Content-Type: application/jrd+json
 
-        {
-          "subject": "https://html.example/group-1.html",
-          "links": [
-            {
-              "rel": "alternate",
-              "type": "application/activity+json",
-              "href": "https://ap.example/api/groups/group-1.jsonld"
-            }
-          ]
-        }
-      </pre>
-      <p>The JRD JSON format includes <a href="https://datatracker.ietf.org/doc/html/rfc7033#section-4.4">a number of properties</a>, as defined in the Webfinger RFC 7033. The relevant data structure in this example is the object in the <code>links</code> array with the <code>rel</code> property set to <code>alternate</code> and the <code>type</code> property set to <code>application/activity+json</code>, an ActivityPub-compatible media type. The <code>href</code> property of this link is URL of the ActivityPub equivalent for the HTML page.</p>
       <section>
-        <h4>Webfinger failure</h4>
-        <p>Not all Webfinger-aware servers return JRD documents for <code>https</code> URLs. Others might only return JRD documents for URLs that represent actors, such as registered users.</p>
-        <p>As with other link-relation-based discovery mechanisms, like the HTTP Link header or the &lt;link&gt; element, a JSON or JSON-LD media in the link's <code>type</code> property might not indicate an ActivityPub URL, but some other JSON or JSON-LD object.</p>
-      </section>
-    </section>
-    <section>
-      <h3>Embedded JSON-LD</h3>
-      <p>HTML documents can include <a href="https://www.w3.org/TR/json-ld11/">JSON-LD</a> data in a <code>&lt;script&gt;</code> element in the <code>&lt;head&gt;</code> section of the document. This data can be used to provide metadata about the document, including its equivalent ActivityPub object.</p>
-      <p>Given a page that shows an image at <code>https://html.example/gallery/image-17.html</code>, the HTML for the page could look like this:</p>
-      <pre>
-        &lt;!DOCTYPE html&gt;
-        &lt;html lang=&quot;en&quot;&gt;
-          &lt;head&gt;
-            &lt;title&gt;Image 17&lt;/title&gt;
-            &lt;script type=&quot;application/ld+json&quot;&gt;
-            {
-              &quot;@context&quot;: &quot;https://www.w3.org/ns/activitystreams&quot;,
-              &quot;type&quot;: &quot;Image&quot;,
-              &quot;id&quot;: &quot;https://ap.example/api/images/image-17.jsonld&quot;,
-              &quot;url&quot;: [
-                {
-                  &quot;type&quot;: &quot;Link&quot;,
-                  &quot;mediaType&quot;: &quot;text/html&quot;,
-                  &quot;href&quot;: &quot;https://html.example/gallery/image-17.html&quot;
-                }
-              ]
-            }
-            &lt;/script&gt;
-          &lt;/head&gt;
-          &lt;body&gt;
-              &lt;h1&gt;Image 17&lt;/h1&gt;
-              &lt;p&gt;&lt;img src=&quot;https://html.example/images/image-17.png&quot;&gt;&lt;/p&gt;
-          &lt;/body&gt;
-        &lt;/html&gt;
-      </pre>
-      <p>This embedded JSON-LD specifies that an ActivityPub object with the ID <code>https://ap.example/api/images/image-17.jsonld</code> exists, and that it has an HTML page <code>url</code> at <code>https://html.example/gallery/image-17.html</code>, that is, the current page's URL. This is a roundabout, but clear, way to specify the ActivityPub ID of the current page.</p>
-      <p>Consumers need to parse the HTML page, and the embedded JSON-LD, to extract the ActivityPub object ID. An advantage to this technique is that other properties of the ActivityPub object can be embedded as well; however, to confirm those properties, the consumer will need to fetch the object from its canonical URL, the ID, anyways.</p>
-      <section>
-        <h4>Embedded JSON-LD failure</h4>
-        <p>
-          Complicated structures for the <code>url</code> property may make it hard to confirm that the object's URL is the same as the current page's.
-        </p>
-        <p>
-          Embedded JSON-LD is very popular for embedding <a href="https://schema.org/">Schema.org</a> metadata. This can lead to false positives when looking for ActivityPub objects.
-        </p>
+        <h3>Embedded JSON-LD</h3>
+        <p>HTML documents can include <a href="https://www.w3.org/TR/json-ld11/">JSON-LD</a> data in a <code>&lt;script&gt;</code> element in the <code>&lt;head&gt;</code> section of the document. This data can be used to provide metadata about the document, including its equivalent ActivityPub object.</p>
+        <p>Given a page that shows an image at <code>https://html.example/gallery/image-17.html</code>, the HTML for the page could look like this:</p>
+        <pre>
+          &lt;!DOCTYPE html&gt;
+          &lt;html lang=&quot;en&quot;&gt;
+            &lt;head&gt;
+              &lt;title&gt;Image 17&lt;/title&gt;
+              &lt;script type=&quot;application/ld+json&quot;&gt;
+              {
+                &quot;@context&quot;: &quot;https://www.w3.org/ns/activitystreams&quot;,
+                &quot;type&quot;: &quot;Image&quot;,
+                &quot;id&quot;: &quot;https://ap.example/api/images/image-17.jsonld&quot;,
+                &quot;url&quot;: [
+                  {
+                    &quot;type&quot;: &quot;Link&quot;,
+                    &quot;mediaType&quot;: &quot;text/html&quot;,
+                    &quot;href&quot;: &quot;https://html.example/gallery/image-17.html&quot;
+                  }
+                ]
+              }
+              &lt;/script&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+                &lt;h1&gt;Image 17&lt;/h1&gt;
+                &lt;p&gt;&lt;img src=&quot;https://html.example/images/image-17.png&quot;&gt;&lt;/p&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>This embedded JSON-LD specifies that an ActivityPub object with the ID <code>https://ap.example/api/images/image-17.jsonld</code> exists, and that it has an HTML page <code>url</code> at <code>https://html.example/gallery/image-17.html</code>, that is, the current page's URL. This is a roundabout, but clear, way to specify the ActivityPub ID of the current page.</p>
+        <p>Consumers need to parse the HTML page, and the embedded JSON-LD, to extract the ActivityPub object ID. An advantage to this technique is that other properties of the ActivityPub object can be embedded as well; however, to confirm those properties, the consumer will need to fetch the object from its canonical URL, the ID, anyways.</p>
+        <section>
+          <h4>Embedded JSON-LD failure</h4>
+          <p>
+            Complicated structures for the <code>url</code> property may make it hard to confirm that the object's URL is the same as the current page's.
+          </p>
+          <p>
+            Embedded JSON-LD is very popular for embedding <a href="https://schema.org/">Schema.org</a> metadata. This can lead to false positives when looking for ActivityPub objects.
+          </p>
+        </section>
       </section>
     </section>
   </section>
