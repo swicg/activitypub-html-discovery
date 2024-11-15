@@ -787,7 +787,7 @@
       <p>Each of these properties can have values that are a string, a JSON object, or a JSON array consisting of strings and/or JSON objects. If the value is a string, it is the URL of the author object. If the value is an object, its <code>id</code> property is the URL of the ActivityPub JSON-LD object. For an array, each item can be resolved as either a string or an object.</p>
       <p>The advantage of this method is that it does not require a separate discovery path for authors.</p>
       <section>
-        <h3>Example</h3>
+        <h4>Example</h4>
         <p>Given an HTML page at <code>https://html.example/note-1.html</code> that represents a <code>Note</code> object, the consumer can use an HTML &lt;link&gt; header to identify the URL of the ActivityPub note:</p>
         <pre class="HTML">
           &lt;link
@@ -814,133 +814,182 @@
         </p>
       </section>
       <section>
-        <h3>Object discovery failure</h3>
+        <h4>Object discovery failure</h4>
         <p>This discovery method can fail if the ActivityPub object requires authentication to be fetched -- which is often the case for content that was not made available to the public by the author. A simple consumer may not have the context necessary to use OAuth 2.0, HTTP Signature, or other authentication methods.</p>
         <p>Not all ActivityPub implementations include the <code>attributedTo</code> or <code>actor</code> property for an object in its default representation.</p>
       </section>
     </section>
     <section>
-      <h3>HTTP Link header</h3>
-      <p>The <code>Link</code> header can also be used to identify the author of an HTML page. The <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-author">author</a> link type identifies the author of a resource. So, a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to "application/activity+json" will link to the ActivityPub representation of the author of the object.</p>
-      <p>This technique has the advantage of requiring a minimum amount of data transfer and complicated parsing of data structures. It can also be used with different media types than just HTML; for example, a JPEG image.</p>
+      <h3>URL as input</h3>
+      <p>This section describes techniques for discovering an ActivityPub author object using the HTML representation's URL as an input. The HTML representation's URL may come from ActivityPub properties, links in other content, or by other means.</p>
+      <p>If these techniques do not succeed, consumers can fetch the content of the HTML document and use one of the techniques that require HTML as input.</p>
       <section>
-        <h4>Example</h4>
-        <p>
-          Given an HTML page at <code>https://html.example/files/video-33.html</code> that represents a <code>Video</code> object, the consumer can use an HTTP <code>HEAD</code> request to identify the URL of the ActivityPub video:
-        </p>
-        <pre class="HTTP">
-          HEAD /files/video-33.html HTTP/1.1
-          Host: html.example
-        </pre>
-        <p>The publisher would respond with the HTTP headers:</p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: text/html
-          Link: &lt;https://ap.example/api/videos/video-33.jsonld&gt;; rel="alternate"; type="application/activity+json"
-          Link: &lt;https://ap.example/profiles/person-7.jsonld&gt;; rel="author"; type="application/activity+json"
-        </pre>
-        <p>Note that there are two <code>Link</code> headers in the result; one represents the <code>Video</code>, and the other represents the <code>Person</code> that authored the video. The <code>rel</code> value of "author" distinguishes the author link.</p>
-      </section>
-      <section>
-        <h4>Link header failure</h4>
-        <p>Some non-compliant publishers will respond to a <code>HEAD</code> request with the full body of the HTML document.</p>
-      </section>
-    </section>
-    <section>
-      <h3>HTML &lt;link&gt; element</h3>
-      <p>The ActivityPub id of the author of an object represented by an HTML document can also be found using the HTML &lt;link&gt; element. As with the HTTP <code>Link</code> header, if a &lt;link&gt; element has a <code>rel</code> attribute equal to "author" and a <code>type</code> attribute equal to "application/activity+json", its <code>href</code> property is the URL of the ActivityPub object representing the author.</p>
-      <p>This technique is useful when the HTML page is already downloaded and available, such as within a browser environment.</p>
-      <section>
-        <h4>Example</h4>
-        <p>Given an HTML page at <code>https://html.example/files/document-40.html</code> that represents a <code>Document</code> object, the consumer can use the following HTML to identify the URL of the ActivityPub representation of the document:</p>
-        <pre class="HTML">
-          &lt;!doctype html&gt;
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;title&gt;Document 33&lt;/title&gt;
-              &lt;link
-                rel="author"
-                type="application/activity+json"
-                href="https://ap.example/profiles/person-7.jsonld" /&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;!-- rest of the page --&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
-        <p>In this example, the &lt;link&gt; element with the <code>rel</code> attribute set to "author" and the <code>type</code> attribute set to "application/activity+json" is the author of the document.</p>
-      </section>
-      <section>
-        <h4>Link element failure</h4>
-        <p>Some servers may include a &lt;link&gt; element with an <code>author</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+        <h4>HTTP Link header</h4>
+        <p>The <code>Link</code> header can also be used to identify the author of an HTML page. The <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-author">author</a> link type identifies the author of a resource. So, a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to "application/activity+json" will link to the ActivityPub representation of the author of the object.</p>
+        <p>This technique has the advantage of requiring a minimum amount of data transfer and complicated parsing of data structures. It can also be used with different media types than just HTML; for example, a JPEG image.</p>
+        <section>
+          <h5>Example</h5>
+          <p>
+            Given an HTML page at <code>https://html.example/files/video-33.html</code> that represents a <code>Video</code> object, the consumer can use an HTTP <code>HEAD</code> request to identify the URL of the ActivityPub video:
+          </p>
+          <pre class="HTTP">
+            HEAD /files/video-33.html HTTP/1.1
+            Host: html.example
+          </pre>
+          <p>The publisher would respond with the HTTP headers:</p>
+          <pre class="HTTP">
+            HTTP/1.1 200 OK
+            Content-Type: text/html
+            Link: &lt;https://ap.example/api/videos/video-33.jsonld&gt;; rel="alternate"; type="application/activity+json"
+            Link: &lt;https://ap.example/profiles/person-7.jsonld&gt;; rel="author"; type="application/activity+json"
+          </pre>
+          <p>Note that there are two <code>Link</code> headers in the result; one represents the <code>Video</code>, and the other represents the <code>Person</code> that authored the video. The <code>rel</code> value of "author" distinguishes the author link.</p>
+        </section>
+        <section>
+          <h5>Link header failure</h5>
+          <p>Some non-compliant publishers will respond to a <code>HEAD</code> request with the full body of the HTML document.</p>
+        </section>
       </section>
     </section>
     <section>
-      <h3>OpenGraph Protocol</h3>
-      <p>
-        The <a href="https://ogp.me/">OpenGraph Protocol</a> is a set of metadata properties that can be included in an HTML document to provide information about the document. Several of these properties can be used to identify the author of the document; usually with the URL of an HTML page that has a <a href="https://ogp.me/#type_profile">profile</a> type.
-      </p>
-      <ul>
-        <li><code>music:musician</code> identifies the creator of a song or album.</li>
-        <li><code>music:creator</code> identifies the creator of a playlist or station.</li>
-        <li><code>video:actor</code> identifies the actor in a video.</li>
-        <li><code>video:director</code> identifies the director of a video.</li>
-        <li><code>video:writer</code> identifies the writer of a video.</li>
-        <li><code>article:author</code> identifies the author of an article.</li>
-        <li><code>book:author</code> identifies the author of a book.</li>
-      </ul>
-      <p>
-        For these properties, the most likely discovery path is to follow the property's URL value to an HTML page for the profile, and then use <a href="#discovery">forward discovery</a> to find the ActivityPub object corresponding to that profile.
-      </p>
-      <p>
-        Another option is the <code>fediverse:creator</code> property, <a href="https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">developed by Mastodon</a>. This property is used to identify the creator of a document. Its value is the Webfinger ID of the creator, prefixed with an <code>@</code> character, not an <code>acct:</code> URL. The consumer can use the Webfinger protocol to find the ActivityPub object corresponding to the creator.
-      </p>
-      <p>The advantage of using OGP for metadata is that it is widely implemented by Web publishing systems.</p>
+      <h3>Document as input</h3>
+      <p>These techniques require the contents of the HTML representation. This could already be available in a browser environment, or through other means.</p>
+      <p>If these techniques don't succeed, it's sometimes possible to obtain the URL of the document through the environment, for example, using the <code>document.location</code> property in a browser JavaScript program. Consumers can then try techniques that use the URL as input.</p>
+      <section>
+        <h4>HTML &lt;link&gt; element</h4>
+        <p>The ActivityPub id of the author of an object represented by an HTML document can also be found using the HTML &lt;link&gt; element. As with the HTTP <code>Link</code> header, if a &lt;link&gt; element has a <code>rel</code> attribute equal to "author" and a <code>type</code> attribute equal to "application/activity+json", its <code>href</code> property is the URL of the ActivityPub object representing the author.</p>
+        <p>This technique is useful when the HTML page is already downloaded and available, such as within a browser environment.</p>
+        <section>
+          <h5>Example</h5>
+          <p>Given an HTML page at <code>https://html.example/files/document-40.html</code> that represents a <code>Document</code> object, the consumer can use the following HTML to identify the URL of the ActivityPub representation of the document:</p>
+          <pre class="HTML">
+            &lt;!doctype html&gt;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;Document 33&lt;/title&gt;
+                &lt;link
+                  rel="author"
+                  type="application/activity+json"
+                  href="https://ap.example/profiles/person-7.jsonld" /&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;!-- rest of the page --&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          </pre>
+          <p>In this example, the &lt;link&gt; element with the <code>rel</code> attribute set to "author" and the <code>type</code> attribute set to "application/activity+json" is the author of the document.</p>
+        </section>
+        <section>
+          <h5>Link element failure</h5>
+          <p>Some servers may include a &lt;link&gt; element with an <code>author</code> relation and with a JSON type or JSON-LD type that does not link to an ActivityPub resource.</p>
+        </section>
+      </section>
+      <section>
+        <h4>OpenGraph Protocol</h4>
+        <p>
+          The <a href="https://ogp.me/">OpenGraph Protocol</a> is a set of metadata properties that can be included in an HTML document to provide information about the document. Several of these properties can be used to identify the author of the document; usually with the URL of an HTML page that has a <a href="https://ogp.me/#type_profile">profile</a> type.
+        </p>
+        <ul>
+          <li><code>music:musician</code> identifies the creator of a song or album.</li>
+          <li><code>music:creator</code> identifies the creator of a playlist or station.</li>
+          <li><code>video:actor</code> identifies the actor in a video.</li>
+          <li><code>video:director</code> identifies the director of a video.</li>
+          <li><code>video:writer</code> identifies the writer of a video.</li>
+          <li><code>article:author</code> identifies the author of an article.</li>
+          <li><code>book:author</code> identifies the author of a book.</li>
+        </ul>
+        <p>
+          For these properties, the most likely discovery path is to follow the property's URL value to an HTML page for the profile, and then use <a href="#discovery">forward discovery</a> to find the ActivityPub object corresponding to that profile.
+        </p>
+        <p>
+          Another option is the <code>fediverse:creator</code> property, <a href="https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">developed by Mastodon</a>. This property is used to identify the creator of a document. Its value is the Webfinger ID of the creator, prefixed with an <code>@</code> character, not an <code>acct:</code> URL. The consumer can use the Webfinger protocol to find the ActivityPub object corresponding to the creator.
+        </p>
+        <p>The advantage of using OGP for metadata is that it is widely implemented by Web publishing systems.</p>
+        <section>
+          <h5>Example</h5>
+          <p>
+            Given an HTML page at <code>https://html.example/files/article-40.html</code> that represents a <code>Article</code> object, the consumer can use the OpenGraph metadata to identify the URL of HTML profile for the author of the article:
+          </p>
+          <pre class="HTML">
+            &lt;!doctype html&gt;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;Article 40&lt;/title&gt;
+                &lt;meta property="article:author" content="https://html.example/profiles/person-7.html" /&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;!-- rest of the page --&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          </pre>
+          <p>
+            In this example, the <code>article:author</code> property is the author of the document.
+          </p>
+          <p>
+            Given an HTML page at <code>https://html.example/files/video-40.html</code> that represents a <code>Video</code> object, the consumer can use OpenGraph metadata to identify the Webfinger ID of the creator of the video:
+          </p>
+          <pre class="HTML">
+            &lt;!doctype html&gt;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;title&gt;Video 40&lt;/title&gt;
+                &lt;meta property="fediverse:creator" content="@person-22@ap.example" /&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;!-- rest of the page --&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+          </pre>
+          <p>
+            In this example, the <code>fediverse:creator</code> property is the Webfinger ID of the creator of the video, prefixed with the <code>@</code> symbol. The Webfinger ID can be used to find the ActivityPub object corresponding to the creator.
+          </p>
+        </section>
+        <section>
+          <h5>OpenGraph Protocol failure</h5>
+          <p>
+            The OpenGraph Protocol is not widely used for identifying authors of documents. When it is used, the profile page may not support discovery of an ActivityPub object.
+          </p>
+        </section>
+      </section>
+    </section>
+    <section>
+      <h3>Discovering author HTML</h3>
+      <p>Another option for author discovery is to discover the HTML profile page for the author of the resource, and then discover the equivalent ActivityPub object for the HTML profile page.</p>
+      <p>Techniques for discovering author HTML pages are out of scope for this report, but may include using HTTP <code>Link</code> headers, &lt;link&gt; elements, &lt;a&gt; elements, or Webfinger <code>link</code> objects with the <code>rel</code> property set to "author" and the <code>type</code> property set to "text/html" or omitted. Embedded JSON-LD, OpenGraph Protocol, and other mechanisms exist for discovering author profile HTML pages.</p>
       <section>
         <h4>Example</h4>
-        <p>
-          Given an HTML page at <code>https://html.example/files/article-40.html</code> that represents a <code>Article</code> object, the consumer can use the OpenGraph metadata to identify the URL of HTML profile for the author of the article:
-        </p>
-        <pre class="HTML">
-          &lt;!doctype html&gt;
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;title&gt;Article 40&lt;/title&gt;
-              &lt;meta property="article:author" content="https://html.example/profiles/person-7.html" /&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;!-- rest of the page --&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
-        <p>
-          In this example, the <code>article:author</code> property is the author of the document.
-        </p>
-        <p>
-          Given an HTML page at <code>https://html.example/files/video-40.html</code> that represents a <code>Video</code> object, the consumer can use OpenGraph metadata to identify the Webfinger ID of the creator of the video:
-        </p>
+        <p>Given the contents of an HTML page at <code>https://html.example/files/video-40.html</code> that represents a <code>Video</code> object, the consumer can check the &lt;link&gt; elements in the HTML to find the URL of the author's profile page:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
             &lt;head&gt;
               &lt;title&gt;Video 40&lt;/title&gt;
-              &lt;meta property="fediverse:creator" content="@person-22@ap.example" /&gt;
+              &lt;link
+                rel="author"
+                type="text/html"
+                href="https://html.example/profiles/person-22.html" /&gt;
             &lt;/head&gt;
             &lt;body&gt;
               &lt;!-- rest of the page --&gt;
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
-        <p>
-          In this example, the <code>fediverse:creator</code> property is the Webfinger ID of the creator of the video, prefixed with the <code>@</code> symbol. The Webfinger ID can be used to find the ActivityPub object corresponding to the creator.
-        </p>
+        <p>It could then use a forward discovery technique, such as HTTP <code>Link</code> header discovery, to get the equivalent ActivityPub object.</p>
+        <pre class="HTTP">
+          HEAD /profiles/person-22.html HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>The response might include a <code>Link</code> header with the URL of the equivalent ActivityPub object:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: text/html
+          Link: &lt;https://ap.example/profiles/person-22.jsonld&gt;; rel="alternate"; type="application/activity+json"
+        </pre>
       </section>
       <section>
-        <h4>OpenGraph Protocol failure</h4>
-        <p>
-          The OpenGraph Protocol is not widely used for identifying authors of documents. When it is used, the profile page may not support discovery of an ActivityPub object.
-        </p>
-    </section>
+        <h4>Author HTML failure</h4>
+        <p>Author HTML discovery can fail if the author's profile page is not available, or if the profile page does not link to an ActivityPub object.</p>
+      </section>
     </section>
   </section>
   <section id="verification">
