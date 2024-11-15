@@ -95,7 +95,7 @@
     </p>
 
     <p>
-    "Author discovery" is any process that, given the resource's HTML representation's URL, will return the author resource's ActivityPub representation's URL. Author discovery is important because many ActivityPub processes require delivering activities to the author.
+    "Author discovery" is any process that, given the resource's HTML representation, will return the author resource's ActivityPub representation. Author discovery is important because many ActivityPub processes require delivering activities to the author.
     </p>
 
     <p>
@@ -112,6 +112,8 @@
       Note that a resource may have an author resource with an ActivityPub representation, but not have its own ActivityPub representation. An example is an article published in a content-management system (CMS) that is ascribed to an actor with an ActivityPub account who wants to receive credit and/or feedback for the work.
     </p>
 
+    <p>As with forward and reverse discovery, the consumer may start with the URL of the resource HTML or the content of the resource HTML.</p>
+
     <p>
     For some kinds of resources, especially ActivityPub actors, a Webfinger is a more readable alternative to the ActivityPub representation's URL. In these cases, the forward discovery process and author discovery process might include the Webfinger discovery process as an intermediate step:
     </p>
@@ -126,7 +128,7 @@
     </p>
 
     <p>
-      In this document, we describe several methods of forward discovery, reverse discovery, and author discovery. Different methods are implemented by different publishers and consumers, and have different trade-offs in terms of complexity, performance, and reliability. The final sections define best practices for publishers and consumers to maximize interoperability and minimize development effort.
+      In this document, we describe several methods of forward discovery, reverse discovery, and author discovery. Different methods are implemented by different publishers and consumers, and have different trade-offs in terms of complexity, performance, and reliability. A section on verification explains how to verify that the discovered information is accurate. The final sections define best practices for publishers and consumers to maximize interoperability and minimize development effort.
     </p>
 
     <section>
