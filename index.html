@@ -211,6 +211,7 @@
           Extensions may be left off of the URL, especially if the same URL will be used for multiple media types. Note that including the <code>.jsonld</code> extension is not common practice for ActivityPub <code>id</code> values. It is used in this report to highlight that the URL is for a JSON-LD representation.
         </li>
       </ul>
+      <p>The structure used in the examples is merely mnemonic and non-normative. None of the techniques described in this document depend on a particular URL structure, unless otherwise specified.</p>
     </section>
   </section>
   <section id="discovery">
@@ -378,6 +379,7 @@
           GET /.well-known/webfinger?resource=https%3A%2F%2Fhtml.example%2Fgroup-1.html HTTP/1.1
           Host: html.example
         </pre>
+        <p>Note that the <code>/.well-known/webfinger</code> path is fixed and required for Webfinger.</p>
         <p>A compliant server will respond with the metadata for the resource:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
@@ -394,6 +396,7 @@
             ]
           }
         </pre>
+        <p>Note that unlike other URLs used in the examples in this report, the <code>/.well-known/webfinger</code> path is fixed and required for Webfinger.</p>
         <p>The JRD JSON format includes <a href="https://datatracker.ietf.org/doc/html/rfc7033#section-4.4">a number of properties</a>, as defined in the Webfinger RFC 7033. The relevant data structure in this example is the object in the <code>links</code> array with the <code>rel</code> property set to <code>alternate</code> and the <code>type</code> property set to <code>application/activity+json</code>, an ActivityPub-compatible media type. The <code>href</code> property of this link is URL of the ActivityPub equivalent for the HTML page.</p>
         <section>
           <h4>Webfinger failure</h4>
@@ -645,6 +648,7 @@
             GET /.well-known/webfinger?resource=https%3A%2F%2Fap.example%2Fgeo%2Fplace-7.jsonld HTTP/1.1
             Host: ap.example
           </pre>
+          <p>Note that the <code>/.well-known/webfinger</code> path is fixed and required for Webfinger.</p>
           <p>The publisher could return the following JRD output:</p>
           <pre class="JSON">
             {
@@ -668,6 +672,7 @@
             GET /.well-known/webfinger?resource=acct%3Aperson-19%40ap.example HTTP/1.1
             Host: ap.example
           </pre>
+          <p>Note that the <code>/.well-known/webfinger</code> path is fixed and required for Webfinger discovery.</p>
           <p>The publisher could return the following JRD output:</p>
           <pre class="JSON">
             {
