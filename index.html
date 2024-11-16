@@ -996,6 +996,8 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
+    <p>Publishers of HTML representations and ActivityPub representations include data or metadata to help with discovery of related representations or resources. This data is a <em>claim</em> that the linked resource really has the relationship stated.</p>
+    <p>Unfortunately, not all claims are true. Consumers need to verify the claims made by publishers, using the verification techniques described here. Some techniques are direct and can be used with confidence; others are heuristics that provide some level of support to the claims, but are not foolproof.</p>
     <section>
       <h3>Representation verification</h3>
       <p>Verification is a process of confirming that an HTML page and an ActivityPub object represent the same resource. This is necessary to ensure that the publisher of one representation is not falsely connecting two unrelated resources. These forms of verification are valid for both forward and reverse discovery.</p>
@@ -1190,6 +1192,7 @@
         <section>
           <h5>Allowlist verification failure</h5>
           <p>Establishing trust relationships out-of-band is labor intensive, and most consumers will only have a small number of trusted domains or other entities.</p>
+        </section>
       </section>
     </section>
   </section>
