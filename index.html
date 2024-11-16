@@ -196,19 +196,19 @@
         </li>
         <li><code>{path}</code> is the path to the object. It should be opaque; none of the paths in this document have
           semantic meaning unless otherwise specified.</li>
-        <li><code>{type}</code> is the general content type of object. This will usually be the lowercase version of the
+        <li><code>{type}</code> is the content type of the resource. This will usually be the lowercase version of the
           ActivityPub object type, such as <code>Note</code>, <code>Person</code>, or <code>Image</code>.</li>
         </li>
         <li><code>{ordinal}</code> is an ordinal number, when multiple objects are being described in the same
           discussion.</li>
-        <li><code>{ext}</code> is an optional extension that indicates the Internet media type of the resource,
+        <li><code>{ext}</code> is an optional "file extension" that indicates the Internet media type of the resource,
           including:
           <ul>
             <li><code>.jsonld</code> for JSON-LD objects</li>
             <li><code>.html</code> for HTML documents</li>
-            <li><code>.png</code>, <code>.jpg</code>, etc. for PNG images</li>
+            <li><code>.png</code> for PNG images, <code>.jpg</code> for JPEG images, etc.</li>
           </ul>
-          Extensions may be left off of the URL, especially if the same URL will be used for multiple media types. Note that using the <code>.jsonld</code> extension is not common practice for ActivityPub <code>id</code> values, but is used to highlight that the URL is for a JSON-LD object.
+          Extensions may be left off of the URL, especially if the same URL will be used for multiple media types. Note that including the <code>.jsonld</code> extension is not common practice for ActivityPub <code>id</code> values. It is used in this report to highlight that the URL is for a JSON-LD representation.
         </li>
       </ul>
     </section>
