@@ -39,89 +39,16 @@
     </p>
 
     <p>
-    "Forward discovery" is any process that, given the resource's HTML representation, will return the resource's ActivityPub representation.
-    </p>
-
-    <ul>
-      <li>resource HTML &rarr; resource ActivityPub</li>
-    </ul>
-
-    <p>
-      There are multiple techniques for forward discovery which will be documented in this report. Some discovery techniques require the full HTML document -- its markup and content. Others only need the URL of the HTML representation.
-    </p>
-
-    <ul>
-      <li>resource HTML document &rarr; resource ActivityPub</li>
-      <li>resource HTML URL &rarr; resource ActivityPub</li>
-    </ul>
-
-    <p>
-      When a consumer is doing discovery, it can start with the input it has -- document or URL -- and convert to the other input if it needs to.Converting an HTML document to an HTML URL usually requires access to the document's context, like a browser environment. Converting an HTML URL to a document requires fetching the document and parsing it.
-    </p>
-
-    <ul>
-      <li>resource HTML document &rarr; resource HTML URL &rarr; resource ActivityPub</li>
-      <li>resource HTML URL &rarr; resource HTML document &rarr; resource ActivityPub</li>
-    </ul>
-
-    <p>
-    "Reverse discovery" is any process that, given the resource's ActivityPub representation, will return the resource's HTML representation.
-    </p>
-
-    <ul>
-      <li>resource ActivityPub &rarr; resource HTML</li>
-    </ul>
-
-    <p>
-      As with forward discovery, some reverse discovery techniques require the full ActivityPub document -- its JSON properties and content. Others only need the URL of the ActivityPub representation.
-    </p>
-
-    <ul>
-      <li>resource ActivityPub document &rarr; resource HTML</li>
-      <li>resource ActivityPub URL &rarr; resource HTML</li>
-    </ul>
-
-    <p>
-      When a consumer is doing reverse discovery, it can start with techniques that use the input it has -- document or URL -- and switch to techniques that use the other input only if needed. Converting an ActivityPub document to an ActivityPub URL requires extracting the <code>id</code> property of the object. Converting an ActivityPub URL to a document requires fetching the document and parsing it.
-    </p>
-
-    <ul>
-      <li>resource ActivityPub document &rarr; resource ActivityPub URL &rarr; resource HTML</li>
-      <li>resource ActivityPub URL &rarr; resource ActivityPub document &rarr; resource HTML</li>
-    </ul>
-
-    <p>
-      Some resources have a relationship to another resource, which is its <dfn>author</dfn> or creator. The author resource has an ActivityPub JSON-LD representation (again, if it doesn't, it's not covered by this document!) and may have an HTML representation.
+      Some resources have a relationship to another resource, which is its author or creator. The author resource has an ActivityPub JSON-LD representation (again, if it doesn't, it's not covered by this document!) and may have an HTML representation.
     </p>
 
     <p>
-    "Author discovery" is any process that, given the resource's HTML representation, will return the author resource's ActivityPub representation. Author discovery is important because many ActivityPub processes require delivering activities to the author.
+      A resource may have an author resource with an ActivityPub representation, but not have its own ActivityPub representation. An example is an article published in a content-management system (CMS) that is ascribed to an actor with an ActivityPub account who wants to receive credit and/or feedback for the work.
     </p>
 
     <p>
-    There are a few paths for author discovery:
+      Discovery, in this document, means starting with the URL or content of one representation, and identifying another representation. Each section of the document covers a different starting data type, and a different goal.
     </p>
-
-    <ul>
-      <li>resource HTML &rarr; resource ActivityPub &rarr; author ActivityPub</li>
-      <li>resource HTML &rarr; author HTML &rarr; author ActivityPub</li>
-      <li>resource HTML &rarr; author ActivityPub</li>
-    </ul>
-
-    <p>
-      Note that a resource may have an author resource with an ActivityPub representation, but not have its own ActivityPub representation. An example is an article published in a content-management system (CMS) that is ascribed to an actor with an ActivityPub account who wants to receive credit and/or feedback for the work.
-    </p>
-
-    <p>As with forward and reverse discovery, the consumer may start with the URL of the resource HTML or the content of the resource HTML.</p>
-
-    <p>
-    For some kinds of resources, especially ActivityPub actors, a Webfinger is a more readable alternative to the ActivityPub representation's URL. In these cases, the forward discovery process and author discovery process might include the Webfinger discovery process as an intermediate step:
-    </p>
-
-    <ul>
-      <li>resource HTML &rarr; resource Webfinger &rarr; resource ActivityPub</li>
-      <li>resource HTML &rarr; author Webfinger &rarr; author ActivityPub</li>
-    </ul>
 
     <p>
       In this document, the terms "<a href="https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>" and "<a href="https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>" are used as  in Activity Streams 2.0 Core. The terms are extended to include implementations that publish or consume HTML representations of resources with ActivityPub representations.
@@ -154,64 +81,12 @@
         <li><code>Page</code></li>
       </ul>
       <p>
-        Other ActivityPub types are less likely to have their own HTML representations, such as activity types.
+        Other ActivityPub types, such as activity types, are less likely to have their own HTML representations.
       </p>
       <p>
         <code>Collection</code> types are often better represented by an object they are closely related to. For example, an actor's <code>outbox</code>
         collection is often provided on the actor's profile page, which is a representation of the actor. Similarly, the <code>likes</code> or <code>replies</code> of an <code>Image</code> object are often provided on the object's page, and don't have an independent HTML representation. That said, this document does not preclude the possibility of HTML representations for collection types.
       </p>
-    </section>
-    <section>
-      <h3>Motivating user stories</h3>
-      <p>These are some of the user stories that motivate this work.</p>
-      <p>
-      <ul>
-        <li><em>As a Web user, when viewing a Web page, I want to <code>Like</code> the contents, so that I can share it with my followers, let the author know I appreciated it, and save it to my <code>liked</code> collection.</em> A browser-based ActivityPub API client could submit a <code>Like</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
-        <li><em>As a Web user, when viewing a Web page, I want to <code>Announce</code> the contents, so that I can share it with my followers.</em> A browser-based ActivityPub API client could submit a <code>Announce</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
-        <li><em>As a Web user, when viewing an actor's profile, I want to <code>Follow</code> the actor, so that I can get updates about their activities in my inbox.</em> A browser-based ActivityPub API client could submit a <code>Follow</code> activity to the user's ActivityPub server, but it would need to know the actor ID of the actor whose profile is being viewed.</li>
-        <li><em>As a Web user, when viewing an actor's profile, I want to send them a direct message, to share information or make a connection.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the profile actor's ID in the <code>to</code> property, but the API client would need to know the actor ID of the actor whose profile is being viewed.</li>
-        <li><em>As a Web user, when viewing an image page in my browser, I want to send a direct message to the author, to share information or give feedback.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the image's author's actor ID in the <code>to</code> property, but the API client would need to know the actor ID of the author of the image.</li>
-        <li><em>As a social network client user, when I see a link in the content of a social media post, I want to load the resource for that link into my social media client without launching an external browser, so that I have a smooth user experience and can fully interact with the content.</em> Given a link like <code>https://html.example/blog/page-1.html</code>, an ActivityPub API client could discover the related ActivityPub ID <code>https://ap.example/api/page-1.jsonld</code>, retrieve it with machine-readable metadata, and provide affordances for interacting with the object, such as liking, sharing, or replying.</li>
-        <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to follow a link to the actor's profile page, so I can learn more about them.</em> Converting a Webfinger address into an ActivityPub actor ID is well-covered in the ActivityPub and Webfinger report, but the next step of converting an actor ID to a profile page is not.</li>
-        <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to load the actor's profile into my social network client, so I can interact directly with it.</em> If the link in the <code>content</code> is to the actor's profile page, it's necessary to be able to turn that link into an actor ID to allow more inspection of the actor and affordances like following or blocking.</li>
-      </ul>
-      </p>
-    </section>
-    <section>
-      <h3>URLs in examples</h3>
-      <p>This document uses a consistent format for example URLs:
-      <pre>
-        <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
-      </pre>
-      </p>
-      <p>Where:</p>
-      <ul>
-        <li><code>{name}</code> is the domain name of the server. There are three default domain names used:
-          <ul>
-            <li><code>ap.example</code> - A server that primarily provides ActivityPub JSON-LD documents.</li>
-            <li><code>html.example</code> - A server that primarily provides HTML documents.</li>
-            <li><code>mixed.example</code> - A server that provides both ActivityPub JSON-LD and HTML documents.</li>
-          </ul>
-          Other names may be used when additional examples are required.
-        </li>
-        <li><code>{path}</code> is the path to the object. It should be opaque; none of the paths in this document have
-          semantic meaning unless otherwise specified.</li>
-        <li><code>{type}</code> is the content type of the resource. This will usually be the lowercase version of the
-          ActivityPub object type, such as <code>Note</code>, <code>Person</code>, or <code>Image</code>.</li>
-        </li>
-        <li><code>{ordinal}</code> is an ordinal number, when multiple objects are being described in the same
-          discussion.</li>
-        <li><code>{ext}</code> is an optional "file extension" that indicates the Internet media type of the resource,
-          including:
-          <ul>
-            <li><code>.jsonld</code> for JSON-LD objects</li>
-            <li><code>.html</code> for HTML documents</li>
-            <li><code>.png</code> for PNG images, <code>.jpg</code> for JPEG images, etc.</li>
-          </ul>
-          Extensions may be left off of the URL, especially if the same URL will be used for multiple media types. Note that including the <code>.jsonld</code> extension is not common practice for ActivityPub <code>id</code> values. It is used in this report to highlight that the URL is for a JSON-LD representation.
-        </li>
-      </ul>
-      <p>The structure used in the examples is merely mnemonic and non-normative. None of the techniques described in this document depend on a particular URL structure, unless otherwise specified.</p>
     </section>
   </section>
   <section id="html-to-activitypub">
@@ -1185,6 +1060,58 @@
         <li><strong>Embedded JSON-LD</strong>. This technique allows consumers not only to identify the URL for the ActivityPub representation, but to retrieve the full body of the object, without an additional HTTP request.</li>
       </ul>
     </section>
+  </section>
+    <section id="user-stories" class="appendix">
+    <h3>Motivating user stories</h3>
+    <p>These are some of the user stories that motivate this work.</p>
+    <p>
+    <ul>
+      <li><em>As a Web user, when viewing a Web page, I want to <code>Like</code> the contents, so that I can share it with my followers, let the author know I appreciated it, and save it to my <code>liked</code> collection.</em> A browser-based ActivityPub API client could submit a <code>Like</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
+      <li><em>As a Web user, when viewing a Web page, I want to <code>Announce</code> the contents, so that I can share it with my followers.</em> A browser-based ActivityPub API client could submit a <code>Announce</code> activity to the user's ActivityPub server, but it would need to know the ID of the ActivityPub equivalent of the page.</li>
+      <li><em>As a Web user, when viewing an actor's profile, I want to <code>Follow</code> the actor, so that I can get updates about their activities in my inbox.</em> A browser-based ActivityPub API client could submit a <code>Follow</code> activity to the user's ActivityPub server, but it would need to know the actor ID of the actor whose profile is being viewed.</li>
+      <li><em>As a Web user, when viewing an actor's profile, I want to send them a direct message, to share information or make a connection.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the profile actor's ID in the <code>to</code> property, but the API client would need to know the actor ID of the actor whose profile is being viewed.</li>
+      <li><em>As a Web user, when viewing an image page in my browser, I want to send a direct message to the author, to share information or give feedback.</em> A browser-based ActivityPub API client could send a <code>Note</code> activity to the user's ActivityPub server, with the image's author's actor ID in the <code>to</code> property, but the API client would need to know the actor ID of the author of the image.</li>
+      <li><em>As a social network client user, when I see a link in the content of a social media post, I want to load the resource for that link into my social media client without launching an external browser, so that I have a smooth user experience and can fully interact with the content.</em> Given a link like <code>https://html.example/blog/page-1.html</code>, an ActivityPub API client could discover the related ActivityPub ID <code>https://ap.example/api/page-1.jsonld</code>, retrieve it with machine-readable metadata, and provide affordances for interacting with the object, such as liking, sharing, or replying.</li>
+      <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to follow a link to the actor's profile page, so I can learn more about them.</em> Converting a Webfinger address into an ActivityPub actor ID is well-covered in the ActivityPub and Webfinger report, but the next step of converting an actor ID to a profile page is not.</li>
+      <li><em>As a social network client user, when I see a Webfinger handle mentioned in a social media post, I want to load the actor's profile into my social network client, so I can interact directly with it.</em> If the link in the <code>content</code> is to the actor's profile page, it's necessary to be able to turn that link into an actor ID to allow more inspection of the actor and affordances like following or blocking.</li>
+    </ul>
+    </p>
+  </section>
+  <section id="urls-in-examples" class="appendix">
+    <h3>URLs in examples</h3>
+    <p>This document uses a consistent format for example URLs:
+    <pre>
+      <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
+    </pre>
+    </p>
+    <p>Where:</p>
+    <ul>
+      <li><code>{name}</code> is the domain name of the server. There are three default domain names used:
+        <ul>
+          <li><code>ap.example</code> - A server that primarily provides ActivityPub JSON-LD documents.</li>
+          <li><code>html.example</code> - A server that primarily provides HTML documents.</li>
+          <li><code>mixed.example</code> - A server that provides both ActivityPub JSON-LD and HTML documents.</li>
+        </ul>
+        Other names may be used when additional examples are required.
+      </li>
+      <li><code>{path}</code> is the path to the object. It should be opaque; none of the paths in this document have
+        semantic meaning unless otherwise specified.</li>
+      <li><code>{type}</code> is the content type of the resource. This will usually be the lowercase version of the
+        ActivityPub object type, such as <code>Note</code>, <code>Person</code>, or <code>Image</code>.</li>
+      </li>
+      <li><code>{ordinal}</code> is an ordinal number, when multiple objects are being described in the same
+        discussion.</li>
+      <li><code>{ext}</code> is an optional "file extension" that indicates the Internet media type of the resource,
+        including:
+        <ul>
+          <li><code>.jsonld</code> for JSON-LD objects</li>
+          <li><code>.html</code> for HTML documents</li>
+          <li><code>.png</code> for PNG images, <code>.jpg</code> for JPEG images, etc.</li>
+        </ul>
+        Extensions may be left off of the URL, especially if the same URL will be used for multiple media types. Note that including the <code>.jsonld</code> extension is not common practice for ActivityPub <code>id</code> values. It is used in this report to highlight that the URL is for a JSON-LD representation.
+      </li>
+    </ul>
+    <p>The structure used in the examples is merely mnemonic and non-normative. None of the techniques described in this document depend on a particular URL structure, unless otherwise specified.</p>
   </section>
 </body>
 
