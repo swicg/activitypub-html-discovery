@@ -79,42 +79,6 @@
     <p>The final sections define best practices for publishers and
     consumers to maximize interoperability and minimize development
     effort.</p>
-    <section>
-      <h3>Applicable resource types</h3>
-      <p>Unless otherwise specified, the techniques described below
-      can be used with any Activity Streams 2.0 types. The
-      best-defined groups of AS2 types for HTML discovery are actor
-      types:</p>
-      <ul>
-        <li><code>Person</code></li>
-        <li><code>Application</code></li>
-        <li><code>Service</code></li>
-        <li><code>Group</code></li>
-        <li><code>Organization</code></li>
-      </ul>
-      <p>and digital content types:</p>
-      <ul>
-        <li><code>Note</code></li>
-        <li><code>Article</code></li>
-        <li><code>Image</code></li>
-        <li><code>Video</code></li>
-        <li><code>Audio</code></li>
-        <li><code>Document</code></li>
-        <li><code>Page</code></li>
-      </ul>
-      <p>Other ActivityPub types, such as activity types, are less
-      likely to have their own HTML representations.</p>
-      <p><code>Collection</code> types are often better represented
-      by an object they are closely related to. For example, an
-      actor's <code>outbox</code> collection is often provided on
-      the actor's profile page, which is a representation of the
-      actor. Similarly, the <code>likes</code> or
-      <code>replies</code> of an <code>Image</code> object are
-      often provided on the object's page, and don't have an
-      independent HTML representation. That said, this document
-      does not preclude the possibility of HTML representations for
-      collection types.</p>
-    </section>
   </section>
   <section id="html-to-activitypub">
     <h2>HTML document to ActivityPub object</h2>
@@ -532,7 +496,7 @@
     input.</p>
     <section id="id-to-html-content-negotiation">
       <h3>Content negotiation</h3>
-      <p>As with forward discovery, it's possible for the HTML and
+      <p>It's possible for the HTML and
       JSON-LD representations of an object to be found at the same
       URL.</p>
       <section>
@@ -596,7 +560,7 @@
     </section>
     <section id="id-to-html-link-header">
       <h3>HTTP Link header</h3>
-      <p>As with forward discovery, it is possible to use the
+      <p>It is possible to use the
       <code>Link</code> header to identify an HTML page related to
       a given ActivityPub JSON-LD resource. A <code>Link</code>
       header with the <code>alternate</code> link relation and a
@@ -1085,9 +1049,9 @@
         <p>The most reliable verification method is two-way
         discovery. This consists of first doing discovery in one
         direction, and then doing discovery in the other direction
-        with the results. For example, doing forward discovery from
+        with the results. For example, doing discovery from
         an HTML page to an ActivityPub object, and then doing
-        reverse discovery from the ActivityPub object to,
+        discovery from the ActivityPub object to,
         hopefully, the same HTML page.</p>
         <section>
           <h5>Example</h5>
@@ -1636,7 +1600,7 @@
     </section>
   </section>
   <section id="user-stories" class="appendix">
-    <h3>Motivating user stories</h3>
+    <h2>Motivating user stories</h2>
     <p>These are some of the user stories that motivate this
     work.</p>
     <ul>
@@ -1707,7 +1671,7 @@
     </ul>
   </section>
   <section id="urls-in-examples" class="appendix">
-    <h3>URLs in examples</h3>
+    <h2>URLs in examples</h2>
     <p>This document uses a consistent format for example URLs:</p>
     <pre>
       <code>https://{name}.example/{path}/{type}-{ordinal}{?ext}</code>
@@ -1759,5 +1723,41 @@
     document depend on a particular URL structure, unless otherwise
     specified.</p>
   </section>
+  <section id="resource-types" class="appendix">
+      <h2>Applicable resource types</h2>
+      <p>Unless otherwise specified, the techniques described below
+      can be used with any Activity Streams 2.0 types. The
+      best-defined groups of AS2 types for HTML discovery are actor
+      types:</p>
+      <ul>
+        <li><code>Person</code></li>
+        <li><code>Application</code></li>
+        <li><code>Service</code></li>
+        <li><code>Group</code></li>
+        <li><code>Organization</code></li>
+      </ul>
+      <p>and digital content types:</p>
+      <ul>
+        <li><code>Note</code></li>
+        <li><code>Article</code></li>
+        <li><code>Image</code></li>
+        <li><code>Video</code></li>
+        <li><code>Audio</code></li>
+        <li><code>Document</code></li>
+        <li><code>Page</code></li>
+      </ul>
+      <p>Other ActivityPub types, such as activity types, are less
+      likely to have their own HTML representations.</p>
+      <p><code>Collection</code> types are often better represented
+      by an object they are closely related to. For example, an
+      actor's <code>outbox</code> collection is often provided on
+      the actor's profile page, which is a representation of the
+      actor. Similarly, the <code>likes</code> or
+      <code>replies</code> of an <code>Image</code> object are
+      often provided on the object's page, and don't have an
+      independent HTML representation. That said, this document
+      does not preclude the possibility of HTML representations for
+      collection types.</p>
+    </section>
 </body>
 </html>
