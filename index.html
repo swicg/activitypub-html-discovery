@@ -195,8 +195,8 @@
         users to set <code>rel</code> and other properties on
         <code>a</code> elements, which may result in false matches.
         Even more than with other methods, using the <code>a</code>
-        element for discovery requires reverse discovery for
-        confirmation.</p>
+        element for discovery requires <a href=
+        "#verification">verification</a>.</p>
       </section>
     </section>
     <section id="html-to-activitypub-embedded-json-ld">
@@ -490,8 +490,7 @@
     property of the ActivityPub JSON-LD document.</p>
     <p>If these techniques aren't successful, the consumer can use
     the URL to fetch the ActivityPub JSON-LD document, and then use
-    a reverse discovery technique that takes a document as
-    input.</p>
+    a discovery technique that takes a document as input.</p>
     <section id="id-to-html-content-negotiation">
       <h3>Content negotiation</h3>
       <p>It's possible for the HTML and JSON-LD representations of
@@ -1039,8 +1038,7 @@
       and an ActivityPub object represent the same resource. This
       is necessary to ensure that the publisher of one
       representation is not falsely connecting two unrelated
-      resources. These forms of verification are valid for both
-      forward and reverse discovery.</p>
+      resources.</p>
       <section>
         <h4>Two-way discovery</h4>
         <p>The most reliable verification method is two-way
@@ -1104,8 +1102,9 @@
         of the original representation's URL and the discovered
         representation's URL. The origin is the combination of the
         scheme, host, and port of a URL. If the origins are the
-        same, the two representations can be considered
-        related.</p>
+        same, the publisher of both the HTML and the ActivityPub
+        JSON-LD is probably the same, so the discovery results are
+        probably reliable.</p>
         <p>Content negotiation without a redirect will always have
         the same origin, as the URL of the HTML page and the URL of
         the JSON-LD representation are the same.</p>
