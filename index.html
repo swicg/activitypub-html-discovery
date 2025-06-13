@@ -1510,8 +1510,8 @@
         <code>Link</code> object on its own, or an array of
         <code>Link</code> objects, as the <code>url</code> property
         of the ActivityPub object. Explicitly include the
-        <code>type</code> property with a value of "text/html".
-        Avoid using multiple links with the same <code>type</code>,
+        <code>mediaType</code> property with a value of "text/html".
+        Avoid using multiple links with the same <code>mediaType</code>,
         since there's no easy way to distinguish which one is the
         correct HTML representation of the resource.</li>
         <li><strong>attributedTo property</strong>. For every
@@ -1523,7 +1523,7 @@
         <li><strong>HTTP Link</strong>. Publishers that have
         control over HTTP headers for their ActivityPub objects
         should include the HTTP <code>Link</code> headers with both
-        "alternate" and "author" relations.Add the
+        "alternate" and "author" relations. Add the
         "application/activity+json" media type explicitly. Don't
         include multiple links with the same relation and media
         type, since there's not a clear algorithm for choosing
