@@ -76,20 +76,21 @@
     terms of complexity, performance, and reliability.</p>
     <p>A section on verification explains how to verify that the
     discovered information is accurate.</p>
-    <p>The final section defines best practices for publishers to maximize interoperability and minimize development
-    effort.</p>
+    <p>The final section defines best practices for publishers to
+    maximize interoperability and minimize development effort.</p>
   </section>
   <section id="html-to-activitypub">
     <h2>HTML document to ActivityPub object</h2>
-    <p>A consumer may start with the full contents of
-    an HTML document, including markup and other content. For
-    example, a browser-based application may have access to the
-    HTML loaded in the browser window. A consumer with an HTML document may be able to extract the URL from the environment -- for example, using
-    the <code>document.location</code> property in a JavaScript
-    environment. Using the document content for discovery can
-    return the ActivityPub equivalent without the HTTP requests
-    that discovery by URL requires, saving some time and network
-    traffic.</p>
+    <p>A consumer may start with the full contents of an HTML
+    document, including markup and other content. For example, a
+    browser-based application may have access to the HTML loaded in
+    the browser window. A consumer with an HTML document may be
+    able to extract the URL from the environment -- for example,
+    using the <code>document.location</code> property in a
+    JavaScript environment. Using the document content for
+    discovery can return the ActivityPub equivalent without the
+    HTTP requests that discovery by URL requires, saving some time
+    and network traffic.</p>
     <section id="html-to-activitypub-link-element">
       <h3>HTML &lt;link&gt; element</h3>
       <p>The <a href=
@@ -493,9 +494,8 @@
     input.</p>
     <section id="id-to-html-content-negotiation">
       <h3>Content negotiation</h3>
-      <p>It's possible for the HTML and
-      JSON-LD representations of an object to be found at the same
-      URL.</p>
+      <p>It's possible for the HTML and JSON-LD representations of
+      an object to be found at the same URL.</p>
       <section>
         <h5>Examples</h5>
         <p>Given the URL for an ActivityPub object, such as
@@ -557,12 +557,12 @@
     </section>
     <section id="id-to-html-link-header">
       <h3>HTTP Link header</h3>
-      <p>It is possible to use the
-      <code>Link</code> header to identify an HTML page related to
-      a given ActivityPub JSON-LD resource. A <code>Link</code>
-      header with the <code>alternate</code> link relation and a
-      <code>type</code> equal to <code>text/html</code> indicates
-      an HTML page representing the same object.</p>
+      <p>It is possible to use the <code>Link</code> header to
+      identify an HTML page related to a given ActivityPub JSON-LD
+      resource. A <code>Link</code> header with the
+      <code>alternate</code> link relation and a <code>type</code>
+      equal to <code>text/html</code> indicates an HTML page
+      representing the same object.</p>
       <p>The advantage of this technique is that it does not
       require downloading and parsing the JSON-LD content of the
       ActivityPub object. The <code>Link</code> header has fewer
@@ -1046,10 +1046,10 @@
         <p>The most reliable verification method is two-way
         discovery. This consists of first doing discovery in one
         direction, and then doing discovery in the other direction
-        with the results. For example, doing discovery from
-        an HTML page to an ActivityPub object, and then doing
-        discovery from the ActivityPub object to,
-        hopefully, the same HTML page.</p>
+        with the results. For example, doing discovery from an HTML
+        page to an ActivityPub object, and then doing discovery
+        from the ActivityPub object to, hopefully, the same HTML
+        page.</p>
         <section>
           <h5>Example</h5>
           <p>Given an HTML page with the URL
@@ -1392,10 +1392,11 @@
         <code>Link</code> object on its own, or an array of
         <code>Link</code> objects, as the <code>url</code> property
         of the ActivityPub object. Explicitly include the
-        <code>mediaType</code> property with a value of "text/html".
-        Avoid using multiple links with the same <code>mediaType</code>,
-        since there's no easy way to distinguish which one is the
-        correct HTML representation of the resource.</li>
+        <code>mediaType</code> property with a value of
+        "text/html". Avoid using multiple links with the same
+        <code>mediaType</code>, since there's no easy way to
+        distinguish which one is the correct HTML representation of
+        the resource.</li>
         <li><strong>attributedTo property</strong>. For every
         ActivityPub object, include the <code>attributedTo</code>
         property, either as an URL or as a JSON object with at
@@ -1606,40 +1607,39 @@
     specified.</p>
   </section>
   <section id="resource-types" class="appendix">
-      <h2>Applicable resource types</h2>
-      <p>Unless otherwise specified, the techniques described below
-      can be used with any Activity Streams 2.0 types. The
-      best-defined groups of AS2 types for HTML discovery are actor
-      types:</p>
-      <ul>
-        <li><code>Person</code></li>
-        <li><code>Application</code></li>
-        <li><code>Service</code></li>
-        <li><code>Group</code></li>
-        <li><code>Organization</code></li>
-      </ul>
-      <p>and digital content types:</p>
-      <ul>
-        <li><code>Note</code></li>
-        <li><code>Article</code></li>
-        <li><code>Image</code></li>
-        <li><code>Video</code></li>
-        <li><code>Audio</code></li>
-        <li><code>Document</code></li>
-        <li><code>Page</code></li>
-      </ul>
-      <p>Other ActivityPub types, such as activity types, are less
-      likely to have their own HTML representations.</p>
-      <p><code>Collection</code> types are often better represented
-      by an object they are closely related to. For example, an
-      actor's <code>outbox</code> collection is often provided on
-      the actor's profile page, which is a representation of the
-      actor. Similarly, the <code>likes</code> or
-      <code>replies</code> of an <code>Image</code> object are
-      often provided on the object's page, and don't have an
-      independent HTML representation. That said, this document
-      does not preclude the possibility of HTML representations for
-      collection types.</p>
-    </section>
+    <h2>Applicable resource types</h2>
+    <p>Unless otherwise specified, the techniques described below
+    can be used with any Activity Streams 2.0 types. The
+    best-defined groups of AS2 types for HTML discovery are actor
+    types:</p>
+    <ul>
+      <li><code>Person</code></li>
+      <li><code>Application</code></li>
+      <li><code>Service</code></li>
+      <li><code>Group</code></li>
+      <li><code>Organization</code></li>
+    </ul>
+    <p>and digital content types:</p>
+    <ul>
+      <li><code>Note</code></li>
+      <li><code>Article</code></li>
+      <li><code>Image</code></li>
+      <li><code>Video</code></li>
+      <li><code>Audio</code></li>
+      <li><code>Document</code></li>
+      <li><code>Page</code></li>
+    </ul>
+    <p>Other ActivityPub types, such as activity types, are less
+    likely to have their own HTML representations.</p>
+    <p><code>Collection</code> types are often better represented
+    by an object they are closely related to. For example, an
+    actor's <code>outbox</code> collection is often provided on the
+    actor's profile page, which is a representation of the actor.
+    Similarly, the <code>likes</code> or <code>replies</code> of an
+    <code>Image</code> object are often provided on the object's
+    page, and don't have an independent HTML representation. That
+    said, this document does not preclude the possibility of HTML
+    representations for collection types.</p>
+  </section>
 </body>
 </html>
