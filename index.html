@@ -70,15 +70,15 @@
     extended to include implementations that publish or consume
     HTML representations of resources with ActivityPub
     representations.</p>
-    <p>In this document, we describe several methods of forward
-    discovery, reverse discovery, and author discovery. Different
-    methods are implemented by different publishers and consumers,
-    and have different trade-offs in terms of complexity,
-    performance, and reliability. A section on verification
-    explains how to verify that the discovered information is
-    accurate. The final sections define best practices for
-    publishers and consumers to maximize interoperability and
-    minimize development effort.</p>
+    <p>In this document, several methods of discovery are
+    described. Different methods are implemented by different
+    publishers and consumers, and have different trade-offs in
+    terms of complexity, performance, and reliability.</p>
+    <p>A section on verification explains how to verify that the
+    discovered information is accurate.</p>
+    <p>The final sections define best practices for publishers and
+    consumers to maximize interoperability and minimize development
+    effort.</p>
     <section>
       <h3>Applicable resource types</h3>
       <p>Unless otherwise specified, the techniques described below
@@ -118,13 +118,12 @@
   </section>
   <section id="html-to-activitypub">
     <h2>HTML document to ActivityPub object</h2>
-    <p>Alternately, a consumer may start with the full contents of
+    <p>A consumer may start with the full contents of
     an HTML document, including markup and other content. For
     example, a browser-based application may have access to the
-    HTML loaded in the browser window. It's also usually possible
-    to extract the URL from the environment -- for example, using
+    HTML loaded in the browser window. A consumer with an HTML document may be able to extract the URL from the environment -- for example, using
     the <code>document.location</code> property in a JavaScript
-    environment. But using the document content for discovery can
+    environment. Using the document content for discovery can
     return the ActivityPub equivalent without the HTTP requests
     that discovery by URL requires, saving some time and network
     traffic.</p>
@@ -259,13 +258,11 @@
               "@context": "https://www.w3.org/ns/activitystreams",
               "type": "Image",
               "id": "https://ap.example/api/images/image-17.jsonld",
-              "url": [
-                {
-                  "type": "Link",
-                  "mediaType": "text/html",
-                  "href": "https://html.example/gallery/image-17.html"
-                }
-              ]
+              "url": {
+                "type": "Link",
+                "mediaType": "text/html",
+                "href": "https://html.example/gallery/image-17.html"
+              }
             }
             &lt;/script&gt;
           &lt;/head&gt;
