@@ -283,7 +283,7 @@
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
-        Accept: application/activity+json, application/ld+json, application/json
+        Accept: application/activity+json;q=1.0, application/ld+json;q=0.8, application/json;q=0.5
       </pre>
       <p>A compliant server may respond with the ActivityPub
       JSON-LD object in the body of the response:</p>
@@ -339,8 +339,7 @@
         server does not support ActivityPub, but does support
         content negotiation for another [[JSON]] format. Such a server
         returns a <code>200 OK</code> status code with a JSON
-        object that does not use JSON-LD, or JSON-LD object that
-        does not use the Activity Streams 2.0 vocabulary:</p>
+        object that does not use JSON-LD:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: application/json
@@ -350,6 +349,26 @@
             "otherProperty": "otherValue"
           }
         </pre>
+        <p>
+          Consumers can detect this condition by checking for a <code>@context</code> property or other common Activity Streams 2.0 properties like
+          <code>id</code> or <code>type</code>.
+        </p>
+        <p>Similarly, when the server supports JSON-LD but not Activity Streams 2.0:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: application/ld+json
+
+          {
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            "@id": "https://example.com/photos/sunset.jpg",
+            "name": "Sunset over the harbor"
+          }
+        </pre>
+        <p>
+          Consumers can detect this condition by checking the <code>@context</code> property for the Activity Streams 2.0 context URL, or checking for Activity Streams 2.0 types like
+          <code>Image</code> or <code>Person</code>.
+        </p>
       </section>
     </section>
     <section id="url-to-activitypub-link-header">
