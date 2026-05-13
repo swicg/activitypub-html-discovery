@@ -843,9 +843,8 @@
       the author of an HTML page. The <a href=
       "https://html.spec.whatwg.org/multipage/links.html#link-type-author">
       author</a> link type identifies the author of a resource. So,
-      a <code>Link</code> header with a <code>rel</code> property
-      equal to "author" and a <code>type</code> property equal to
-      "application/activity+json" will link to the ActivityPub
+      a publisher can use a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to
+      "application/activity+json" to indicate the ActivityPub
       representation of the author of the object.</p>
       <p>Actors in ActivityPub are sometimes referenced by an acct: URI using Webfinger. In this case, the <code>Link</code> header may not include a <code>type</code> property.</p>
       <p>This technique has the advantage of requiring a minimum
