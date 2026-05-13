@@ -848,6 +848,7 @@
       equal to "author" and a <code>type</code> property equal to
       "application/activity+json" will link to the ActivityPub
       representation of the author of the object.</p>
+      <p>Actors in ActivityPub are sometimes referenced by an acct: URI using Webfinger. In this case, the <code>Link</code> header may not include a <code>type</code> property.</p>
       <p>This technique has the advantage of requiring a minimum
       amount of data transfer and complicated parsing of data
       structures. It can also be used with different media types
@@ -875,6 +876,24 @@
         other represents the <code>Person</code> that authored the
         video. The <code>rel</code> value of "author" distinguishes
         the author link.</p>
+        <p>As an example with a Webfinger identifier for the author,
+          given an HTML page at
+        <code>https://html.example/files/event-229.html</code> that
+        represents an <code>Event</code> object, the consumer can
+        use an HTTP <code>HEAD</code> request to get HTTP status and headers for the object:</p>
+        <pre class="HTTP">
+          HEAD /files/event-229.html HTTP/1.1
+          Host: html.example
+        </pre>
+        <p>The publisher may respond with the HTTP headers:</p>
+        <pre class="HTTP">
+          HTTP/1.1 200 OK
+          Content-Type: text/html
+          Link: &lt;https://ap.example/api/event/event-229.jsonld&gt;; rel="alternate"; type="application/activity+json"
+          Link: &lt;acct:username@social.example&gt;; rel="author"
+        </pre>
+        <p>
+          Webfinger can then be used to discovery the ActivityPub id for the author.</p>
       </section>
       <section>
         <h5>Link header failure</h5>
@@ -904,6 +923,7 @@
       equal to "application/activity+json", its <code>href</code>
       property is the URL of the ActivityPub object representing
       the author.</p>
+      <p>Alternately, an ActivityPub actor could be referenced indirectly with a Webfinger identifier as an acct: URI, in which case the <code>type</code> property would be undefined.</p>
       <p>This technique is useful when the HTML page is already
       downloaded and available, such as within a browser
       environment.</p>
@@ -912,8 +932,8 @@
         <p>Given an HTML page at
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
-        consumer can use the following HTML to identify the URL of
-        the ActivityPub representation of the document:</p>
+        publisher can use the following HTML to indicate the URL of
+        the ActivityPub representation of the author of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -934,6 +954,26 @@
         <code>type</code> attribute set to
         "application/activity+json" is the author of the
         document.</p>
+        <p>For an acct: URI, an HTML page at
+        <code>https://html.example/files/image-55.html</code>
+        that represents an <code>Image</code> object, the
+        publisher can use the following HTML to indicate the acct: URI of
+        the author of the document:</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Image 55&lt;/title&gt;
+              &lt;link
+                rel="author"
+                href="acct:username12@social.example" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>A consumer could use Webfinger to discover the ActivityPub ID of the author from the acct: URI.</p>
       </section>
       <section>
         <h5>Link element failure</h5>
