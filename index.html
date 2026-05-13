@@ -122,7 +122,7 @@
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
       <section>
-        <h5>Link element failure</h5>
+        <h4>Link element failure</h4>
         <p>Some servers may include a <code>link</code> element
         with an <code>alternate</code> relation and with a JSON
         type or JSON-LD type that does not link to an ActivityPub
@@ -311,7 +311,7 @@
         Location: https://mixed.example/different/path/to/note-1.jsonld
       </pre>
       <section>
-        <h5>Content negotiation failure</h5>
+        <h4>Content negotiation failure</h4>
         <p>If the server does not support content negotiation, it
         may respond with a <code>406 Not Acceptable</code> status
         code.</p>
@@ -419,7 +419,7 @@
       ...
       </pre>
       <section>
-        <h5>Link header failure</h5>
+        <h4>Link header failure</h4>
         <p>Some servers may return the full body of the HTML
         document in response to a <code>HEAD</code> request,
         without including a <code>Link</code> header.</p>
@@ -514,7 +514,7 @@
       <p>It's possible for the HTML and JSON-LD representations of
       an object to be found at the same URL.</p>
       <section>
-        <h5>Examples</h5>
+        <h4>Examples</h4>
         <p>Given the URL for an ActivityPub object, such as
         <code>https://mixed.example/some/path/to/note-1</code>, a
         consumer could attempt to retrieve the corresponding HTML
@@ -546,7 +546,7 @@
         </pre>
       </section>
       <section>
-        <h5>Content negotiation failure</h5>
+        <h4>Content negotiation failure</h4>
         <p>If the server does not support content negotiation, it
         may respond with a <code>406 Not Acceptable</code> status
         code.</p>
@@ -587,7 +587,7 @@
       <code>url</code> property, for example, making it slightly
       easier for consumers.</p>
       <section>
-        <h5>Example</h5>
+        <h4>Example</h4>
         <p>Given an ActivityPub JSON-LD object at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
@@ -605,14 +605,14 @@
       </pre>
       </section>
       <section>
-        <h5>HTTP Link header failure</h5>
+        <h4>HTTP Link header failure</h4>
         <p>Some non-compliant HTTP servers will send the full body
         of the resource in the response to the <code>HEAD</code>
         request.</p>
       </section>
     </section>
     <section id="id-to-html-webfinger">
-      <h4>Webfinger</h4>
+      <h3>Webfinger</h3>
       <p>The Webfinger protocol can be used to find an HTML page
       related to an ActivityPub object in a number of ways.</p>
       <p>The consumer can identify the resource for a Webfinger
@@ -651,7 +651,7 @@
       is widely implemented by ActivityPub publishers to enable
       using <code>acct</code> URLs as identities.</p>
       <section>
-        <h5>Examples</h5>
+        <h4>Examples</h4>
         <p>Given an ActivityPub <code>Place</code> object at
         <code>https://ap.example/geo/place-7.jsonld</code>, a
         consumer could use a Webfinger query to find the HTML page
@@ -713,7 +713,7 @@
         <code>Person</code> object.</p>
       </section>
       <section>
-        <h5>Webfinger failure</h5>
+        <h4>Webfinger failure</h4>
         <p>Some servers may not return JRD documents for
         <code>https</code> URLs. Others might only return JRD
         documents for URLs that represent actors, such as
@@ -722,7 +722,7 @@
     </section>
   </section>
   <section id="activitypub-to-html">
-    <h3>ActivityPub object to HTML document</h3>
+    <h2>ActivityPub object to HTML document</h2>
     <p>These techniques require the ActivityPub JSON-LD document as
     the input for the process. The document can be obtained through
     delivery via the ActivityPub protocol, or through the
@@ -753,7 +753,7 @@
         objects.</li>
       </ul>
       <section>
-        <h5>Examples</h5>
+        <h4>Examples</h4>
         <p>In this example, the <code>url</code> property is only a
         string.</p>
         <pre class="HTTP">
@@ -808,7 +808,7 @@
         </pre>
       </section>
       <section>
-        <h5><code>url</code> property failure</h5>
+        <h4><code>url</code> property failure</h4>
         <p>When the <code>url</code> property is only a string, it
         may not represent an HTML page. Especially for objects with
         binary content types, like <code>Image</code>,
@@ -854,7 +854,7 @@
       structures. It can also be used with different media types
       than just HTML; for example, a JPEG image.</p>
       <section>
-        <h5>Example</h5>
+        <h4>Example</h4>
         <p>Given an HTML page at
         <code>https://html.example/files/video-33.html</code> that
         represents a <code>Video</code> object, the consumer can
@@ -896,7 +896,7 @@
           Webfinger can then be used to discovery the ActivityPub id for the author.</p>
       </section>
       <section>
-        <h5>Link header failure</h5>
+        <h4>Link header failure</h4>
         <p>Some non-compliant publishers will respond to a
         <code>HEAD</code> request with the full body of the HTML
         document.</p>
@@ -928,7 +928,7 @@
       downloaded and available, such as within a browser
       environment.</p>
       <section>
-        <h5>Example</h5>
+        <h4>Example</h4>
         <p>Given an HTML page at
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
@@ -976,7 +976,7 @@
         <p>A consumer could use Webfinger to discover the ActivityPub ID of the author from the acct: URI.</p>
       </section>
       <section>
-        <h5>Link element failure</h5>
+        <h4>Link element failure</h4>
         <p>Some servers may include a &lt;link&gt; element with an
         <code>author</code> relation and with a JSON type or
         JSON-LD type that does not link to an ActivityPub
@@ -984,7 +984,7 @@
       </section>
     </section>
     <section id="html-to-author-activitypub-opengraph">
-      <h4>OpenGraph Protocol</h4>
+      <h3>OpenGraph Protocol</h3>
       <p>The <a href="https://ogp.me/">OpenGraph Protocol</a> is a
       set of metadata properties that can be included in an HTML
       document to provide information about the document. Several
@@ -1024,7 +1024,7 @@
       <p>The advantage of using OGP for metadata is that it is
       widely implemented by Web publishing systems.</p>
       <section>
-        <h5>Example</h5>
+        <h4>Example</h4>
         <p>Given an HTML page at
         <code>https://html.example/files/article-40.html</code>
         that represents a <code>Article</code> object, the consumer
@@ -1070,7 +1070,7 @@
         the creator.</p>
       </section>
       <section>
-        <h5>OpenGraph Protocol failure</h5>
+        <h4>OpenGraph Protocol failure</h4>
         <p>The OpenGraph Protocol is not widely used for
         identifying authors of documents. When it is used, the
         profile page may not support discovery of an ActivityPub
@@ -1246,7 +1246,7 @@
           the ActivityPub JSON-LD representation's URL.</p>
         </section>
         <section>
-          <h4>Allowlist failure</h4>
+          <h5>Allowlist failure</h5>
           <p>Maintaining an allowlist is time-consuming. The number
           of domains with Web sites is in the hundreds of millions;
           identifying even a tiny fraction to be trusted takes a
