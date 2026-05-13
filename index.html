@@ -303,11 +303,11 @@
       Because this has historically been the case for many
       implementations, some consumers expect this behavior to be
       the default.</p>
-      <p>Alternately, the server may respond with a <code>308
-      Permanent Redirect</code> to indicate the location of the
+      <p>Alternately, the server may respond with a <code>303
+      See Other</code> to indicate the location of the
       JSON-LD representation.</p>
       <pre class="HTTP">
-        HTTP/1.1 308 Permanent Redirect
+        HTTP/1.1 303 See Other
         Location: https://mixed.example/different/path/to/note-1.jsonld
       </pre>
       <section>
@@ -518,11 +518,11 @@
           &lt;body&gt;
           &lt;p&gt;This is a note.&lt;/p&gt;
         </pre>
-        <p>Alternately, the server may respond with a <code>308
-        Permanent Redirect</code> to indicate the location of the
+        <p>Alternately, the server may respond with a <code>303
+        See Other</code> to indicate the location of the
         HTML representation.</p>
         <pre class="HTTP">
-          HTTP/1.1 308 Permanent Redirect
+          HTTP/1.1 303 See Other
           Location: https://mixed.example/different/path/to/note-1.html
         </pre>
       </section>
