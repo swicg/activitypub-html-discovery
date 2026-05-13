@@ -35,17 +35,17 @@
   </section>
   <section class="informative">
     <h2>Introduction</h2>
-    <p>ActivityPub is a standard for publishing structured social
-    network data on the Web in JSON-LD format and sharing that data
+    <p>[[ActivityPub]] is a standard for publishing structured social
+    network data on the Web in [[JSON-LD]] format and sharing that data
     from client to server and from server to server. This document
     describes several methods for discovering the ActivityPub
-    object described by an HTML page, and conversely the HTML page
+    object described by an [[HTML]] page, and conversely the HTML page
     for an ActivityPub object.</p>
     <p>Social data in the ActivityPub model is a "resource" like a
     person, image, or place. That resource has an ActivityPub
     JSON-LD representation (if it doesn't, it's not covered by this
     document!) and may have an HTML representation. The ActivityPub
-    representation and the HTML representations each have an URL --
+    representation and the HTML representations each have an [[URL]] --
     possibly the same URL.</p>
     <p>Some resources have a relationship to another resource,
     which is its author or creator. The author resource has an
@@ -66,7 +66,7 @@
     "https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>"
     and "<a href=
     "https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>"
-    are used as in Activity Streams 2.0 Core. The terms are
+    are used as in [[activitystreams-core]]. The terms are
     extended to include implementations that publish or consume
     HTML representations of resources with ActivityPub
     representations.</p>
@@ -87,7 +87,7 @@
     the browser window. A consumer with an HTML document may be
     able to extract the URL from the environment -- for example,
     using the <code>document.location</code> property in a
-    JavaScript environment. Using the document content for
+    [[JavaScript]] environment. Using the document content for
     discovery can return the ActivityPub equivalent without the
     HTTP requests that discovery by URL requires, saving some time
     and network traffic.</p>
@@ -181,7 +181,7 @@
       than with the <code>link</code> header. The <code>link</code>
       header is usually in the first few kilobytes of a document,
       and will usually be nested only 2 levels below the document
-      in the DOM tree. An <code>a</code> element may be anywhere in
+      in the [[DOM]] tree. An <code>a</code> element may be anywhere in
       the <code>body</code>, maybe nested very deep in the
       tree.</p>
       <section>
@@ -202,7 +202,7 @@
     <section id="html-to-activitypub-embedded-json-ld">
       <h3>Embedded JSON-LD</h3>
       <p>HTML documents can include <a href=
-      "https://www.w3.org/TR/json-ld11/">JSON-LD</a> data in a
+      "https://www.w3.org/TR/json-ld11/#embedding-json-ld-in-html-documents">JSON-LD</a> data in a
       <code>&lt;script&gt;</code> element in the
       <code>&lt;head&gt;</code> section of the document. This data
       can be used to provide metadata about the document, including
@@ -337,7 +337,7 @@
         </pre>
         <p>A more difficult failure mode to detect arises when the
         server does not support ActivityPub, but does support
-        content negotiation for another JSON format. Such a server
+        content negotiation for another [[JSON]] format. Such a server
         returns a <code>200 OK</code> status code with a JSON
         object that does not use JSON-LD, or JSON-LD object that
         does not use the Activity Streams 2.0 vocabulary:</p>
@@ -354,9 +354,8 @@
     </section>
     <section id="url-to-activitypub-link-header">
       <h3>HTTP Link header</h3>
-      <p>The <a href=
-      "https://datatracker.ietf.org/doc/html/rfc8288">HTTP Link
-      header</a> can be used to indicate an alternative
+      <p>The HTTP Link
+      header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
       to discover the ActivityPub JSON-LD object for an HTML
       page.</p>
@@ -417,10 +416,10 @@
     </section>
     <section id="url-to-activitypub-webfinger">
       <h3>Webfinger</h3>
-      <p><a href=
-      "https://datatracker.ietf.org/doc/html/rfc7033">Webfinger</a>
+      <p>Webfinger [[RFC7033]]
       is a standard for discovering metadata about a resource
-      identified with an URL. Finding the ActivityPub URL for an
+      identified with an URL, especially an acct: URI [[RFC7565]].
+      Finding the ActivityPub URL for an
       actor identified with an <code>acct:</code> URL is well
       documented in the <a href=
       "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/">
