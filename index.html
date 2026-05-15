@@ -981,6 +981,43 @@
         resource.</p>
       </section>
     </section>
+    <section id="html-to-author-activitypub-fediverse-creator">
+      <h3>fediverse:creator</h3>
+      <p>Another option is the <code>fediverse:creator</code>
+      meta tag, <a href=
+      "https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">
+      developed by Mastodon</a>. This tag is used to identify
+      the creator of a document. Its value is the Webfinger ID of
+      the creator, prefixed with an <code>@</code> character, not
+      an <code>acct:</code> URL. The consumer can use the Webfinger
+      protocol to find the ActivityPub object corresponding to the
+      creator.</p>
+      <section>
+        <h4>Example</h4>
+        <p>Given an HTML page at
+        <code>https://html.example/files/video-40.html</code> that
+        represents a <code>Video</code> object, the consumer can
+        use metadata to identify the Webfinger ID of the
+        creator of the video:</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Video 40&lt;/title&gt;
+              &lt;meta name="fediverse:creator" content="@person-22@ap.example" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>In this example, the <code>fediverse:creator</code>
+        property is the Webfinger ID of the creator of the video,
+        prefixed with the <code>@</code> symbol. The Webfinger ID
+        can be used to find the ActivityPub object corresponding to
+        the creator.</p>
+      </section>
+    </section>
     <section id="html-to-author-activitypub-opengraph">
       <h3>OpenGraph Protocol</h3>
       <p>The <a href="https://ogp.me/">OpenGraph Protocol</a> is a
@@ -1009,15 +1046,6 @@
       follow the property's URL value to an HTML page for the
       profile, and then use <a href="#html-to-activitypub">HTML to ActivityPub</a> discovery to find the ActivityPub object corresponding to
       that profile.</p>
-      <p>Another option is the <code>fediverse:creator</code>
-      property, <a href=
-      "https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">
-      developed by Mastodon</a>. This property is used to identify
-      the creator of a document. Its value is the Webfinger ID of
-      the creator, prefixed with an <code>@</code> character, not
-      an <code>acct:</code> URL. The consumer can use the Webfinger
-      protocol to find the ActivityPub object corresponding to the
-      creator.</p>
       <p>The advantage of using OGP for metadata is that it is
       widely implemented by Web publishing systems.</p>
       <section>
@@ -1041,30 +1069,8 @@
         </pre>
         <p>In this example, the <code>article:author</code>
         property is the author of the document. (Note that
-        OpenGraph Protocol uses the non-standard
+        OpenGraph Protocol uses the [[html-rdfa]]
         <code>property</code> attribute for metadata.)</p>
-        <p>Given an HTML page at
-        <code>https://html.example/files/video-40.html</code> that
-        represents a <code>Video</code> object, the consumer can
-        use OpenGraph metadata to identify the Webfinger ID of the
-        creator of the video:</p>
-        <pre class="HTML">
-          &lt;!doctype html&gt;
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;title&gt;Video 40&lt;/title&gt;
-              &lt;meta property="fediverse:creator" content="@person-22@ap.example" /&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;!-- rest of the page --&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
-        <p>In this example, the <code>fediverse:creator</code>
-        property is the Webfinger ID of the creator of the video,
-        prefixed with the <code>@</code> symbol. The Webfinger ID
-        can be used to find the ActivityPub object corresponding to
-        the creator.</p>
       </section>
       <section>
         <h4>OpenGraph Protocol failure</h4>
@@ -1525,7 +1531,7 @@
         differentiate between the two. Many ActivityPub
         single-server applications use this method, and some
         consumers will assume that it is used.</li>
-        <li><strong>OpenGraph</strong>. For identifying authors,
+        <li><strong>fediverse:creator</strong>. For identifying authors,
         use the <code>meta</code> element with name
         <code>fediverse:creator</code> and value set to the
         Webfinger of the author preceded by an "@" symbol.</li>
