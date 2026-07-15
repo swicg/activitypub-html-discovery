@@ -42,25 +42,25 @@
     object described by an [[HTML]] page, and conversely the HTML page
     for an ActivityPub object.</p>
     <p>Social data in the ActivityPub model is a "resource" like a
-    person, image, or place. That resource has an ActivityPub
+    person, image, or place. That resource has an Activity Streams 2.0
     JSON-LD representation (if it doesn't, it's not covered by this
-    document!) and may have an HTML representation. The ActivityPub
-    representation and the HTML representations each have an [[URL]] --
+    document!) and may have an HTML representation. The Activity Streams 2.0
+    representation and the HTML representation each have an [[URL]] --
     possibly the same URL.</p>
     <p>Some resources have a relationship to another resource,
     which is its author or creator. The author resource has an
-    ActivityPub JSON-LD representation (again, if it doesn't, it's
+    Activity Streams 2.0 representation (again, if it doesn't, it's
     not covered by this document!) and may have an HTML
     representation.</p>
-    <p>A resource may have an author resource with an ActivityPub
-    representation, but not have its own ActivityPub
+    <p>A resource may have an author resource with an Activity Streams 2.0
+    representation, but not have its own Activity Streams 2.0
     representation. An example is an article published in a
-    content-management system (CMS) that is ascribed to an actor
-    with an ActivityPub account who wants to receive credit and/or
-    feedback for the work.</p>
+    content-management system (CMS) that is attributed to an author
+    who wants to receive credit and/or feedback for the work
+    via a representative ActivityPub actor.</p>
     <p>Discovery, in this document, means starting with the URL or
-    content of one representation, and identifying another
-    representation. Each section of the document covers a different
+    content of one representation, and arriving at the URL or content of
+    another representation. Each section of the document covers a different
     starting data type, and a different goal.</p>
     <p>In this document, the terms "<a href=
     "https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>"
@@ -99,8 +99,8 @@
       <code>&lt;head&gt;</code> section of an HTML document. It
       provides links for the whole document, using a number of
       different link relations.</p>
-      <p>To indicate its equivalent ActivityPub object, the HTML
-      page at <code>https://html.example/watch/video-1.html</code>
+      <p>To indicate its equivalent Activity Streams 2.0 document, the HTML
+      document at <code>https://html.example/watch/video-1.html</code>
       could include the following link element:</p>
       <pre class="HTML">
         &lt;!doctype html&gt;
@@ -117,15 +117,18 @@
           &lt;/body&gt;
         &lt;/html&gt;
       </pre>
-      <p>Consumers need to parse the HTML to find the
+      <p>Consumers might parse the HTML to find the
       <code>link</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
+      <p>The ActivityPub object is the top-level JSON object of the
+      alternate representation, which is the Activity Streams 2.0 document.
+      </p>
       <section>
         <h4>Link element failure</h4>
-        <p>Some servers may include a <code>link</code> element
-        with an <code>alternate</code> relation and with a JSON
-        type or JSON-LD type that does not link to an ActivityPub
+        <p>Some publishers might include a <code>link</code> element
+        with an <code>alternate</code> relation and with a media type
+        that does not link to an ActivityPub
         resource.</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
@@ -136,6 +139,25 @@
                 rel="alternate"
                 type="application/json"
                 href="https://api.example/unrelated/videodescriptor.json" /&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+              &lt;!-- rest of the page --&gt;
+            &lt;/body&gt;
+          &lt;/html&gt;
+        </pre>
+        <p>Publishers might also include a <code>link</code> element
+        with an <code>alternate</code> relation and with an
+        ActivityPub-compatible media type, but the representation obtained
+        by fetching the target URL does not contain an ActivityPub object.</p>
+        <pre class="HTML">
+          &lt;!doctype html&gt;
+          &lt;html&gt;
+            &lt;head&gt;
+              &lt;title&gt;Video 1&lt;/title&gt;
+              &lt;link
+                rel="alternate"
+                type="application/activity+json"
+                href="https://not-ap.example/api/descriptors/video-1.jsonld" /&gt;
             &lt;/head&gt;
             &lt;body&gt;
               &lt;!-- rest of the page --&gt;
@@ -153,8 +175,8 @@
       be used to define relationships with other documents, with
       the benefit that the link is (usually) visible and clickable
       by a reader.</p>
-      <p>To indicate its equivalent ActivityPub object, the HTML
-      page at
+      <p>To indicate its equivalent Activity Streams 2.0 representation,
+      the HTML page at
       <code>https://html.example/profiles/person-1.html</code>
       could include the following <code>a</code> element:</p>
       <pre class="HTML">
@@ -174,7 +196,7 @@
           &lt;/body&gt;
         &lt;/html&gt;
       </pre>
-      <p>Consumers will need to parse the HTML to find the
+      <p>Consumers might parse the HTML to find the
       <code>a</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be even more slow and complicated
@@ -182,15 +204,22 @@
       header is usually in the first few kilobytes of a document,
       and will usually be nested only 2 levels below the document
       in the [[DOM]] tree. An <code>a</code> element may be anywhere in
-      the <code>body</code>, maybe nested very deep in the
+      the <code>body</code>, possibly nested very deeply in the
       tree.</p>
+      <p>The ActivityPub object is the top-level JSON object of the
+      alternate representation, which is the Activity Streams 2.0 document.
+      </p>
       <section>
         <h4>a element failure</h4>
-        <p>As with the <code>link</code> element, some servers may
+        <p>As with the <code>link</code> element, some publishers might
         include an <code>a</code> element with an
-        <code>alternate</code> relation and with a JSON type or
-        JSON-LD type that does not link to an ActivityPub
+        <code>alternate</code> relation and with a media type
+        that does not link to an ActivityPub
         resource.</p>
+        <p>Alternatively, publishers might include an <code>a</code> element
+        with an <code>alternate</code> relation and with an
+        ActivityPub-compatible media type, but the representation obtained
+        by fetching the target URL does not contain an ActivityPub object.</p>
         <p>In addition, many content management systems allow end
         users to set <code>rel</code> and other properties on
         <code>a</code> elements, which may result in false matches.
@@ -206,7 +235,7 @@
       <code>&lt;script&gt;</code> element in the
       <code>&lt;head&gt;</code> section of the document. This data
       can be used to provide metadata about the document, including
-      its equivalent ActivityPub object.</p>
+      an associated ActivityPub object.</p>
       <p>Given a page that shows an image at
       <code>https://html.example/gallery/image-17.html</code>, the
       HTML for the page could look like this:</p>
@@ -238,13 +267,13 @@
           &lt;/body&gt;
         &lt;/html&gt;
       </pre>
-      <p>This embedded JSON-LD specifies that an ActivityPub object
+      <p>This embedded JSON-LD claims that an ActivityPub object
       with the ID
       <code>https://ap.example/api/images/image-17.jsonld</code>
-      exists, and that it has an HTML page <code>url</code> at
-      <code>https://html.example/gallery/image-17.html</code>, that
-      is, the current page's URL. This is a roundabout, but clear,
-      way to specify the ActivityPub ID of the current page.</p>
+      exists, and that it is represented by an <code>url</code> that is a <code>Link</code> whose media type is <code>text/html</code> and whose location is
+      <code>https://html.example/gallery/image-17.html</code>, which
+      can be compared to the current page's URL. This is a roundabout, but clear,
+      way to specify the ActivityPub ID of an object on the current page.</p>
       <p>Consumers need to parse the HTML page, and the embedded
       JSON-LD, to extract the ActivityPub object ID. An advantage
       to this technique is that other properties of the ActivityPub
@@ -275,21 +304,21 @@
       "https://en.wikipedia.org/wiki/Content_negotiation">Content
       negotiation</a> is a catch-all term for ways of negotiating
       the representation of a resource through the HTTP protocol.
-      In this document, it will specifically cover <a href=
+      In this document, it specifically covers <a href=
       "https://datatracker.ietf.org/doc/html/rfc9110#name-proactive-negotiation">
       proactive negotiation</a> using the <a href=
       "https://datatracker.ietf.org/doc/html/rfc9110#field.accept">
       Accept</a> header.</p>
       <p>Given the URL <code>https://mixed.example/some/path/to/note-1</code>, a
-      consumer could attempt to retrieve the
-      ActivityPub JSON-LD object using this HTTP request:</p>
+      consumer could attempt to retrieve an
+      Activity Streams 2.0 representation using this HTTP request:</p>
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
         Accept: application/activity+json;q=1.0, application/ld+json;q=0.8, application/json;q=0.5
       </pre>
-      <p>A compliant server may respond with the ActivityPub
-      JSON-LD object in the body of the response:</p>
+      <p>A compliant server may respond with the Activity Streams 2.0 document
+      in the body content of the response:</p>
       <pre class="HTTP">
         HTTP/1.1 200 OK
         Content-Type: application/activity+json
@@ -297,7 +326,7 @@
         {
           "@context": "https://www.w3.org/ns/activitystreams",
           "id": "https://mixed.example/some/path/to/note-1",
-          "type": "Article",
+          "type": "Note",
           "content": "This is a note."
         }
       </pre>
@@ -307,8 +336,7 @@
       implementations, some consumers expect this behavior to be
       the default.</p>
       <p>Alternately, the server may respond with a <code>303
-      See Other</code> to indicate the location of the
-      JSON-LD representation.</p>
+      See Other</code> to indicate the location of a information resource containing information about the logical resource (which might not be possible to represent directly over HTTP).</p>
       <pre class="HTTP">
         HTTP/1.1 303 See Other
         Location: https://mixed.example/different/path/to/note-1.jsonld
@@ -379,9 +407,8 @@
       <p>The HTTP Link
       header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
-      to discover the ActivityPub JSON-LD object for an HTML
-      page.</p>
-      <p>Given the URL for an HTML document, such as
+      to discover an Activity Streams 2.0 document which contains an alternate representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
+      <p>Given a URL whose default HTTP representation has HTML content, such as
       <code>https://html.example/user/test1/article-1</code>, the
       consumer can use an HTTP <code>HEAD</code> request to get the
       headers for the resource, which will hopefully include the
@@ -396,9 +423,9 @@
       HTTP/1.1 200 OK
       Link: &lt;https://ap.example/api/articles/article-1.jsonld&gt;; rel="alternate"; type="application/activity+json"
       </pre>
-      <p>The link header with the <code>alternate</code> relation
+      <p>The Link header with the <code>alternate</code> relation
       type, and an ActivityPub-compatible media type, indicates
-      that the ActivityPub JSON-LD object is available at the
+      that the information is available in an alternate format at the
       linked URL.</p>
       <p>This can be a very efficient method of discovery, since
       the consumer does not need to download the entire HTML
@@ -437,27 +464,27 @@
       </section>
     </section>
     <section id="url-to-activitypub-webfinger">
-      <h3>Webfinger</h3>
-      <p>Webfinger [[RFC7033]]
+      <h3>WebFinger</h3>
+      <p>WebFinger [[RFC7033]]
       is a standard for discovering metadata about a resource
       identified with an URL, especially an acct: URI [[RFC7565]].
       Finding the ActivityPub URL for an
-      actor identified with an <code>acct:</code> URL is well
-      documented in the <a href=
+      actor identified with an <code>acct:</code> URI is
+      described in the <a href=
       "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/">
-      ActivityPub and Webfinger</a> report. However, Webfinger can
+      ActivityPub and WebFinger</a> report. However, WebFinger can
       be used to find metadata about other resources, including
       HTML pages with <code>https:</code> URLs.</p>
       <p>Given an URL for a document, like
       <code>https://html.example/group-1.html</code>, a GET request
-      can be made to an URL in the <code>/.well-known/</code> path
+      can be made to a WebFinger endpoint URL in the <code>/.well-known/</code> path
       of the domain for the URL, as follows:</p>
       <pre class="HTTP">
         GET /.well-known/webfinger?resource=https%3A%2F%2Fhtml.example%2Fgroup-1.html HTTP/1.1
         Host: html.example
       </pre>
-      <p>Note that the <code>/.well-known/webfinger</code> path is
-      fixed and required for Webfinger.</p>
+      <p>Note that, unlike other URLs used in the examples in this report, the <code>/.well-known/webfinger</code> path is
+      fixed and required for WebFinger by [[RFC7033]].</p>
       <p>A compliant server will respond with the metadata for the
       resource:</p>
       <pre class="HTTP">
@@ -475,38 +502,35 @@
           ]
         }
       </pre>
-      <p>Note that unlike other URLs used in the examples in this
-      report, the <code>/.well-known/webfinger</code> path is fixed
-      and required for Webfinger.</p>
       <p>The JRD JSON format includes <a href=
       "https://datatracker.ietf.org/doc/html/rfc7033#section-4.4">a
-      number of properties</a>, as defined in the Webfinger RFC
-      7033. The relevant data structure in this example is the
+      number of properties</a>, as defined in [[[RFC7033]]].
+      The relevant data structure in this example is the
       object in the <code>links</code> array with the
       <code>rel</code> property set to <code>alternate</code> and
       the <code>type</code> property set to
       <code>application/activity+json</code>, an
       ActivityPub-compatible media type. The <code>href</code>
-      property of this link is URL of the ActivityPub equivalent
+      property of this link is URL of the Activity Streams 2.0 equivalent document
       for the HTML page.</p>
       <section>
-        <h4>Webfinger failure</h4>
-        <p>Not all Webfinger-aware servers return JRD documents for
+        <h4>WebFinger failure</h4>
+        <p>Not all WebFinger-aware servers return JRD documents for
         <code>https</code> URLs. Others might only return JRD
         documents for URLs that represent actors, such as
         registered users.</p>
         <p>As with other link-relation-based discovery mechanisms,
         like the HTTP Link header or the &lt;link&gt; element, a
-        JSON or JSON-LD media in the link's <code>type</code>
-        property might not indicate an ActivityPub URL, but some
+        JSON or JSON-LD media type in the link's <code>type</code>
+        property might not contain an ActivityPub object, but some
         other JSON or JSON-LD object.</p>
       </section>
     </section>
   </section>
   <section id="id-to-html">
     <h2>ActivityPub ID to HTML Document</h2>
-    <p>These techniques require the ActivityPub object's URL as
-    input. Often, the object's URL is obtained either as a property
+    <p>These techniques require the ActivityPub object's ID as
+    input. Often, the object's ID is obtained either as a <code>"@type": "@id"</code> property
     of another ActivityPub object, or from the <code>id</code>
     property of the ActivityPub JSON-LD document.</p>
     <p>If these techniques aren't successful, the consumer can use
@@ -528,7 +552,7 @@
           Accept: text/html
         </pre>
         <p>A compliant server may respond with the HTML document in
-        the body of the response:</p>
+        the body content of the response:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: text/html
@@ -575,23 +599,22 @@
         </pre>
       </section>
     </section>
-    <section id="id-to-html-link-header">
+    <section id="id-to-http-link-header">
       <h3>HTTP Link header</h3>
       <p>It is possible to use the <code>Link</code> header to
-      identify an HTML page related to a given ActivityPub JSON-LD
-      resource. A <code>Link</code> header with the
+      identify an HTML page related to a given Activity Streams 2.0 document. A <code>Link</code> header with the
       <code>alternate</code> link relation and a <code>type</code>
       equal to <code>text/html</code> indicates an HTML page
-      representing the same object.</p>
+      representing the same resource in an alternate format.</p>
       <p>The advantage of this technique is that it does not
       require downloading and parsing the JSON-LD content of the
-      ActivityPub object. The <code>Link</code> header has fewer
+      Activity Streams 2.0 document. The <code>Link</code> header has fewer
       options for formatting than other methods such as the
       <code>url</code> property, for example, making it slightly
       easier for consumers.</p>
       <section>
         <h4>Example</h4>
-        <p>Given an ActivityPub JSON-LD object at
+        <p>Given an Activity Streams 2.0 document at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
         get the relevant headers for the resource:</p>
@@ -615,42 +638,41 @@
       </section>
     </section>
     <section id="id-to-html-webfinger">
-      <h3>Webfinger</h3>
-      <p>The Webfinger protocol can be used to find an HTML page
+      <h3>WebFinger</h3>
+      <p>The WebFinger protocol can be used to find an HTML page
       related to an ActivityPub object in a number of ways.</p>
-      <p>The consumer can identify the resource for a Webfinger
+      <p>The consumer can identify the resource for a WebFinger
       query in two ways. First, the <code>id</code> property,
       usually an <code>https</code> URL, can be passed as the
-      <code>resource</code> parameter for the Webfinger query.
+      <code>resource</code> parameter for the WebFinger query.
       Alternately, if the ActivityPub object is an <a href=
       "https://www.w3.org/TR/activitypub/#actors">actor</a>, an
-      <code>acct</code> URL in the format
+      <code>acct</code> URI in the format
       <code>acct:username@domain.example</code> can be constructed
       using the technique for <a href=
       "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">
-      Webfinger reverse discovery</a>. This <code>acct</code> URL
+      WebFinger reverse discovery</a>. This <code>acct</code> URI
       can be used as the <code>resource</code> parameter for the
       Webfinger query.</p>
       <p>The publisher can provide a link to the HTML
       representation of the object in the JRD output of the
-      Webfinger query in at least two ways.</p>
+      WebFinger query in at least two ways.</p>
       <p>First, the <code>links</code> property of the output
       object can contain a link object with a <code>rel</code>
       property set to <code>alternate</code> and the
       <code>type</code> property set to <code>text/html</code>. If
       such a link exists, its <code>href</code> property is the URL
       of the related HTML page.</p>
-      <p>Second, the <code>links</code> property of the JRD output
-      object may include an object with a <code>rel</code> property
+      <p>Second, the <code>links</code> property of the JRD document may include a link object with a <code>rel</code> property
       set to <code>http://webfinger.net/rel/profile-page</code>.
       This is defined to be "the main home/profile page that a
       human should visit when getting info about that webfinger
-      account." (<a href=
-      "https://webfinger.net/rel/">https://webfinger.net/rel/</a>)
+      account" (<a href=
+      "https://webfinger.net/rel/">https://webfinger.net/rel/</a>).
       It is not guaranteed to be HTML, but a <code>type</code>
       property can further define that. Per the definition, "it's
       likely text/html if it's for users."</p>
-      <p>An advantage of using Webfinger for discovery is that it
+      <p>An advantage of using WebFinger for discovery is that it
       is widely implemented by ActivityPub publishers to enable
       using <code>acct</code> URLs as identities.</p>
       <section>
@@ -664,7 +686,7 @@
           Host: ap.example
         </pre>
         <p>Note that the <code>/.well-known/webfinger</code> path
-        is fixed and required for Webfinger.</p>
+        is fixed and required for WebFinger.</p>
         <p>The publisher could return the following JRD output:</p>
         <pre class="JSON">
           {
@@ -679,24 +701,26 @@
           }
         </pre>
         <p>In this example, the <code>links</code> property of the
-        JRD object contains a single object with a <code>rel</code>
+        JRD document contains a single link object with a <code>rel</code>
         property set to <code>alternate</code> and a
         <code>type</code> property set to <code>text/html</code>.
         The <code>href</code> property of this object is the URL of
         the HTML page representing the object.</p>
         <p>Alternately, given an ActivityPub <code>Person</code>
         object at
-        <code>https://ap.example/profiles/person-19.jsonld</code>,
+        <code>https://ap.example/profiles/person-19.jsonld</code> whose <code>preferredUsername</code> is <code>person-19</code>,
         the consumer could construct an <code>acct</code> URL as
-        <code>acct:person-19@ap.example</code> and use it as the
-        <code>resource</code> parameter for the Webfinger
+        <code>acct:person-19@ap.example</code> using the technique for <a href=
+      "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">
+      WebFinger reverse discovery</a> and use it as the
+        <code>resource</code> parameter for the WebFinger
         query:</p>
         <pre class="HTTP">
           GET /.well-known/webfinger?resource=acct%3Aperson-19%40ap.example HTTP/1.1
           Host: ap.example
         </pre>
         <p>Note that the <code>/.well-known/webfinger</code> path
-        is fixed and required for Webfinger discovery.</p>
+        is fixed and required for WebFinger discovery.</p>
         <p>The publisher could return the following JRD output:</p>
         <pre class="JSON">
           {
@@ -716,7 +740,7 @@
         <code>Person</code> object.</p>
       </section>
       <section>
-        <h4>Webfinger failure</h4>
+        <h4>WebFinger failure</h4>
         <p>Some servers may not return JRD documents for
         <code>https</code> URLs. Others might only return JRD
         documents for URLs that represent actors, such as
@@ -726,7 +750,7 @@
   </section>
   <section id="activitypub-to-html">
     <h2>ActivityPub object to HTML document</h2>
-    <p>These techniques require the ActivityPub JSON-LD document as
+    <p>These techniques require the Activity Streams 2.0 document containing the ActivityPub object as
     the input for the process. The document can be obtained through
     delivery via the ActivityPub protocol, or through the
     ActivityPub API, or by other means.</p>
@@ -738,8 +762,8 @@
       <h3><code>url</code> property</h3>
       <p>ActivityPub objects can have an optional <code>url</code>
       property, which "[i]dentifies one or more links to
-      representations of the object." The property is the preferred
-      way to indicate a corresponding HTML page for an ActivityPub
+      representations of the object." The <code>url</code> property is the preferred
+      way to indicate an HTML page representing an ActivityPub
       object.</p>
       <p>As with many Activity Vocabulary properties, this can have
       several formats:</p>
@@ -846,11 +870,11 @@
       <p>The <code>Link</code> header can also be used to identify
       the author of an HTML page. The <a href=
       "https://html.spec.whatwg.org/multipage/links.html#link-type-author">
-      author</a> link type identifies the author of a resource. So,
+      author</a> link relation identifies the author of a resource. So,
       a publisher can use a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to
-      "application/activity+json" to indicate the ActivityPub
+      an ActivityPub-compatible media type to indicate the ActivityPub
       representation of the author of the object.</p>
-      <p>Actors in ActivityPub are sometimes referenced by an acct: URI using Webfinger. In this case, the <code>Link</code> header may not include a <code>type</code> property.</p>
+      <p>Actors in ActivityPub are sometimes referenced by an acct: URI using WebFinger. In this case, the <code>Link</code> header may not include a <code>type</code> property. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       <p>This technique has the advantage of requiring a minimum
       amount of data transfer and complicated parsing of data
       structures. It can also be used with different media types
@@ -860,8 +884,8 @@
         <p>Given an HTML page at
         <code>https://html.example/files/video-33.html</code> that
         represents a <code>Video</code> object, the consumer can
-        use an HTTP <code>HEAD</code> request to identify the URL
-        of the ActivityPub video:</p>
+        use an HTTP <code>HEAD</code> request to obtain information about
+        the ActivityPub video's corresponding HTTP resource:</p>
         <pre class="HTTP">
           HEAD /files/video-33.html HTTP/1.1
           Host: html.example
@@ -874,11 +898,11 @@
           Link: &lt;https://ap.example/profiles/person-7.jsonld&gt;; rel="author"; type="application/activity+json"
         </pre>
         <p>Note that there are two <code>Link</code> headers in the
-        result; one represents the <code>Video</code>, and the
+        result; one represents information about the <code>Video</code> in an alternate format, and the
         other represents the <code>Person</code> that authored the
         video. The <code>rel</code> value of "author" distinguishes
         the author link.</p>
-        <p>As an example with a Webfinger identifier for the author,
+        <p>As an example with an acct: URI for the author,
           given an HTML page at
         <code>https://html.example/files/event-229.html</code> that
         represents an <code>Event</code> object, the consumer can
@@ -895,7 +919,7 @@
           Link: &lt;acct:username@social.example&gt;; rel="author"
         </pre>
         <p>
-          Webfinger can then be used to discovery the ActivityPub id for the author.</p>
+          The acct: URI may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the ActivityPub resource for the author.</p>
       </section>
       <section>
         <h4>Link header failure</h4>
@@ -922,10 +946,10 @@
       &lt;link&gt; element. As with the HTTP <code>Link</code>
       header, if a &lt;link&gt; element has a <code>rel</code>
       attribute equal to "author" and a <code>type</code> attribute
-      equal to "application/activity+json", its <code>href</code>
-      property is the URL of the ActivityPub object representing
+      equal to an ActivityPub-compatible media type, its <code>href</code>
+      property can be the URL of the ActivityPub object representing
       the author.</p>
-      <p>Alternately, an ActivityPub actor could be referenced indirectly with a Webfinger identifier as an acct: URI, in which case the <code>type</code> property would be undefined.</p>
+      <p>Alternately, an ActivityPub actor could be referenced indirectly with an acct: URI which may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a>, in which case the <code>type</code> property would be undefined.</p>
       <p>This technique is useful when the HTML page is already
       downloaded and available, such as within a browser
       environment.</p>
@@ -935,7 +959,7 @@
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
         publisher can use the following HTML to indicate the URL of
-        the ActivityPub representation of the author of the document:</p>
+        the Activity Streams 2.0 representation of the author of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -975,7 +999,7 @@
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
-        <p>A consumer could use Webfinger to discover the ActivityPub ID of the author from the acct: URI.</p>
+        <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI.</p>
       </section>
       <section>
         <h4>Link element failure</h4>
@@ -991,17 +1015,16 @@
       meta tag, <a href=
       "https://blog.joinmastodon.org/2024/07/highlighting-journalism-on-mastodon/">
       developed by Mastodon</a>. This tag is used to identify
-      the creator of a document. Its value is the Webfinger ID of
+      a document creator's Fediverse profile. Its value is the Fediverse handle of
       the creator, prefixed with an <code>@</code> character, not
-      an <code>acct:</code> URL. The consumer can use the Webfinger
-      protocol to find the ActivityPub object corresponding to the
+      an <code>acct:</code> URL. The consumer can try using <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially find the ActivityPub object corresponding to the
       creator.</p>
       <section>
         <h4>Example</h4>
         <p>Given an HTML page at
         <code>https://html.example/files/video-40.html</code> that
         represents a <code>Video</code> object, the consumer can
-        use metadata to identify the Webfinger ID of the
+        use metadata to identify the Fediverse handle of the
         creator of the video:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
@@ -1016,8 +1039,8 @@
           &lt;/html&gt;
         </pre>
         <p>In this example, the <code>fediverse:creator</code>
-        property is the Webfinger ID of the creator of the video,
-        prefixed with the <code>@</code> symbol. The Webfinger ID
+        property is the Fediverse handle of the creator of the video,
+        prefixed with the <code>@</code> symbol. The Fediverse handle
         can be used to find the ActivityPub object corresponding to
         the creator.</p>
       </section>
@@ -1074,7 +1097,7 @@
         <p>In this example, the <code>article:author</code>
         property is the author of the document. (Note that
         OpenGraph Protocol uses the [[html-rdfa]]
-        <code>property</code> attribute for metadata.)</p>
+        <code>property</code> attribute for metadata, not the <code>name</code> property from HTML.)</p>
       </section>
       <section>
         <h4>OpenGraph Protocol failure</h4>
@@ -1087,20 +1110,21 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
-    <p>Publishers of HTML representations and ActivityPub
-    representations include data or metadata to help with discovery
+    <p>Publishers of HTML and/or Activity Streams 2.0
+    representations of ActivityPub objects
+    include data or metadata to help with discovery
     of related representations or resources. This data is a
     <em>claim</em> that the linked resource really has the
     relationship stated.</p>
-    <p>Unfortunately, not all claims are true. Consumers need to
+    <p>Unfortunately, not all claims are true. If the claim is not trusted, consumers need to
     verify the claims made by publishers, using the verification
     techniques described here. Some techniques are direct and can
     be used with confidence; others are heuristics that provide
     some level of support to the claims, but are not foolproof.</p>
     <section>
       <h3>Representation verification</h3>
-      <p>Verification is a process of confirming that an HTML page
-      and an ActivityPub object represent the same resource. This
+      <p>Verification is a process of confirming that an HTML document
+      and an Activity Streams 2.0 document represent the same resource. This
       is necessary to ensure that the publisher of one
       representation is not falsely connecting two unrelated
       resources.</p>
@@ -1117,7 +1141,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://html.example/downloads/image-14.html</code>,
-          the consumer could discover the ActivityPub JSON-LD URL
+          the consumer could discover the Activity Streams 2.0 representation's URL
           using the <code>Link</code> header method:</p>
           <pre class="HTTP">
             HEAD /downloads/image-14.html HTTP/1.1
@@ -1129,11 +1153,11 @@
             Content-Type: text/html
             Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
           </pre>
-          <p>Then, the consumer could fetch the ActivityPub object
+          <p>Then, the consumer could fetch the Activity Streams 2.0 document
           at
           <code>https://ap.example/api/images/image-14.jsonld</code>
           and look for the URL of the HTML page in the
-          <code>url</code> property:</p>
+          <code>url</code> property of the ActivityPub object:</p>
           <pre class="JSON">
             {
               "@context": "https://www.w3.org/ns/activitystreams",
@@ -1167,8 +1191,7 @@
         of the original representation's URL and the discovered
         representation's URL. The origin is the combination of the
         scheme, host, and port of a URL. If the origins are the
-        same, the publisher of both the HTML and the ActivityPub
-        JSON-LD is probably the same, so the discovery results are
+        same, the publisher of both the HTML document and the Activity Streams 2.0 document is probably the same, so the discovery results are
         probably reliable.</p>
         <p>Content negotiation without a redirect will always have
         the same origin, as the URL of the HTML page and the URL of
@@ -1177,7 +1200,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://mixed.example/profiles/person-3</code>, the
-          consumer could discover the ActivityPub JSON-LD URL using
+          consumer could discover the alternate Activity Streams 2.0 representation using
           the &lt;link&gt; element method:</p>
           <pre class="HTML">
             &lt;link
@@ -1186,8 +1209,7 @@
               href="https://mixed.example/api/person/person-3" /&gt;
           </pre>
           <p>The <code>href</code> property of the &lt;link&gt;
-          element is the URL of the ActivityPub JSON-LD
-          representation. The origin of the URL of the HTML page is
+          element is the URL of the Activity Streams 2.0 document. The origin of the URL of the HTML page is
           <code>https://mixed.example</code>, and the origin of the
           URL of the ActivityPub JSON-LD representation is
           <code>https://mixed.example</code>, so the origins match
@@ -1209,8 +1231,8 @@
           HTML page to an ActivityPub object created by
           another.</p>
           <p>Same origin verification will give a false negative if
-          the publisher is using different domains for HTML pages
-          and ActivityPub JSON-LD objects. This can happen if
+          the publisher is using different domains for HTML documents
+          and Activity Streams 2.0 documents. This can happen if
           ActivityPub features are added on to an existing
           published Web site, or if the publisher needs to keep the
           domains separate for implementation reasons. If same
@@ -1233,7 +1255,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://html.example/profiles/person-3</code>, the
-          consumer could discover the ActivityPub JSON-LD URL using
+          consumer could discover an ActivityPub object ID using
           the Embedded JSON-LD method:</p>
           <pre class="HTML">
             &lt;script type="application/ld+json"&gt;
@@ -1293,7 +1315,7 @@
           the author of the resource represented by the HTML
           document at
           <code>https://html.example/blog/article-9.html</code>.
-          The consumer retrieves the ActivityPub JSON-LD for the
+          The consumer retrieves the ActivityPub object for the
           person:</p>
           <pre class="json">
           {
@@ -1379,7 +1401,7 @@
           <p>Some authors may not include a <code>Create</code>
           activity for every object they create on the Web. They
           may use an author discovery process to identify the
-          author, but not include the object in the ActivityPub
+          author, but not include the object in the Activity Streams 2.0
           representation.</p>
         </section>
       </section>
@@ -1397,7 +1419,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://mixed.example/profiles/person-3.html</code>,
-          the consumer could discover the ActivityPub JSON-LD URL
+          the consumer could discover an ActivityPub object
           using the Embedded JSON-LD method with the value
           <code>https://mixed.example/api/person-3.jsonld</code>.
           Because both URLs have the origin
@@ -1448,7 +1470,7 @@
     methods.</p>
     <section>
       <h3>Publishing ActivityPub JSON-LD</h3>
-      <p>When publishing an Activity Streams 2.0 JSON-LD object for
+      <p>When publishing an Activity Streams 2.0 document for
       ActivityPub, publishers should consider these best
       practices.</p>
       <ul>
@@ -1476,13 +1498,13 @@
         type, since there's not a clear algorithm for choosing
         between them.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and ActivityPub representations on the
+        implement both HTML and Activity Streams 2.0 representations on the
         same server should strongly consider giving them the same
         route and using content negotiation to navigate between
         them. Many ActivityPub implementations follow this pattern,
         and older or simpler consumers will assume that content
         negotiation is supported.</li>
-        <li><strong>Webfinger</strong>. Implement Webfinger
+        <li><strong>WebFinger</strong>. Implement WebFinger
         discovery at least for <code>https:</code> URLs for actor
         objects, and preferably for all objects. Include members of
         the <code>links</code> array both for the "alternate"
@@ -1529,7 +1551,7 @@
         <code>Link</code> headers with the same <code>rel</code>
         and <code>type</code> values.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and ActivityPub representations on the
+        implement both HTML and Activity Streams 2.0 representations on the
         same domain should strongly consider using the same route
         for both representations, and using content negotiation to
         differentiate between the two. Many ActivityPub
@@ -1541,7 +1563,7 @@
         Webfinger of the author preceded by an "@" symbol.</li>
         <li><strong>Embedded JSON-LD</strong>. This technique
         allows consumers not only to identify the URL for the
-        ActivityPub representation, but to retrieve the full body
+        ActivityPub object, but to retrieve the full body
         of the object, without an additional HTTP request.</li>
       </ul>
     </section>
@@ -1630,11 +1652,11 @@
         are three default domain names used:
         <ul>
           <li><code>ap.example</code> - A server that primarily
-          provides ActivityPub JSON-LD documents.</li>
+          provides Activity Streams 2.0 documents containing ActivityPub objects.</li>
           <li><code>html.example</code> - A server that primarily
           provides HTML documents.</li>
           <li><code>mixed.example</code> - A server that provides
-          both ActivityPub JSON-LD and HTML documents.</li>
+          both Activity Streams 2.0 and HTML documents.</li>
           <li><code>media.example</code> - A server that provides
           primarily binary files, such as images, video, or audio.</li>
         </ul>Other names may be used when additional examples are
@@ -1715,7 +1737,7 @@
       <li>12 Jun 2025: Shorten introduction. Move use cases, URL formats, and relevant resource types to appendices. Remove redundant best practices for consumers. Other readability improvements.</li>
       <li>13 May 2026: Add references. Change HTTP status code from 308 to 303. Improve Accept: header to include q-values. Add discovery of acct: URIs for authors. Correct nesting level of headers. Update RFC 7231 references to RFC 9110.</li>
       <li>15 May 2026: Move fediverse:creator to its own section.</li>
-      <li>15 July 2026: Add binary file representation for image in embedded JSON.</li>
+      <li>15 July 2026: Add binary file representation for image in embedded JSON. Clarified ambiguity between Activity Streams 2.0 documents and ActivityPub objects.</li>
     </ul>
   </section>
 </body>
