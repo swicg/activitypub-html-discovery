@@ -220,11 +220,15 @@
               "@context": "https://www.w3.org/ns/activitystreams",
               "type": "Image",
               "id": "https://ap.example/api/images/image-17.jsonld",
-              "url": {
+              "url": [{
                 "type": "Link",
                 "mediaType": "text/html",
                 "href": "https://html.example/gallery/image-17.html"
-              }
+              }, {
+                "type": "Link",
+                "mediaType": "image/png",
+                "href": "https://media.example/files/image-17.png"
+              }]
             }
             &lt;/script&gt;
           &lt;/head&gt;
@@ -1631,6 +1635,8 @@
           provides HTML documents.</li>
           <li><code>mixed.example</code> - A server that provides
           both ActivityPub JSON-LD and HTML documents.</li>
+          <li><code>media.example</code> - A server that provides
+          primarily binary files, such as images, video, or audio.</li>
         </ul>Other names may be used when additional examples are
         required.
       </li>
@@ -1709,6 +1715,7 @@
       <li>12 Jun 2025: Shorten introduction. Move use cases, URL formats, and relevant resource types to appendices. Remove redundant best practices for consumers. Other readability improvements.</li>
       <li>13 May 2026: Add references. Change HTTP status code from 308 to 303. Improve Accept: header to include q-values. Add discovery of acct: URIs for authors. Correct nesting level of headers. Update RFC 7231 references to RFC 9110.</li>
       <li>15 May 2026: Move fediverse:creator to its own section.</li>
+      <li>15 July 2026: Add binary file representation for image in embedded JSON.</li>
     </ul>
   </section>
 </body>
