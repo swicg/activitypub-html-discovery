@@ -457,6 +457,9 @@
         &lt;head&gt;
         ...
         </pre>
+        <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
+        property might not contain an ActivityPub object, but some
+        other JSON or JSON-LD object.</p>
       </section>
     </section>
     <section id="url-to-activitypub-webfinger">
@@ -930,6 +933,9 @@
         <p>Some non-compliant publishers will respond to a
         <code>HEAD</code> request with the full body of the HTML
         document.</p>
+        <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
+        property might not contain an ActivityPub object, but some
+        other JSON or JSON-LD object.</p>
       </section>
     </section>
   </section>
@@ -1011,6 +1017,9 @@
         <code>author</code> relation and with a JSON type or
         JSON-LD type that does not link to an ActivityPub
         resource.</p>
+        <p>A link element with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the element's <code>type</code>
+        property might not refer to an ActivityPub object, but some
+        other JSON or JSON-LD object.</p>
       </section>
     </section>
     <section id="html-to-author-activitypub-fediverse-creator">
