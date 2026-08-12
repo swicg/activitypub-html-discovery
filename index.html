@@ -376,11 +376,7 @@
             "otherProperty": "otherValue"
           }
         </pre>
-        <p>
-          Consumers can detect this condition by checking for a <code>@context</code> property or other common ActivityPub object properties like
-          <code>id</code> or <code>type</code>.
-        </p>
-        <p>Similarly, when the server supports JSON-LD but not ActivityPub object:</p>
+        <p>Similarly, when the server supports JSON-LD but does not return an ActivityPub object:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: application/ld+json
@@ -392,10 +388,6 @@
             "name": "Sunset over the harbor"
           }
         </pre>
-        <p>
-          Consumers can detect this condition by checking the <code>@context</code> property for the ActivityPub object context URL, or checking for ActivityPub object types like
-          <code>Image</code> or <code>Person</code>.
-        </p>
       </section>
     </section>
     <section id="url-to-activitypub-link-header">
