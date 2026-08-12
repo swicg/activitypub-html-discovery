@@ -41,19 +41,16 @@
     describes several methods for discovering the ActivityPub
     object described by an [[HTML]] page, and conversely the HTML page
     for an ActivityPub object.</p>
-    <p>Social data in the ActivityPub model is a "resource" like a
-    person, image, or place. That resource has an Activity Streams 2.0
-    JSON-LD representation (if it doesn't, it's not covered by this
-    document!) and may have an HTML representation. The Activity Streams 2.0
-    representation and the HTML representation each have an [[URL]] --
-    possibly the same URL.</p>
+    <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
+    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. An ActivityPub object is an <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">Activity Streams Document</a> with an HTTPS <code>id</code> property, which can be dereferenced to get the document.</p>
+    <p>The ActivityPub object representation and the HTML representation each have an [[URL]] -- possibly the same URL.</p>
     <p>Some resources have a relationship to another resource,
-    which is its author or creator. The author resource has an
-    Activity Streams 2.0 representation (again, if it doesn't, it's
+    which is its <dfn>author</dfn> or creator. The author resource has an
+    ActivityPub object representation (again, if it doesn't, it's
     not covered by this document!) and may have an HTML
-    representation.</p>
-    <p>A resource may have an author resource with an Activity Streams 2.0
-    representation, but not have its own Activity Streams 2.0
+    representation. An author or creator is often an <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub actor</a>, defined in the ActivityPub specification as an ActivityPub object with specific properties for sending and receiving activities.</p>
+    <p>A resource may have an author resource with an ActivityPub object
+    representation, but not have its own ActivityPub object
     representation. An example is an article published in a
     content-management system (CMS) that is attributed to an author
     who wants to receive credit and/or feedback for the work
@@ -99,7 +96,7 @@
       <code>&lt;head&gt;</code> section of an HTML document. It
       provides links for the whole document, using a number of
       different link relations.</p>
-      <p>To indicate its equivalent Activity Streams 2.0 document, the HTML
+      <p>To indicate its equivalent ActivityPub object, the HTML
       document at <code>https://html.example/watch/video-1.html</code>
       could include the following link element:</p>
       <pre class="HTML">
@@ -122,7 +119,7 @@
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
       <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the Activity Streams 2.0 document.
+      alternate representation, which is the ActivityPub object.
       </p>
       <section>
         <h4>Link element failure</h4>
@@ -175,7 +172,7 @@
       be used to define relationships with other documents, with
       the benefit that the link is (usually) visible and clickable
       by a reader.</p>
-      <p>To indicate its equivalent Activity Streams 2.0 representation,
+      <p>To indicate its equivalent ActivityPub object representation,
       the HTML page at
       <code>https://html.example/profiles/person-1.html</code>
       could include the following <code>a</code> element:</p>
@@ -207,7 +204,7 @@
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
       <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the Activity Streams 2.0 document.
+      alternate representation, which is the ActivityPub object.
       </p>
       <section>
         <h4>a element failure</h4>
@@ -232,8 +229,7 @@
       <h3>Embedded JSON-LD</h3>
       <p>HTML documents can include <a href=
       "https://www.w3.org/TR/json-ld11/#embedding-json-ld-in-html-documents">JSON-LD</a> data in a
-      <code>&lt;script&gt;</code> element in the
-      <code>&lt;head&gt;</code> section of the document. This data
+      <code>&lt;script&gt;</code> element. This data
       can be used to provide metadata about the document, including
       an associated ActivityPub object.</p>
       <p>Given a page that shows an image at
@@ -317,7 +313,7 @@
         Host: mixed.example
         Accept: application/activity+json;q=1.0, application/ld+json;q=0.8, application/json;q=0.5
       </pre>
-      <p>A compliant server may respond with the Activity Streams 2.0 document
+      <p>A compliant server may respond with the ActivityPub object
       in the body content of the response:</p>
       <pre class="HTTP">
         HTTP/1.1 200 OK
@@ -381,10 +377,10 @@
           }
         </pre>
         <p>
-          Consumers can detect this condition by checking for a <code>@context</code> property or other common Activity Streams 2.0 properties like
+          Consumers can detect this condition by checking for a <code>@context</code> property or other common ActivityPub object properties like
           <code>id</code> or <code>type</code>.
         </p>
-        <p>Similarly, when the server supports JSON-LD but not Activity Streams 2.0:</p>
+        <p>Similarly, when the server supports JSON-LD but not ActivityPub object:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: application/ld+json
@@ -397,7 +393,7 @@
           }
         </pre>
         <p>
-          Consumers can detect this condition by checking the <code>@context</code> property for the Activity Streams 2.0 context URL, or checking for Activity Streams 2.0 types like
+          Consumers can detect this condition by checking the <code>@context</code> property for the ActivityPub object context URL, or checking for ActivityPub object types like
           <code>Image</code> or <code>Person</code>.
         </p>
       </section>
@@ -407,7 +403,7 @@
       <p>The HTTP Link
       header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
-      to discover an Activity Streams 2.0 document which contains an alternate representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
+      to discover an ActivityPub object which contains an alternate representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
       <p>Given a URL whose default HTTP representation has HTML content, such as
       <code>https://html.example/user/test1/article-1</code>, the
       consumer can use an HTTP <code>HEAD</code> request to get the
@@ -511,7 +507,7 @@
       the <code>type</code> property set to
       <code>application/activity+json</code>, an
       ActivityPub-compatible media type. The <code>href</code>
-      property of this link is URL of the Activity Streams 2.0 equivalent document
+      property of this link is URL of the ActivityPub object equivalent document
       for the HTML page.</p>
       <section>
         <h4>WebFinger failure</h4>
@@ -602,19 +598,19 @@
     <section id="id-to-http-link-header">
       <h3>HTTP Link header</h3>
       <p>It is possible to use the <code>Link</code> header to
-      identify an HTML page related to a given Activity Streams 2.0 document. A <code>Link</code> header with the
+      identify an HTML page related to a given ActivityPub object. A <code>Link</code> header with the
       <code>alternate</code> link relation and a <code>type</code>
       equal to <code>text/html</code> indicates an HTML page
       representing the same resource in an alternate format.</p>
       <p>The advantage of this technique is that it does not
       require downloading and parsing the JSON-LD content of the
-      Activity Streams 2.0 document. The <code>Link</code> header has fewer
+      ActivityPub object. The <code>Link</code> header has fewer
       options for formatting than other methods such as the
       <code>url</code> property, for example, making it slightly
       easier for consumers.</p>
       <section>
         <h4>Example</h4>
-        <p>Given an Activity Streams 2.0 document at
+        <p>Given an ActivityPub object at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
         get the relevant headers for the resource:</p>
@@ -750,7 +746,7 @@
   </section>
   <section id="activitypub-to-html">
     <h2>ActivityPub object to HTML document</h2>
-    <p>These techniques require the Activity Streams 2.0 document containing the ActivityPub object as
+    <p>These techniques require the ActivityPub object containing the ActivityPub object as
     the input for the process. The document can be obtained through
     delivery via the ActivityPub protocol, or through the
     ActivityPub API, or by other means.</p>
@@ -959,7 +955,7 @@
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
         publisher can use the following HTML to indicate the URL of
-        the Activity Streams 2.0 representation of the author of the document:</p>
+        the ActivityPub object representation of the author of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -1110,7 +1106,7 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
-    <p>Publishers of HTML and/or Activity Streams 2.0
+    <p>Publishers of HTML and/or ActivityPub object
     representations of ActivityPub objects
     include data or metadata to help with discovery
     of related representations or resources. This data is a
@@ -1124,7 +1120,7 @@
     <section>
       <h3>Representation verification</h3>
       <p>Verification is a process of confirming that an HTML document
-      and an Activity Streams 2.0 document represent the same resource. This
+      and an ActivityPub object represent the same resource. This
       is necessary to ensure that the publisher of one
       representation is not falsely connecting two unrelated
       resources.</p>
@@ -1141,7 +1137,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://html.example/downloads/image-14.html</code>,
-          the consumer could discover the Activity Streams 2.0 representation's URL
+          the consumer could discover the ActivityPub object representation's URL
           using the <code>Link</code> header method:</p>
           <pre class="HTTP">
             HEAD /downloads/image-14.html HTTP/1.1
@@ -1153,7 +1149,7 @@
             Content-Type: text/html
             Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
           </pre>
-          <p>Then, the consumer could fetch the Activity Streams 2.0 document
+          <p>Then, the consumer could fetch the ActivityPub object
           at
           <code>https://ap.example/api/images/image-14.jsonld</code>
           and look for the URL of the HTML page in the
@@ -1191,7 +1187,7 @@
         of the original representation's URL and the discovered
         representation's URL. The origin is the combination of the
         scheme, host, and port of a URL. If the origins are the
-        same, the publisher of both the HTML document and the Activity Streams 2.0 document is probably the same, so the discovery results are
+        same, the publisher of both the HTML document and the ActivityPub object is probably the same, so the discovery results are
         probably reliable.</p>
         <p>Content negotiation without a redirect will always have
         the same origin, as the URL of the HTML page and the URL of
@@ -1200,7 +1196,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://mixed.example/profiles/person-3</code>, the
-          consumer could discover the alternate Activity Streams 2.0 representation using
+          consumer could discover the alternate ActivityPub object representation using
           the &lt;link&gt; element method:</p>
           <pre class="HTML">
             &lt;link
@@ -1209,9 +1205,9 @@
               href="https://mixed.example/api/person/person-3" /&gt;
           </pre>
           <p>The <code>href</code> property of the &lt;link&gt;
-          element is the URL of the Activity Streams 2.0 document. The origin of the URL of the HTML page is
+          element is the URL of the ActivityPub object. The origin of the URL of the HTML page is
           <code>https://mixed.example</code>, and the origin of the
-          URL of the Activity Streams 2.0 representation is
+          URL of the ActivityPub object representation is
           <code>https://mixed.example</code>, so the origins match
           and the discovery is verified.</p>
         </section>
@@ -1232,7 +1228,7 @@
           another.</p>
           <p>Same origin verification will give a false negative if
           the publisher is using different domains for HTML documents
-          and Activity Streams 2.0 documents. This can happen if
+          and ActivityPub objects. This can happen if
           ActivityPub features are added on to an existing
           published Web site, or if the publisher needs to keep the
           domains separate for implementation reasons. If same
@@ -1272,7 +1268,7 @@
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person/person-3</code> as
-          the Activity Streams 2.0 representation's URL.</p>
+          the ActivityPub object representation's URL.</p>
         </section>
         <section>
           <h5>Allowlist failure</h5>
@@ -1401,7 +1397,7 @@
           <p>Some authors may not include a <code>Create</code>
           activity for every object they create on the Web. They
           may use an author discovery process to identify the
-          author, but not include the object in the Activity Streams 2.0
+          author, but not include the object in the ActivityPub object
           representation.</p>
         </section>
       </section>
@@ -1452,7 +1448,7 @@
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person-3.jsonld</code> as
-          the Activity Streams 2.0 representation's URL.</p>
+          the ActivityPub object representation's URL.</p>
         </section>
         <section>
           <h5>Allowlist verification failure</h5>
@@ -1470,7 +1466,7 @@
     methods.</p>
     <section>
       <h3>Publishing ActivityPub JSON-LD</h3>
-      <p>When publishing an Activity Streams 2.0 document for
+      <p>When publishing an ActivityPub object for
       ActivityPub, publishers should consider these best
       practices.</p>
       <ul>
@@ -1498,7 +1494,7 @@
         type, since there's not a clear algorithm for choosing
         between them.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and Activity Streams 2.0 representations on the
+        implement both HTML and ActivityPub object representations on the
         same server should strongly consider giving them the same
         route and using content negotiation to navigate between
         them. Many ActivityPub implementations follow this pattern,
@@ -1551,7 +1547,7 @@
         <code>Link</code> headers with the same <code>rel</code>
         and <code>type</code> values.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and Activity Streams 2.0 representations on the
+        implement both HTML and ActivityPub object representations on the
         same domain should strongly consider using the same route
         for both representations, and using content negotiation to
         differentiate between the two. Many ActivityPub
@@ -1563,7 +1559,7 @@
         Webfinger of the author preceded by an "@" symbol.</li>
         <li><strong>Embedded JSON-LD</strong>. This technique
         allows consumers not only to identify the URL for the
-        Activity Streams 2.0 representation, but to retrieve the full body
+        ActivityPub object representation, but to retrieve the full body
         of the object, without an additional HTTP request.</li>
       </ul>
     </section>
@@ -1652,11 +1648,11 @@
         are three default domain names used:
         <ul>
           <li><code>ap.example</code> - A server that primarily
-          provides Activity Streams 2.0 documents containing ActivityPub objects.</li>
+          provides ActivityPub objects containing ActivityPub objects.</li>
           <li><code>html.example</code> - A server that primarily
           provides HTML documents.</li>
           <li><code>mixed.example</code> - A server that provides
-          both Activity Streams 2.0 and HTML documents.</li>
+          both ActivityPub object and HTML documents.</li>
           <li><code>media.example</code> - A server that provides
           primarily binary files, such as images, video, or audio.</li>
         </ul>Other names may be used when additional examples are
@@ -1697,7 +1693,7 @@
   <section id="resource-types" class="appendix">
     <h2>Applicable resource types</h2>
     <p>Unless otherwise specified, the techniques described below
-    can be used with any Activity Streams 2.0 types. The
+    can be used with any ActivityPub object types. The
     best-defined groups of AS2 types for HTML discovery are actor
     types:</p>
     <ul>
@@ -1735,7 +1731,7 @@
       <li>12 Jun 2025: Shorten introduction. Move use cases, URL formats, and relevant resource types to appendices. Remove redundant best practices for consumers. Other readability improvements.</li>
       <li>13 May 2026: Add references. Change HTTP status code from 308 to 303. Improve Accept: header to include q-values. Add discovery of acct: URIs for authors. Correct nesting level of headers. Update RFC 7231 references to RFC 9110.</li>
       <li>15 May 2026: Move fediverse:creator to its own section.</li>
-      <li>15 July 2026: Add binary file representation for image in embedded JSON. Clarified ambiguity between Activity Streams 2.0 documents and ActivityPub objects.</li>
+      <li>15 July 2026: Add binary file representation for image in embedded JSON. Clarified ambiguity between ActivityPub objects and ActivityPub objects.</li>
     </ul>
   </section>
 </body>
