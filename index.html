@@ -652,22 +652,30 @@
       Webfinger query.</p>
       <p>The publisher can provide a link to the HTML
       representation of the object in the JRD output of the
-      WebFinger query in at least two ways.</p>
-      <p>First, the <code>links</code> property of the output
-      object can contain a link object with a <code>rel</code>
-      property set to <code>alternate</code> and the
-      <code>type</code> property set to <code>text/html</code>. If
-      such a link exists, its <code>href</code> property is the URL
-      of the related HTML page.</p>
-      <p>Second, the <code>links</code> property of the JRD document may include a link object with a <code>rel</code> property
-      set to <code>http://webfinger.net/rel/profile-page</code>.
-      This is defined to be "the main home/profile page that a
-      human should visit when getting info about that webfinger
-      account" (<a href=
-      "https://webfinger.net/rel/">https://webfinger.net/rel/</a>).
-      It is not guaranteed to be HTML, but a <code>type</code>
-      property can further define that. Per the definition, "it's
-      likely text/html if it's for users."</p>
+      WebFinger query in at least three ways.</p>
+      <ul>
+        <li>The <code>links</code> property of the output
+        object can contain a link object with a <code>rel</code>
+        property set to <code>alternate</code> and the
+        <code>type</code> property set to <code>text/html</code>. If
+        such a link exists, its <code>href</code> property is the URL
+        of the related HTML page.</li>
+        <li>The <code>links</code> property of the output
+        object can contain a link object with a <code>rel</code>
+        property set to <code>self</code> and the
+        <code>type</code> property set to <code>text/html</code>. If
+        such a link exists, its <code>href</code> property is the URL
+        of the related HTML page.</li>
+        <li>The <code>links</code> property of the JRD document may include a link object with a <code>rel</code> property
+        set to <code>http://webfinger.net/rel/profile-page</code>.
+        This is defined to be "the main home/profile page that a
+        human should visit when getting info about that webfinger
+        account" (<a href=
+        "https://webfinger.net/rel/">https://webfinger.net/rel/</a>).
+        It is not guaranteed to be HTML, but a <code>type</code>
+        property can further define that. Per the definition, "it's
+        likely text/html if it's for users."</li>
+      </ul>
       <p>An advantage of using WebFinger for discovery is that it
       is widely implemented by ActivityPub publishers to enable
       using <code>acct</code> URLs as identities.</p>
