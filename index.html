@@ -49,7 +49,7 @@
     possibly the same URL.</p>
     <p>Some resources have a relationship to another resource,
     which is its author or creator. The author resource has an
-    ActivityPub JSON-LD representation (again, if it doesn't, it's
+    Activity Streams 2.0 representation (again, if it doesn't, it's
     not covered by this document!) and may have an HTML
     representation.</p>
     <p>A resource may have an author resource with an ActivityPub
@@ -282,7 +282,7 @@
       Accept</a> header.</p>
       <p>Given the URL <code>https://mixed.example/some/path/to/note-1</code>, a
       consumer could attempt to retrieve the
-      ActivityPub JSON-LD object using this HTTP request:</p>
+      ActivityPub object using this HTTP request:</p>
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
@@ -379,7 +379,7 @@
       <p>The HTTP Link
       header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
-      to discover the ActivityPub JSON-LD object for an HTML
+      to discover the ActivityPub object for an HTML
       page.</p>
       <p>Given the URL for an HTML document, such as
       <code>https://html.example/user/test1/article-1</code>, the
@@ -398,7 +398,7 @@
       </pre>
       <p>The link header with the <code>alternate</code> relation
       type, and an ActivityPub-compatible media type, indicates
-      that the ActivityPub JSON-LD object is available at the
+      that the ActivityPub object is available at the
       linked URL.</p>
       <p>This can be a very efficient method of discovery, since
       the consumer does not need to download the entire HTML
@@ -591,7 +591,7 @@
       easier for consumers.</p>
       <section>
         <h4>Example</h4>
-        <p>Given an ActivityPub JSON-LD object at
+        <p>Given an ActivityPub object at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
         get the relevant headers for the resource:</p>
@@ -935,7 +935,7 @@
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
         publisher can use the following HTML to indicate the URL of
-        the ActivityPub representation of the author of the document:</p>
+        the Activity Streams 2.0 representation of the author of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -1189,7 +1189,7 @@
           element is the URL of the ActivityPub JSON-LD
           representation. The origin of the URL of the HTML page is
           <code>https://mixed.example</code>, and the origin of the
-          URL of the ActivityPub JSON-LD representation is
+          URL of the Activity Streams 2.0 representation is
           <code>https://mixed.example</code>, so the origins match
           and the discovery is verified.</p>
         </section>
@@ -1210,7 +1210,7 @@
           another.</p>
           <p>Same origin verification will give a false negative if
           the publisher is using different domains for HTML pages
-          and ActivityPub JSON-LD objects. This can happen if
+          and ActivityPub objects. This can happen if
           ActivityPub features are added on to an existing
           published Web site, or if the publisher needs to keep the
           domains separate for implementation reasons. If same
@@ -1250,7 +1250,7 @@
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person/person-3</code> as
-          the ActivityPub JSON-LD representation's URL.</p>
+          the Activity Streams 2.0 representation's URL.</p>
         </section>
         <section>
           <h5>Allowlist failure</h5>
@@ -1430,7 +1430,7 @@
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person-3.jsonld</code> as
-          the ActivityPub JSON-LD representation's URL.</p>
+          the Activity Streams 2.0 representation's URL.</p>
         </section>
         <section>
           <h5>Allowlist verification failure</h5>
@@ -1476,7 +1476,7 @@
         type, since there's not a clear algorithm for choosing
         between them.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and ActivityPub representations on the
+        implement both HTML and Activity Streams 2.0 representations on the
         same server should strongly consider giving them the same
         route and using content negotiation to navigate between
         them. Many ActivityPub implementations follow this pattern,
@@ -1529,7 +1529,7 @@
         <code>Link</code> headers with the same <code>rel</code>
         and <code>type</code> values.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and ActivityPub representations on the
+        implement both HTML and Activity Streams 2.0 representations on the
         same domain should strongly consider using the same route
         for both representations, and using content negotiation to
         differentiate between the two. Many ActivityPub
@@ -1541,7 +1541,7 @@
         Webfinger of the author preceded by an "@" symbol.</li>
         <li><strong>Embedded JSON-LD</strong>. This technique
         allows consumers not only to identify the URL for the
-        ActivityPub representation, but to retrieve the full body
+        Activity Streams 2.0 representation, but to retrieve the full body
         of the object, without an additional HTTP request.</li>
       </ul>
     </section>
@@ -1695,8 +1695,6 @@
       <li><code>Document</code></li>
       <li><code>Page</code></li>
     </ul>
-    <p>Other ActivityPub types, such as activity types, are less
-    likely to have their own HTML representations.</p>
     <p><code>Collection</code> types are often better represented
     by an object they are closely related to. For example, an
     actor's <code>outbox</code> collection is often provided on the
