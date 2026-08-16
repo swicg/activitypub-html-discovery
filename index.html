@@ -845,7 +845,7 @@
   <section id="url-to-author-activitypub">
     <h2>Resource URL to author ActivityPub object</h2>
     <p>This section describes techniques for discovering an
-    ActivityPub author object using the HTML representation's URL
+    ActivityPub [=author=] object using the HTML representation's URL
     as an input. The HTML representation's URL may come from
     ActivityPub properties, links in other content, or by other
     means.</p>
@@ -859,7 +859,7 @@
       "https://html.spec.whatwg.org/multipage/links.html#link-type-author">
       author</a> link relation identifies the author of a resource. So,
       a publisher can use a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to
-      an ActivityPub-compatible media type to indicate the ActivityPub
+      an ActivityPub-compatible media type to indicate an ActivityPub
       representation of the author of the object.</p>
       <p>Actors in ActivityPub are sometimes referenced by an acct: URI using WebFinger. In this case, the <code>Link</code> header may not include a <code>type</code> property. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       <p>This technique has the advantage of requiring a minimum
@@ -888,7 +888,7 @@
         result; one represents information about the <code>Video</code> in an alternate format, and the
         other represents the <code>Person</code> that authored the
         video. The <code>rel</code> value of "author" distinguishes
-        the author link.</p>
+        the [=author=] link.</p>
         <p>As an example with an acct: URI for the author,
           given an HTML page at
         <code>https://html.example/files/event-229.html</code> that
@@ -906,7 +906,7 @@
           Link: &lt;acct:username@social.example&gt;; rel="author"
         </pre>
         <p>
-          The acct: URI may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the ActivityPub resource for the author.</p>
+          The acct: URI could be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the [=ActivityPub object=] for the [=author=]. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       </section>
       <section>
         <h4>Link header failure</h4>
@@ -916,6 +916,7 @@
         <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
         property might not contain an ActivityPub object, but some
         other JSON or JSON-LD object.</p>
+        <p>An `acct:` URI might not necessarily resolve with WebFinger.</p>
       </section>
     </section>
   </section>
