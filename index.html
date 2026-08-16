@@ -521,7 +521,7 @@
       an object to be found at the same URL.</p>
       <section>
         <h4>Examples</h4>
-        <p>Given the URL for an ActivityPub object, such as
+        <p>Given the `id` URL for an ActivityPub object, such as
         <code>https://mixed.example/some/path/to/note-1</code>, a
         consumer could attempt to retrieve the corresponding HTML
         resource using this HTTP request:</p>
@@ -584,7 +584,7 @@
       identify an HTML page related to a given ActivityPub object. A <code>Link</code> header with the
       <code>alternate</code> link relation and a <code>type</code>
       equal to <code>text/html</code> indicates an HTML page
-      representing the same resource in an alternate format.</p>
+      representing the same resource in an [=alternate=] format.</p>
       <p>The advantage of this technique is that it does not
       require downloading and parsing the JSON-LD content of the
       ActivityPub object. The <code>Link</code> header has fewer
@@ -593,7 +593,7 @@
       easier for consumers.</p>
       <section>
         <h4>Example</h4>
-        <p>Given an ActivityPub object at
+        <p>Given an ActivityPub object `id` at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
         get the relevant headers for the resource:</p>
@@ -624,14 +624,14 @@
       query in two ways. First, the <code>id</code> property,
       usually an <code>https</code> URL, can be passed as the
       <code>resource</code> parameter for the WebFinger query.
-      Alternately, if the ActivityPub object is an <a href=
+      Alternately, if the [=ActivityPub object=] is an <a href=
       "https://www.w3.org/TR/activitypub/#actors">actor</a>, an
       <code>acct</code> URI in the format
       <code>acct:username@domain.example</code> can be constructed
       using the technique for <a href=
       "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">
       WebFinger reverse discovery</a>. This <code>acct</code> URI
-      can be used as the <code>resource</code> parameter for the
+      could be used as the <code>resource</code> parameter for the
       Webfinger query.</p>
       <p>The publisher can provide a link to the HTML
       representation of the object in the JRD output of the
