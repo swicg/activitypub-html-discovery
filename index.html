@@ -119,7 +119,7 @@
       <code>link</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
-      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] is contained in this [=Activity Streams document=].</p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] might be contained in this [=Activity Streams document=].</p>
       <section>
         <h4>Link element failure</h4>
         <p>Some publishers might include a <code>link</code> element
@@ -201,7 +201,7 @@
       in the [[DOM]] tree. An <code>a</code> element may be anywhere in
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
-      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] is contained in this [=Activity Streams document=].</p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] might be contained in this [=Activity Streams document=].</p>
       <section>
         <h4>a element failure</h4>
         <p>As with the <code>link</code> element, some publishers might
@@ -295,8 +295,7 @@
       "https://datatracker.ietf.org/doc/html/rfc9110#field.accept">
       Accept</a> header.</p>
       <p>Given the URL <code>https://mixed.example/some/path/to/note-1</code>, a
-      consumer could attempt to retrieve the
-      ActivityPub object using this HTTP request:</p>
+      consumer could attempt to retrieve an [=Activity Streams document=] using this HTTP request:</p>
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
@@ -384,7 +383,7 @@
       <p>The HTTP Link
       header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
-      to discover an ActivityPub object which contains an alternate representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
+      to discover an [=Activity Streams document=] which contains an [=alternate=] representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
       <p>Given a URL whose default HTTP representation has HTML content, such as
       <code>https://html.example/user/test1/article-1</code>, the
       consumer can use an HTTP <code>HEAD</code> request to get the
@@ -402,7 +401,7 @@
       </pre>
       <p>The Link header with the <code>alternate</code> relation
       type, and an ActivityPub-compatible media type, indicates
-      that the ActivityPub object is available at the
+      that the [=ActivityPub object=] might be available within the [=Activity Streams document=] at the
       linked URL.</p>
       <p>This can be a very efficient method of discovery, since
       the consumer does not need to download the entire HTML
