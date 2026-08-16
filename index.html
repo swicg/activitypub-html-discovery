@@ -15,7 +15,7 @@
       editors: [{ name: "Evan Prodromou", url: "https://socialwebfoundation.org/@evanp" }],
       github: "swicg/activitypub-html-discovery",
       shortName: "apdisco",
-      xref: "web-platform",
+      xref: ["web-platform", "rfc3986"],
       group: "socialcg",
       noRecTrack: true
     };
@@ -35,23 +35,24 @@
   </section>
   <section class="informative">
     <h2>Introduction</h2>
-    <p>[[ActivityPub]] is a standard for publishing structured social
+    <p>[[[ActivityPub]]] is a standard for publishing structured social
     network data on the Web in [[JSON-LD]] format and sharing that data
     from client to server and from server to server. This document
     describes several methods for discovering the ActivityPub
     object described by an [[HTML]] page, and conversely the HTML page
-    for an ActivityPub object.</p>
-    <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
-    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. An ActivityPub object is an <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">Activity Streams Document</a> with an HTTPS <code>id</code> property, which can be dereferenced to get the document.</p>
-    <p>The ActivityPub object representation and the HTML representation each have an [[URL]] -- possibly the same URL.</p>
+    describing an ActivityPub object.</p>
+    <p>Social data is a "resource" like a person, image, or place. That resource is usually identified by an `https:` URL, and you can usually obtain one or more representations via HTTP(S).</p>
+    <p>In ActivityPub, resources are expected to have a canonical representation that is an <dfn>Activity Streams document</dfn>. [[[ActivityStreams-core]]] defines this term in the <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">"Serialization" section</a>, and its conformance requirements are further described in the <a href="https://www.w3.org/TR/activitystreams-core/#documents">"Documents" section</a>.</p>
+    <p>In ActivityPub, this canonical representation contains one or more identified objects (possibly as document fragments). An <dfn>ActivityPub object</dfn> is an object being described by the [=Activity Streams document=] whose `id` property is an [=URL=] that matches the current document's canonical network location after removing any [=url/fragment=] component. ActivityPub objects are described in the <a href="https://www.w3.org/TR/activitypub/#obj">"Objects" section</a> of the ActivityPub recommendation.</p>
+    <p>The [=ActivityPub object=]'s Activity Streams representation and HTML representation each have an [[URL]] -- possibly the same URL. Where the URLs differ, the two representations are often considered <dfn>alternate</dfn> representations of each other, and the resource representations might link to each other appropriately.</p>
     <p>Some resources have a relationship to another resource,
     which is its <dfn>author</dfn> or creator. The author resource has an
     ActivityPub object representation (again, if it doesn't, it's
     not covered by this document!) and may have an HTML
     representation. An author or creator is often an <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub actor</a>, defined in the ActivityPub specification as an ActivityPub object with specific properties for sending and receiving activities.</p>
-    <p>A resource may have an author resource with an ActivityPub object
-    representation, but not have its own ActivityPub object
-    representation. An example is an article published in a
+    <p>A resource may have an author resource with an associated ActivityPub object,
+    but not have its own associated ActivityPub object.
+    An example is an article published in a
     content-management system (CMS) that is attributed to an author
     who wants to receive credit and/or feedback for the work
     via a representative ActivityPub actor.</p>
