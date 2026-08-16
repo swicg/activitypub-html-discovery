@@ -932,8 +932,8 @@
     that use the URL as input.</p>
     <section id="html-to-author-activitypub-link-element">
       <h3>HTML &lt;link&gt; element</h3>
-      <p>The ActivityPub id of the author of an object represented
-      by an HTML document can also be found using the HTML
+      <p>The ActivityPub id of the [=author=] of an object represented
+      by an HTML document can be found using the HTML
       &lt;link&gt; element. As with the HTTP <code>Link</code>
       header, if a &lt;link&gt; element has a <code>rel</code>
       attribute equal to "author" and a <code>type</code> attribute
@@ -950,7 +950,7 @@
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
         publisher can use the following HTML to indicate the URL of
-        the ActivityPub object representation of the author of the document:</p>
+        the [=Activity Streams document=] describing the [=author=] of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -969,9 +969,9 @@
         <p>In this example, the &lt;link&gt; element with the
         <code>rel</code> attribute set to "author" and the
         <code>type</code> attribute set to
-        "application/activity+json" is the author of the
+        "application/activity+json" is the [=author=] of the
         document.</p>
-        <p>For an acct: URI, an HTML page at
+        <p>Alternatively, for an HTML page at
         <code>https://html.example/files/image-55.html</code>
         that represents an <code>Image</code> object, the
         publisher can use the following HTML to indicate the acct: URI of
@@ -990,7 +990,7 @@
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
-        <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI.</p>
+        <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       </section>
       <section>
         <h4>Link element failure</h4>
@@ -1011,7 +1011,7 @@
       developed by Mastodon</a>. This tag is used to identify
       a document creator's Fediverse profile. Its value is the Fediverse handle of
       the creator, prefixed with an <code>@</code> character, not
-      an <code>acct:</code> URL. The consumer can try using <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially find the ActivityPub object corresponding to the
+      an <code>acct:</code> URI. The consumer can try using <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially find the ActivityPub object corresponding to the
       creator.</p>
       <section>
         <h4>Example</h4>
@@ -1035,7 +1035,7 @@
         <p>In this example, the <code>fediverse:creator</code>
         property is the Fediverse handle of the creator of the video,
         prefixed with the <code>@</code> symbol. The Fediverse handle
-        can be used to find the ActivityPub object corresponding to
+        could be used to try to find the ActivityPub object corresponding to
         the creator.</p>
       </section>
     </section>
@@ -1104,8 +1104,7 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
-    <p>Publishers of HTML and/or ActivityPub object
-    representations of ActivityPub objects
+    <p>Publishers of HTML and/or [=Activity Streams documents=] describing ActivityPub objects
     include data or metadata to help with discovery
     of related representations or resources. This data is a
     <em>claim</em> that the linked resource really has the
@@ -1147,11 +1146,11 @@
             Content-Type: text/html
             Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
           </pre>
-          <p>Then, the consumer could fetch the ActivityPub object
+          <p>Then, the consumer could fetch the [=Activity Streams document=]
           at
           <code>https://ap.example/api/images/image-14.jsonld</code>
           and look for the URL of the HTML page in the
-          <code>url</code> property of the ActivityPub object:</p>
+          <code>url</code> property of the [=ActivityPub object=]:</p>
           <pre class="JSON">
             {
               "@context": "https://www.w3.org/ns/activitystreams",
@@ -1179,7 +1178,7 @@
       </section>
       <section>
         <h4>Same origin</h4>
-        <p>Another mechanism for verifying a discovery process is
+        <p>Another mechanism for trusting the result of a discovery process is
         to compare the <a href=
         "https://url.spec.whatwg.org/#concept-url-origin">origins</a>
         of the original representation's URL and the discovered
@@ -1194,7 +1193,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://mixed.example/profiles/person-3</code>, the
-          consumer could discover the alternate ActivityPub object representation using
+          consumer could discover the alternate [=Activity Streams document=] using
           the &lt;link&gt; element method:</p>
           <pre class="HTML">
             &lt;link
@@ -1203,15 +1202,15 @@
               href="https://mixed.example/api/person/person-3" /&gt;
           </pre>
           <p>The <code>href</code> property of the &lt;link&gt;
-          element is the URL of the ActivityPub object. The origin of the URL of the HTML page is
+          element is the URL of the [=Activity Streams document=] which is the [=alternate=] representation, and it could contain an [=ActivityPub object=]. The origin of the URL of the HTML page is
           <code>https://mixed.example</code>, and the origin of the
-          URL of the ActivityPub object representation is
+          URL of the [=ActivityPub object=] is
           <code>https://mixed.example</code>, so the origins match
           and the discovery is verified.</p>
         </section>
         <section>
           <h5>Same origin failure</h5>
-          <p>Same origin verification assumes that a single
+          <p>Same origin trust assumes that a single
           publisher controls an entire domain. Although this is
           often true for machine-readable formats like JSON-LD,
           having multiple publishers in control of parts of a
@@ -1224,19 +1223,19 @@
           other mechanism could be used by one user to link their
           HTML page to an ActivityPub object created by
           another.</p>
-          <p>Same origin verification will give a false negative if
+          <p>Same origin trust will give a false negative if
           the publisher is using different domains for HTML documents
           and ActivityPub objects. This can happen if
           ActivityPub features are added on to an existing
           published Web site, or if the publisher needs to keep the
           domains separate for implementation reasons. If same
-          origin verification gives a negative result, other
+          origin trust gives a negative result, other
           methods such as two-way verification should be used.</p>
         </section>
       </section>
       <section>
         <h4>Allowlist</h4>
-        <p>Another means of verification, or more precisely an
+        <p>Another means of establishing trust, or more precisely an
         excuse for skipping verification, is an allowlist. This is
         a list of origins or, possibly, other properties of the
         representation that can be used to confirm trust in the
@@ -1400,7 +1399,7 @@
         </section>
       </section>
       <section>
-        <h4>Same origin verification</h4>
+        <h4>Same origin trust</h4>
         <p>This method, or heuristic, assumes that the claims of
         authorship are mutually supporting if the URLs of the
         representations have the same origin. The origin of an URL
@@ -1421,7 +1420,7 @@
           assume that the discovery is verified.</p>
         </section>
         <section>
-          <h5>Same origin verification failure</h5>
+          <h5>Same origin trust failure</h5>
           <p>Assuming that the same entity controls creation of all
           URLs on a server is somewhat risky. For HTML creation,
           especially, some servers divide up into per-user paths.
@@ -1430,7 +1429,7 @@
         </section>
       </section>
       <section>
-        <h4>Allowlist verification</h4>
+        <h4>Allowlist trust</h4>
         <p>Consumers may include a list of origins or other
         properties of the representation that don't require
         verification. This assumes an externally-established trust
