@@ -66,8 +66,8 @@
     "https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>"
     are used as in [[activitystreams-core]]. The terms are
     extended to include implementations that publish or consume
-    HTML representations of resources with ActivityPub
-    representations.</p>
+    HTML representations of resources with associated ActivityPub
+    objects.</p>
     <p>In this document, several methods of discovery are
     described. Different methods are implemented by different
     publishers and consumers, and have different trade-offs in
@@ -86,7 +86,7 @@
     able to extract the URL from the environment -- for example,
     using the <code>document.location</code> property in a
     [[JavaScript]] environment. Using the document content for
-    discovery can return the ActivityPub equivalent without the
+    discovery can return the equivalent ActivityPub object without the
     HTTP requests that discovery by URL requires, saving some time
     and network traffic.</p>
     <section id="html-to-activitypub-link-element">
@@ -119,15 +119,12 @@
       <code>link</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
-      </p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] is contained in this [=Activity Streams document=].</p>
       <section>
         <h4>Link element failure</h4>
         <p>Some publishers might include a <code>link</code> element
         with an <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub
-        resource.</p>
+        that is not an ActivityPub-compatible media type.</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -145,8 +142,8 @@
         </pre>
         <p>Publishers might also include a <code>link</code> element
         with an <code>alternate</code> relation and with an
-        ActivityPub-compatible media type, but the representation obtained
-        by fetching the target URL does not contain an ActivityPub object.</p>
+        ActivityPub-compatible media type, but the [=alternate=] representation obtained
+        by fetching the target URL does not contain an [=ActivityPub object=].</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -173,7 +170,7 @@
       be used to define relationships with other documents, with
       the benefit that the link is (usually) visible and clickable
       by a reader.</p>
-      <p>To indicate its equivalent ActivityPub object representation,
+      <p>To indicate its equivalent ActivityPub object,
       the HTML page at
       <code>https://html.example/profiles/person-1.html</code>
       could include the following <code>a</code> element:</p>
@@ -204,16 +201,13 @@
       in the [[DOM]] tree. An <code>a</code> element may be anywhere in
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
-      </p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] is contained in this [=Activity Streams document=].</p>
       <section>
         <h4>a element failure</h4>
         <p>As with the <code>link</code> element, some publishers might
         include an <code>a</code> element with an
         <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub
-        resource.</p>
+        that is not ActivityPub-compatible.</p>
         <p>Alternatively, publishers might include an <code>a</code> element
         with an <code>alternate</code> relation and with an
         ActivityPub-compatible media type, but the representation obtained
@@ -273,8 +267,9 @@
       <section>
         <h4>Embedded JSON-LD failure</h4>
         <p>Complicated structures for the <code>url</code> property
-        may make it hard to confirm that the object's URL is the
+        might make it hard to confirm that the object's URL is the
         same as the current page's.</p>
+        <p>The current HTML document's `document.location` might be unknown, or might not match any `href`.</p>
         <p>Embedded JSON-LD is very popular for embedding <a href=
         "https://schema.org/">Schema.org</a> metadata. This can
         lead to false positives when looking for ActivityPub
