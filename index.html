@@ -15,7 +15,7 @@
       editors: [{ name: "Evan Prodromou", url: "https://socialwebfoundation.org/@evanp" }],
       github: "swicg/activitypub-html-discovery",
       shortName: "apdisco",
-      xref: "web-platform",
+      xref: ["web-platform", "rfc3986"],
       group: "socialcg",
       noRecTrack: true
     };
@@ -35,23 +35,24 @@
   </section>
   <section class="informative">
     <h2>Introduction</h2>
-    <p>[[ActivityPub]] is a standard for publishing structured social
+    <p>[[[ActivityPub]]] is a standard for publishing structured social
     network data on the Web in [[JSON-LD]] format and sharing that data
     from client to server and from server to server. This document
     describes several methods for discovering the ActivityPub
     object described by an [[HTML]] page, and conversely the HTML page
-    for an ActivityPub object.</p>
-    <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
-    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. An ActivityPub object is an <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">Activity Streams Document</a> with an HTTPS <code>id</code> property, which can be dereferenced to get the document.</p>
-    <p>The ActivityPub object representation and the HTML representation each have an [[URL]] -- possibly the same URL.</p>
+    describing an ActivityPub object.</p>
+    <p>Social data is a "resource" like a person, image, or place. That resource is usually identified by an `https:` URL, and you can usually obtain one or more representations via HTTP(S).</p>
+    <p>In ActivityPub, resources are expected to have a canonical representation that is an <dfn>Activity Streams document</dfn>. [[[ActivityStreams-core]]] defines this term in the <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">"Serialization" section</a>, and its conformance requirements are further described in the <a href="https://www.w3.org/TR/activitystreams-core/#documents">"Documents" section</a>.</p>
+    <p>In ActivityPub, this canonical representation contains one or more identified objects (possibly as document fragments). An <dfn>ActivityPub object</dfn> is an object being described by the [=Activity Streams document=] whose `id` property is an [=URL=] that matches the current document's canonical network location after removing any [=url/fragment=] component. ActivityPub objects are described in the <a href="https://www.w3.org/TR/activitypub/#obj">"Objects" section</a> of the ActivityPub recommendation.</p>
+    <p>The [=ActivityPub object=]'s Activity Streams representation and HTML representation each have an [[URL]] -- possibly the same URL. Where the URLs differ, the two representations are often considered <dfn>alternate</dfn> representations of each other, and the resource representations might link to each other appropriately.</p>
     <p>Some resources have a relationship to another resource,
     which is its <dfn>author</dfn> or creator. The author resource has an
     ActivityPub object representation (again, if it doesn't, it's
     not covered by this document!) and may have an HTML
     representation. An author or creator is often an <a href="https://www.w3.org/TR/activitypub/#actors">ActivityPub actor</a>, defined in the ActivityPub specification as an ActivityPub object with specific properties for sending and receiving activities.</p>
-    <p>A resource may have an author resource with an ActivityPub object
-    representation, but not have its own ActivityPub object
-    representation. An example is an article published in a
+    <p>A resource may have an author resource with an associated ActivityPub object,
+    but not have its own associated ActivityPub object.
+    An example is an article published in a
     content-management system (CMS) that is attributed to an author
     who wants to receive credit and/or feedback for the work
     via a representative ActivityPub actor.</p>
@@ -65,8 +66,8 @@
     "https://www.w3.org/TR/activitystreams-core/#consumers">consumer</a>"
     are used as in [[activitystreams-core]]. The terms are
     extended to include implementations that publish or consume
-    HTML representations of resources with ActivityPub
-    representations.</p>
+    HTML representations of resources with associated ActivityPub
+    objects.</p>
     <p>In this document, several methods of discovery are
     described. Different methods are implemented by different
     publishers and consumers, and have different trade-offs in
@@ -85,7 +86,7 @@
     able to extract the URL from the environment -- for example,
     using the <code>document.location</code> property in a
     [[JavaScript]] environment. Using the document content for
-    discovery can return the ActivityPub equivalent without the
+    discovery can return the equivalent ActivityPub object without the
     HTTP requests that discovery by URL requires, saving some time
     and network traffic.</p>
     <section id="html-to-activitypub-link-element">
@@ -118,15 +119,12 @@
       <code>link</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
-      </p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] might be contained in this [=Activity Streams document=].</p>
       <section>
         <h4>Link element failure</h4>
         <p>Some publishers might include a <code>link</code> element
         with an <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub
-        resource.</p>
+        that is not an ActivityPub-compatible media type.</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -144,8 +142,8 @@
         </pre>
         <p>Publishers might also include a <code>link</code> element
         with an <code>alternate</code> relation and with an
-        ActivityPub-compatible media type, but the representation obtained
-        by fetching the target URL does not contain an ActivityPub object.</p>
+        ActivityPub-compatible media type, but the [=alternate=] representation obtained
+        by fetching the target URL does not contain an [=ActivityPub object=].</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -172,7 +170,7 @@
       be used to define relationships with other documents, with
       the benefit that the link is (usually) visible and clickable
       by a reader.</p>
-      <p>To indicate its equivalent ActivityPub object representation,
+      <p>To indicate its equivalent ActivityPub object,
       the HTML page at
       <code>https://html.example/profiles/person-1.html</code>
       could include the following <code>a</code> element:</p>
@@ -203,16 +201,13 @@
       in the [[DOM]] tree. An <code>a</code> element may be anywhere in
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
-      </p>
+      <p>The target of this link is the [=Activity Streams document=] which is the [=alternate=] representation of the current HTML document. The [=ActivityPub object=] might be contained in this [=Activity Streams document=].</p>
       <section>
         <h4>a element failure</h4>
         <p>As with the <code>link</code> element, some publishers might
         include an <code>a</code> element with an
         <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub
-        resource.</p>
+        that is not ActivityPub-compatible.</p>
         <p>Alternatively, publishers might include an <code>a</code> element
         with an <code>alternate</code> relation and with an
         ActivityPub-compatible media type, but the representation obtained
@@ -272,8 +267,9 @@
       <section>
         <h4>Embedded JSON-LD failure</h4>
         <p>Complicated structures for the <code>url</code> property
-        may make it hard to confirm that the object's URL is the
+        might make it hard to confirm that the object's URL is the
         same as the current page's.</p>
+        <p>The current HTML document's `document.location` might be unknown, or might not match any `href`.</p>
         <p>Embedded JSON-LD is very popular for embedding <a href=
         "https://schema.org/">Schema.org</a> metadata. This can
         lead to false positives when looking for ActivityPub
@@ -299,8 +295,7 @@
       "https://datatracker.ietf.org/doc/html/rfc9110#field.accept">
       Accept</a> header.</p>
       <p>Given the URL <code>https://mixed.example/some/path/to/note-1</code>, a
-      consumer could attempt to retrieve the
-      ActivityPub object using this HTTP request:</p>
+      consumer could attempt to retrieve an [=Activity Streams document=] using this HTTP request:</p>
       <pre class="HTTP">
         GET /some/path/to/note-1 HTTP/1.1
         Host: mixed.example
@@ -388,7 +383,7 @@
       <p>The HTTP Link
       header [[RFC8288]] can be used to indicate an alternative
       representation of a resource. A consumer can use this header
-      to discover an ActivityPub object which contains an alternate representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
+      to discover an [=Activity Streams document=] which contains an [=alternate=] representation for an HTTP response containing HTML content (or other Content-Type representations).</p>
       <p>Given a URL whose default HTTP representation has HTML content, such as
       <code>https://html.example/user/test1/article-1</code>, the
       consumer can use an HTTP <code>HEAD</code> request to get the
@@ -406,7 +401,7 @@
       </pre>
       <p>The Link header with the <code>alternate</code> relation
       type, and an ActivityPub-compatible media type, indicates
-      that the ActivityPub object is available at the
+      that the [=ActivityPub object=] might be available within the [=Activity Streams document=] at the
       linked URL.</p>
       <p>This can be a very efficient method of discovery, since
       the consumer does not need to download the entire HTML
@@ -495,8 +490,8 @@
       the <code>type</code> property set to
       <code>application/activity+json</code>, an
       ActivityPub-compatible media type. The <code>href</code>
-      property of this link is URL of the ActivityPub object equivalent document
-      for the HTML page.</p>
+      property of this link is the URL of the equivalent [=Activity Streams document=]
+      for the HTML page, which is the [=alternate=] representation.</p>
       <section>
         <h4>WebFinger failure</h4>
         <p>Not all WebFinger-aware servers return JRD documents for
@@ -526,7 +521,7 @@
       an object to be found at the same URL.</p>
       <section>
         <h4>Examples</h4>
-        <p>Given the URL for an ActivityPub object, such as
+        <p>Given the `id` URL for an ActivityPub object, such as
         <code>https://mixed.example/some/path/to/note-1</code>, a
         consumer could attempt to retrieve the corresponding HTML
         resource using this HTTP request:</p>
@@ -589,7 +584,7 @@
       identify an HTML page related to a given ActivityPub object. A <code>Link</code> header with the
       <code>alternate</code> link relation and a <code>type</code>
       equal to <code>text/html</code> indicates an HTML page
-      representing the same resource in an alternate format.</p>
+      representing the same resource in an [=alternate=] format.</p>
       <p>The advantage of this technique is that it does not
       require downloading and parsing the JSON-LD content of the
       ActivityPub object. The <code>Link</code> header has fewer
@@ -598,7 +593,7 @@
       easier for consumers.</p>
       <section>
         <h4>Example</h4>
-        <p>Given an ActivityPub object at
+        <p>Given an ActivityPub object `id` at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
         get the relevant headers for the resource:</p>
@@ -629,14 +624,14 @@
       query in two ways. First, the <code>id</code> property,
       usually an <code>https</code> URL, can be passed as the
       <code>resource</code> parameter for the WebFinger query.
-      Alternately, if the ActivityPub object is an <a href=
+      Alternately, if the [=ActivityPub object=] is an <a href=
       "https://www.w3.org/TR/activitypub/#actors">actor</a>, an
       <code>acct</code> URI in the format
       <code>acct:username@domain.example</code> can be constructed
       using the technique for <a href=
       "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">
       WebFinger reverse discovery</a>. This <code>acct</code> URI
-      can be used as the <code>resource</code> parameter for the
+      could be used as the <code>resource</code> parameter for the
       Webfinger query.</p>
       <p>The publisher can provide a link to the HTML
       representation of the object in the JRD output of the
@@ -850,7 +845,7 @@
   <section id="url-to-author-activitypub">
     <h2>Resource URL to author ActivityPub object</h2>
     <p>This section describes techniques for discovering an
-    ActivityPub author object using the HTML representation's URL
+    ActivityPub [=author=] object using the HTML representation's URL
     as an input. The HTML representation's URL may come from
     ActivityPub properties, links in other content, or by other
     means.</p>
@@ -864,7 +859,7 @@
       "https://html.spec.whatwg.org/multipage/links.html#link-type-author">
       author</a> link relation identifies the author of a resource. So,
       a publisher can use a <code>Link</code> header with a <code>rel</code> property equal to "author" and a <code>type</code> property equal to
-      an ActivityPub-compatible media type to indicate the ActivityPub
+      an ActivityPub-compatible media type to indicate an ActivityPub
       representation of the author of the object.</p>
       <p>Actors in ActivityPub are sometimes referenced by an acct: URI using WebFinger. In this case, the <code>Link</code> header may not include a <code>type</code> property. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       <p>This technique has the advantage of requiring a minimum
@@ -893,7 +888,7 @@
         result; one represents information about the <code>Video</code> in an alternate format, and the
         other represents the <code>Person</code> that authored the
         video. The <code>rel</code> value of "author" distinguishes
-        the author link.</p>
+        the [=author=] link.</p>
         <p>As an example with an acct: URI for the author,
           given an HTML page at
         <code>https://html.example/files/event-229.html</code> that
@@ -911,7 +906,7 @@
           Link: &lt;acct:username@social.example&gt;; rel="author"
         </pre>
         <p>
-          The acct: URI may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the ActivityPub resource for the author.</p>
+          The acct: URI could be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the [=ActivityPub object=] for the [=author=]. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       </section>
       <section>
         <h4>Link header failure</h4>
@@ -921,6 +916,7 @@
         <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
         property might not contain an ActivityPub object, but some
         other JSON or JSON-LD object.</p>
+        <p>An `acct:` URI might not necessarily resolve with WebFinger.</p>
       </section>
     </section>
   </section>
@@ -936,8 +932,8 @@
     that use the URL as input.</p>
     <section id="html-to-author-activitypub-link-element">
       <h3>HTML &lt;link&gt; element</h3>
-      <p>The ActivityPub id of the author of an object represented
-      by an HTML document can also be found using the HTML
+      <p>The ActivityPub id of the [=author=] of an object represented
+      by an HTML document can be found using the HTML
       &lt;link&gt; element. As with the HTTP <code>Link</code>
       header, if a &lt;link&gt; element has a <code>rel</code>
       attribute equal to "author" and a <code>type</code> attribute
@@ -954,7 +950,7 @@
         <code>https://html.example/files/document-40.html</code>
         that represents a <code>Document</code> object, the
         publisher can use the following HTML to indicate the URL of
-        the ActivityPub object representation of the author of the document:</p>
+        the [=Activity Streams document=] describing the [=author=] of the document:</p>
         <pre class="HTML">
           &lt;!doctype html&gt;
           &lt;html&gt;
@@ -973,9 +969,9 @@
         <p>In this example, the &lt;link&gt; element with the
         <code>rel</code> attribute set to "author" and the
         <code>type</code> attribute set to
-        "application/activity+json" is the author of the
+        "application/activity+json" is the [=author=] of the
         document.</p>
-        <p>For an acct: URI, an HTML page at
+        <p>Alternatively, for an HTML page at
         <code>https://html.example/files/image-55.html</code>
         that represents an <code>Image</code> object, the
         publisher can use the following HTML to indicate the acct: URI of
@@ -994,7 +990,7 @@
             &lt;/body&gt;
           &lt;/html&gt;
         </pre>
-        <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI.</p>
+        <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI. Note that, according to [[RFC7565]], acct: URIs are not dereferenceable on their own, e.g. as the value of an <code>href</code> attribute. Out-of-band knowledge is needed to obtain information about an acct: resource, such as a WebFinger query, but no specific mechanism is guaranteed to work with acct: URIs.</p>
       </section>
       <section>
         <h4>Link element failure</h4>
@@ -1015,7 +1011,7 @@
       developed by Mastodon</a>. This tag is used to identify
       a document creator's Fediverse profile. Its value is the Fediverse handle of
       the creator, prefixed with an <code>@</code> character, not
-      an <code>acct:</code> URL. The consumer can try using <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially find the ActivityPub object corresponding to the
+      an <code>acct:</code> URI. The consumer can try using <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially find the ActivityPub object corresponding to the
       creator.</p>
       <section>
         <h4>Example</h4>
@@ -1039,7 +1035,7 @@
         <p>In this example, the <code>fediverse:creator</code>
         property is the Fediverse handle of the creator of the video,
         prefixed with the <code>@</code> symbol. The Fediverse handle
-        can be used to find the ActivityPub object corresponding to
+        could be used to try to find the ActivityPub object corresponding to
         the creator.</p>
       </section>
     </section>
@@ -1108,8 +1104,7 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
-    <p>Publishers of HTML and/or ActivityPub object
-    representations of ActivityPub objects
+    <p>Publishers of HTML and/or [=Activity Streams documents=] describing ActivityPub objects
     include data or metadata to help with discovery
     of related representations or resources. This data is a
     <em>claim</em> that the linked resource really has the
@@ -1151,11 +1146,11 @@
             Content-Type: text/html
             Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
           </pre>
-          <p>Then, the consumer could fetch the ActivityPub object
+          <p>Then, the consumer could fetch the [=Activity Streams document=]
           at
           <code>https://ap.example/api/images/image-14.jsonld</code>
           and look for the URL of the HTML page in the
-          <code>url</code> property of the ActivityPub object:</p>
+          <code>url</code> property of the [=ActivityPub object=]:</p>
           <pre class="JSON">
             {
               "@context": "https://www.w3.org/ns/activitystreams",
@@ -1183,7 +1178,7 @@
       </section>
       <section>
         <h4>Same origin</h4>
-        <p>Another mechanism for verifying a discovery process is
+        <p>Another mechanism for trusting the result of a discovery process is
         to compare the <a href=
         "https://url.spec.whatwg.org/#concept-url-origin">origins</a>
         of the original representation's URL and the discovered
@@ -1198,7 +1193,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://mixed.example/profiles/person-3</code>, the
-          consumer could discover the alternate ActivityPub object representation using
+          consumer could discover the alternate [=Activity Streams document=] using
           the &lt;link&gt; element method:</p>
           <pre class="HTML">
             &lt;link
@@ -1207,15 +1202,15 @@
               href="https://mixed.example/api/person/person-3" /&gt;
           </pre>
           <p>The <code>href</code> property of the &lt;link&gt;
-          element is the URL of the ActivityPub object. The origin of the URL of the HTML page is
+          element is the URL of the [=Activity Streams document=] which is the [=alternate=] representation, and it could contain an [=ActivityPub object=]. The origin of the URL of the HTML page is
           <code>https://mixed.example</code>, and the origin of the
-          URL of the ActivityPub object representation is
+          URL of the [=ActivityPub object=] is
           <code>https://mixed.example</code>, so the origins match
           and the discovery is verified.</p>
         </section>
         <section>
           <h5>Same origin failure</h5>
-          <p>Same origin verification assumes that a single
+          <p>Same origin trust assumes that a single
           publisher controls an entire domain. Although this is
           often true for machine-readable formats like JSON-LD,
           having multiple publishers in control of parts of a
@@ -1228,19 +1223,19 @@
           other mechanism could be used by one user to link their
           HTML page to an ActivityPub object created by
           another.</p>
-          <p>Same origin verification will give a false negative if
+          <p>Same origin trust will give a false negative if
           the publisher is using different domains for HTML documents
           and ActivityPub objects. This can happen if
           ActivityPub features are added on to an existing
           published Web site, or if the publisher needs to keep the
           domains separate for implementation reasons. If same
-          origin verification gives a negative result, other
+          origin trust gives a negative result, other
           methods such as two-way verification should be used.</p>
         </section>
       </section>
       <section>
         <h4>Allowlist</h4>
-        <p>Another means of verification, or more precisely an
+        <p>Another means of establishing trust, or more precisely an
         excuse for skipping verification, is an allowlist. This is
         a list of origins or, possibly, other properties of the
         representation that can be used to confirm trust in the
@@ -1404,7 +1399,7 @@
         </section>
       </section>
       <section>
-        <h4>Same origin verification</h4>
+        <h4>Same origin trust</h4>
         <p>This method, or heuristic, assumes that the claims of
         authorship are mutually supporting if the URLs of the
         representations have the same origin. The origin of an URL
@@ -1425,7 +1420,7 @@
           assume that the discovery is verified.</p>
         </section>
         <section>
-          <h5>Same origin verification failure</h5>
+          <h5>Same origin trust failure</h5>
           <p>Assuming that the same entity controls creation of all
           URLs on a server is somewhat risky. For HTML creation,
           especially, some servers divide up into per-user paths.
@@ -1434,7 +1429,7 @@
         </section>
       </section>
       <section>
-        <h4>Allowlist verification</h4>
+        <h4>Allowlist trust</h4>
         <p>Consumers may include a list of origins or other
         properties of the representation that don't require
         verification. This assumes an externally-established trust
