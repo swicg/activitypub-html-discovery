@@ -10,14 +10,19 @@
   <script class="remove">
     // All config options at https://respec.org/docs/
     var respecConfig = {
-      specStatus: "CG-DRAFT",
-      latestVersion: null,
-      editors: [{ name: "Evan Prodromou", url: "https://socialwebfoundation.org/@evanp" }],
-      github: "swicg/activitypub-html-discovery",
+      specStatus: "unofficial",
+      editors: [{
+        name: "Evan Prodromou",
+        url: "https://socialwebfoundation.org/@evanp",
+        w3cid: 43626
+      }],
+      github: {
+        repoURL: "https://github.com/swicg/activitypub-html-discovery",
+        branch: "main"
+      },
       shortName: "apdisco",
-      xref: "web-platform",
-      group: "socialcg",
-      noRecTrack: true
+      xref: ["web-platform", "html", "activitystreams-core", "activitystreams-vocabulary", "activitypub"],
+      group: "cg/socialcg"
     };
   </script>
 </head>
