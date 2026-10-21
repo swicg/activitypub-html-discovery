@@ -1138,7 +1138,7 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://html.example/downloads/image-14.html</code>,
-          the consumer could discover the ActivityPub object representation's URL
+          the consumer could discover the ActivityPub object
           using the <code>Link</code> header method:</p>
           <pre class="HTTP">
             HEAD /downloads/image-14.html HTTP/1.1
@@ -1150,7 +1150,7 @@
             Content-Type: text/html
             Link: &lt;https://ap.example/api/images/image-14.jsonld&gt;; rel="alternate"; type="application/activity+json"
           </pre>
-          <p>Then, the consumer could fetch the ActivityPub object
+          <p>Then, the consumer could retrieve the ActivityPub object
           at
           <code>https://ap.example/api/images/image-14.jsonld</code>
           and look for the URL of the HTML page in the
