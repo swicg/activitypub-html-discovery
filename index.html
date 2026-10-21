@@ -48,6 +48,7 @@
     <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
     <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. The ActivityPub object has an <code>id</code> property which is dereferenceable, as described in <a href="https://www.w3.org/TR/activitypub/#obj-id">Object Identifiers</a>.</p>
     <p>Another representation is an <dfn>HTML document</dfn>. The HTML representation will also have an URL. The object <code>id</code> and HTML document URL may be the same URL.</p>
+    <p>The ActivityPub object and the HTML document have an <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-alternate">"alternate"</a> relationship, which in the HTML documentation is defined as "an alternate representation of the current document."</p>
     <p>Some resources have a relationship to another resource,
     which is its <dfn>author</dfn> or creator. The author resource has an
     ActivityPub object representation (again, if it doesn't, it's
