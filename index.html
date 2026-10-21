@@ -1269,7 +1269,7 @@
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person/person-3</code> as
-          the ActivityPub object representation's URL.</p>
+          the ActivityPub object <code>id</code>.</p>
         </section>
         <section>
           <h5>Allowlist failure</h5>
@@ -1442,14 +1442,14 @@
           <h5>Example</h5>
           <p>Given an HTML page with the URL
           <code>https://html.example/profiles/person-3.html</code>,
-          the consumer could discover the ActivityPub JSON-LD URL
+          the consumer could discover the ActivityPub object <code>id</code>
           using the Embedded JSON-LD method with the value
           <code>https://ap.example/api/person-3.jsonld</code>. If
           the consumer trusts the publisher of
           <code>https://html.example</code>, they can skip
           verification of the discovery process, and accept
           <code>https://ap.example/api/person-3.jsonld</code> as
-          the ActivityPub object representation's URL.</p>
+          the ActivityPub object <code>id</code>.</p>
         </section>
         <section>
           <h5>Allowlist verification failure</h5>
@@ -1467,8 +1467,8 @@
     methods.</p>
     <section>
       <h3>Publishing ActivityPub JSON-LD</h3>
-      <p>When publishing an ActivityPub object for
-      ActivityPub, publishers should consider these best
+      <p>When publishing an ActivityPub object,
+      publishers should consider these best
       practices.</p>
       <ul>
         <li><strong>url property</strong>. Include either a
@@ -1487,7 +1487,7 @@
         <code>actor</code>, and for public keys, include
         <code>owner</code>.</li>
         <li><strong>HTTP Link</strong>. Publishers that have
-        control over HTTP headers for their ActivityPub objects
+        control over HTTP headers for their Activity Streams Documents
         should include the HTTP <code>Link</code> headers with both
         "alternate" and "author" relations. Add the
         "application/activity+json" media type explicitly. Don't
@@ -1495,7 +1495,7 @@
         type, since there's not a clear algorithm for choosing
         between them.</li>
         <li><strong>Content negotiation</strong>. Publishers that
-        implement both HTML and ActivityPub object representations on the
+        implement both HTML representations and ActivityPub objects on the
         same server should strongly consider giving them the same
         route and using content negotiation to navigate between
         them. Many ActivityPub implementations follow this pattern,
@@ -1559,8 +1559,8 @@
         <code>fediverse:creator</code> and value set to the
         Webfinger of the author preceded by an "@" symbol.</li>
         <li><strong>Embedded JSON-LD</strong>. This technique
-        allows consumers not only to identify the URL for the
-        ActivityPub object representation, but to retrieve the full body
+        allows consumers not only to identify the <code>id</code>
+        of the ActivityPub object, but to retrieve the full body
         of the object, without an additional HTTP request.</li>
       </ul>
     </section>
@@ -1674,7 +1674,7 @@
         indicates the Internet media type of the resource,
         including:
         <ul>
-          <li><code>.jsonld</code> for JSON-LD objects</li>
+          <li><code>.jsonld</code> for JSON-LD documents</li>
           <li><code>.html</code> for HTML documents</li>
           <li><code>.png</code> for PNG images, <code>.jpg</code>
           for JPEG images, etc.</li>
