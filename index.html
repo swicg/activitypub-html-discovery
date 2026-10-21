@@ -89,8 +89,7 @@
     able to extract the URL from the environment -- for example,
     using the <code>document.location</code> property in a
     [[JavaScript]] environment. Using the document content for
-    discovery can return the ActivityPub equivalent without the
-    HTTP requests that discovery by URL requires, saving some time
+    discovery can return the ActivityPub object that represents the same resource as the page, without the HTTP requests that discovery by URL requires, saving some time
     and network traffic.</p>
     <section id="html-to-activitypub-link-element">
       <h3>HTML &lt;link&gt; element</h3>
@@ -100,7 +99,7 @@
       <code>&lt;head&gt;</code> section of an HTML document. It
       provides links for the whole document, using a number of
       different link relations.</p>
-      <p>To indicate its equivalent ActivityPub object, the HTML
+      <p>To indicate the ActivityPub object that represents the same resource, the HTML
       document at <code>https://html.example/watch/video-1.html</code>
       could include the following link element:</p>
       <pre class="HTML">
@@ -175,8 +174,7 @@
       be used to define relationships with other documents, with
       the benefit that the link is (usually) visible and clickable
       by a reader.</p>
-      <p>To indicate its equivalent ActivityPub object representation,
-      the HTML page at
+      <p>To indicate its the ActivityPub object that represents the same resource, the HTML page at
       <code>https://html.example/profiles/person-1.html</code>
       could include the following <code>a</code> element:</p>
       <pre class="HTML">
@@ -764,8 +762,8 @@
         itself.</li>
         <li>A <code>Link</code> object. This structure is used to
         provide additional information about the link, including
-        the <code>mediaType</code>. For an equivalent HTML
-        representation, the <code>mediaType</code> property will be
+        the <code>mediaType</code>. For the HTML
+        representation of the same resource, the <code>mediaType</code> property will be
         "text/html". The <code>href</code> property of the
         <code>Link</code> object is the URL.</li>
         <li>An array: One or more strings and/or <code>Link</code>
@@ -1576,14 +1574,13 @@
       it to my <code>liked</code> collection.</em> A browser-based
       ActivityPub API client could submit a <code>Like</code>
       activity to the user's ActivityPub server, but it would need
-      to know the ID of the ActivityPub equivalent of the
-      page.</li>
+      to know the ID of the ActivityPub object that represents the same resource as the page.</li>
       <li><em>As a Web user, when viewing a Web page, I want to
       <code>Announce</code> the contents, so that I can share it
       with my followers.</em> A browser-based ActivityPub API
       client could submit a <code>Announce</code> activity to the
       user's ActivityPub server, but it would need to know the ID
-      of the ActivityPub equivalent of the page.</li>
+      of the ActivityPub object that represents the same resource as the page.</li>
       <li><em>As a Web user, when viewing an actor's profile, I
       want to <code>Follow</code> the actor, so that I can get
       updates about their activities in my inbox.</em> A
