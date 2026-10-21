@@ -46,7 +46,7 @@
     describes several methods for discovering the ActivityPub
     object that represents the same resource as an [[HTML]] page, and conversely the HTML page that represents the same resource as an ActivityPub object.</p>
     <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
-    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. The ActivityPub object has an <code>id</code> property which is dereferenceable, as described in <a href="https://www.w3.org/TR/activitypub/#obj-id">Object Identifiers</a>.</p>
+    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section of the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. The ActivityPub object has an <code>id</code> property which is dereferenceable, as described in <a href="https://www.w3.org/TR/activitypub/#obj-id">Object Identifiers</a>.</p>
     <p>Another representation is an <dfn>HTML document</dfn>. The HTML representation will also have an URL. The object <code>id</code> and HTML document URL may be the same URL.</p>
     <p>The ActivityPub object and the HTML document have an <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-alternate">"alternate"</a> relationship, which in the HTML documentation is defined as "an alternate representation of the current document."</p>
     <p>Some resources have a relationship to another resource,
@@ -1532,7 +1532,7 @@
         <code>type</code> equal to "application/activity+json". Add
         at least one <code>a</code> element with <code>rel</code>
         equal to "author" and <code>type</code> equal to
-        "application/activity+json".Don't include multiple
+        "application/activity+json". Don't include multiple
         <code>a</code> links with the same <code>rel</code> and
         <code>type</code> values unless they also have the same
         <code>href</code> value.</li>
