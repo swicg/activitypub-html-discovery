@@ -123,8 +123,7 @@
       <code>link</code> element with the <code>alternate</code>
       relation and an ActivityPub-compatible media type as
       <code>type</code>. This can be slow and complicated.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
+      <p>The ActivityPub object can be retrieved from the <code>href</code> of the <code>link</code> element according to <a href="https://www.w3.org/TR/activitypub/#retrieving-objects">Retrieving Objects</a>.
       </p>
       <section>
         <h4>Link element failure</h4>
@@ -208,9 +207,7 @@
       in the [[DOM]] tree. An <code>a</code> element may be anywhere in
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
-      <p>The ActivityPub object is the top-level JSON object of the
-      alternate representation, which is the ActivityPub object.
-      </p>
+      <p>The ActivityPub object can be retrieved from the <code>href</code> of the <code>a</code> element according to <a href="https://www.w3.org/TR/activitypub/#retrieving-objects">Retrieving Objects</a>.
       <section>
         <h4>a element failure</h4>
         <p>As with the <code>link</code> element, some publishers might
@@ -747,8 +744,8 @@
   </section>
   <section id="activitypub-to-html">
     <h2>ActivityPub object to HTML document</h2>
-    <p>These techniques require the ActivityPub object containing the ActivityPub object as
-    the input for the process. The document can be obtained through
+    <p>These techniques require the ActivityPub object as
+    the input for the process. The object can be obtained through
     delivery via the ActivityPub protocol, or through the
     ActivityPub API, or by other means.</p>
     <p>If none of these techniques are successful, the consumer can
@@ -1113,8 +1110,7 @@
   </section>
   <section id="verification">
     <h2>Verification</h2>
-    <p>Publishers of HTML and/or ActivityPub object
-    representations of ActivityPub objects
+    <p>Publishers of HTML and/or Activity Streams Documents
     include data or metadata to help with discovery
     of related representations or resources. This data is a
     <em>claim</em> that the linked resource really has the
@@ -1655,11 +1651,11 @@
         are three default domain names used:
         <ul>
           <li><code>ap.example</code> - A server that primarily
-          provides ActivityPub objects containing ActivityPub objects.</li>
+          provides ActivityPub objects.</li>
           <li><code>html.example</code> - A server that primarily
           provides HTML documents.</li>
           <li><code>mixed.example</code> - A server that provides
-          both ActivityPub object and HTML documents.</li>
+          both ActivityPub objects and HTML documents.</li>
           <li><code>media.example</code> - A server that provides
           primarily binary files, such as images, video, or audio.</li>
         </ul>Other names may be used when additional examples are
@@ -1738,7 +1734,7 @@
       <li>12 Jun 2025: Shorten introduction. Move use cases, URL formats, and relevant resource types to appendices. Remove redundant best practices for consumers. Other readability improvements.</li>
       <li>13 May 2026: Add references. Change HTTP status code from 308 to 303. Improve Accept: header to include q-values. Add discovery of acct: URIs for authors. Correct nesting level of headers. Update RFC 7231 references to RFC 9110.</li>
       <li>15 May 2026: Move fediverse:creator to its own section.</li>
-      <li>15 July 2026: Add binary file representation for image in embedded JSON. Clarified ambiguity between ActivityPub objects and ActivityPub objects.</li>
+      <li>15 July 2026: Add binary file representation for image in embedded JSON. Clarified ambiguity between ActivityPub objects and Activity Streams Documents.</li>
     </ul>
   </section>
 </body>
