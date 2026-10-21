@@ -44,11 +44,10 @@
     network data on the Web in [[JSON-LD]] format and sharing that data
     from client to server and from server to server. This document
     describes several methods for discovering the ActivityPub
-    object described by an [[HTML]] page, and conversely the HTML page
-    for an ActivityPub object.</p>
+    object that represents the same resource as an [[HTML]] page, and conversely the HTML page that represents the same resource as an ActivityPub object.</p>
     <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
-    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. An ActivityPub object is an <a href="https://www.w3.org/TR/activitystreams-core/#dfn-activity-streams-document">Activity Streams Document</a> with an HTTPS <code>id</code> property, which can be dereferenced to get the document.</p>
-    <p>The ActivityPub object representation and the HTML representation each have an [[URL]] -- possibly the same URL.</p>
+    <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation.</p>
+    <p>The ActivityPub object has an <code>id</code> property which is dereferenceable, as described in <a href="https://www.w3.org/TR/activitypub/#obj-id">Object Identifiers</a>. The HTML representation will also have an URL. The object <code>id</code> and HTML document URL may be the same URL.</p>
     <p>Some resources have a relationship to another resource,
     which is its <dfn>author</dfn> or creator. The author resource has an
     ActivityPub object representation (again, if it doesn't, it's
@@ -371,7 +370,7 @@
             "otherProperty": "otherValue"
           }
         </pre>
-        <p>Similarly, when the server supports JSON-LD but does not return an ActivityPub object:</p>
+        <p>Similarly, when the server supports JSON-LD but does not return an Activity Streams Document:</p>
         <pre class="HTTP">
           HTTP/1.1 200 OK
           Content-Type: application/ld+json
