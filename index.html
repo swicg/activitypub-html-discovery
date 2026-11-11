@@ -29,10 +29,8 @@
 <body>
   <section id="abstract">
     <p>ActivityPub is a standard for publishing structured social
-    network data on the Web in JSON-LD format. This document
-    describes various methods for discovering the ActivityPub
-    object described by an HTML page, and conversely the HTML page
-    for an ActivityPub object.</p>
+    network data on the Web in JSON-LD format. This specification
+    describes how publishers can connect HTML documents to their corresponding ActivityPub objects. It also describes how publishers can connect ActivityPub objects with their corresponding HTML documents. Finally, it  describes how to connect HTML documents with the ActivityPub objects representing their authors.</p>
   </section>
   <section id="sotd">
     <p>This is a draft of the Social Web Incubator Group (SocialCG)
@@ -45,7 +43,7 @@
     from client to server and from server to server. This document
     describes several methods for discovering the ActivityPub
     object that represents the same resource as an [[HTML]] page, and conversely the HTML page that represents the same resource as an ActivityPub object.</p>
-    <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations.</p>
+    <p>Social data is a "resource" like a person, image, or place. That resource can have multiple representations. Representations often differ by media type.</p>
     <p>One representation is an <dfn>ActivityPub object</dfn>, as described in the <a href="https://www.w3.org/TR/activitypub/#obj">Objects</a> section of the <a href="https://www.w3.org/TR/activitypub/">ActivityPub</a> recommendation. The ActivityPub object has an <code>id</code> property which is dereferenceable, as described in <a href="https://www.w3.org/TR/activitypub/#obj-id">Object Identifiers</a>.</p>
     <p>Another representation is an <dfn>HTML document</dfn>. The HTML representation will also have an URL. The object <code>id</code> and HTML document URL may be the same URL.</p>
     <p>The ActivityPub object and the HTML document have an <a href="https://html.spec.whatwg.org/multipage/links.html#link-type-alternate">"alternate"</a> relationship, which in the HTML documentation is defined as "an alternate representation of the current document."</p>
@@ -60,10 +58,6 @@
     content-management system (CMS) that is attributed to an author
     who wants to receive credit and/or feedback for the work
     via a representative ActivityPub actor.</p>
-    <p>Discovery, in this document, means starting with the URL or
-    content of one representation, and arriving at the URL or content of
-    another representation. Each section of the document covers a different
-    starting data type, and a different goal.</p>
     <p>In this document, the terms "<a href=
     "https://www.w3.org/TR/activitystreams-core/#publishers">publisher</a>"
     and "<a href=
@@ -72,14 +66,8 @@
     extended to include implementations that publish or consume
     HTML representations of resources with ActivityPub
     representations.</p>
-    <p>In this document, several methods of discovery are
-    described. Different methods are implemented by different
-    publishers and consumers, and have different trade-offs in
-    terms of complexity, performance, and reliability.</p>
-    <p>A section on verification explains how to verify that the
-    discovered information is accurate.</p>
-    <p>The final section defines best practices for publishers to
-    maximize interoperability and minimize development effort.</p>
+    <p>Different consumers operate better on representations with different media types. Web browsers present HTML documents to the end user. ActivityPub clients and servers can read and transform ActivityPub objects. Discovery is a process in which consumers can use properties of one representation of a resource to get the <code>id</code> or URL of another representation.</p>
+    <p>This document describes methods that publishers can use to enable discovery by consumers. The <a href="#user-stories">User Stories</a> section presents some scenarios in which discovery is useful.</p>
   </section>
   <section id="html-to-activitypub">
     <h2>HTML document to ActivityPub object</h2>
