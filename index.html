@@ -124,46 +124,6 @@
       <code>type</code>. This can be slow and complicated.</p>
       <p>The ActivityPub object can be retrieved from the <code>href</code> of the <code>link</code> element according to <a href="https://www.w3.org/TR/activitypub/#retrieving-objects">Retrieving Objects</a>.
       </p>
-      <section>
-        <h4>Link element failure</h4>
-        <p>Some publishers might include a <code>link</code> element
-        with an <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub object.</p>
-        <pre class="HTML">
-          &lt;!doctype html&gt;
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;title&gt;Video 1&lt;/title&gt;
-              &lt;link
-                rel="alternate"
-                type="application/json"
-                href="https://api.example/unrelated/videodescriptor.json" /&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;!-- rest of the page --&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
-        <p>Publishers might also include a <code>link</code> element
-        with an <code>alternate</code> relation and with an
-        ActivityPub-compatible media type, but the representation obtained
-        by fetching the target URL does not contain an ActivityPub object.</p>
-        <pre class="HTML">
-          &lt;!doctype html&gt;
-          &lt;html&gt;
-            &lt;head&gt;
-              &lt;title&gt;Video 1&lt;/title&gt;
-              &lt;link
-                rel="alternate"
-                type="application/activity+json"
-                href="https://not-ap.example/api/descriptors/video-1.jsonld" /&gt;
-            &lt;/head&gt;
-            &lt;body&gt;
-              &lt;!-- rest of the page --&gt;
-            &lt;/body&gt;
-          &lt;/html&gt;
-        </pre>
-      </section>
     </section>
     <section id="html-to-activitypub-a-element">
       <h3>HTML &lt;a&gt; element</h3>
@@ -205,21 +165,6 @@
       the <code>body</code>, possibly nested very deeply in the
       tree.</p>
       <p>The ActivityPub object can be retrieved from the <code>href</code> of the <code>a</code> element according to <a href="https://www.w3.org/TR/activitypub/#retrieving-objects">Retrieving Objects</a>.
-      <section>
-        <h4>a element failure</h4>
-        <p>As with the <code>link</code> element, some publishers might
-        include an <code>a</code> element with an
-        <code>alternate</code> relation and with a media type
-        that does not link to an ActivityPub
-        resource.</p>
-        <p>Alternatively, publishers might include an <code>a</code> element
-        with an <code>alternate</code> relation and with an
-        ActivityPub-compatible media type, but the representation obtained
-        by fetching the target URL does not contain an ActivityPub object.</p>
-        <p>In addition, many content management systems allow end
-        users to set <code>rel</code> and other properties on
-        <code>a</code> elements, which may result in false matches.</p>
-      </section>
     </section>
     <section id="html-to-activitypub-embedded-json-ld">
       <h3>Embedded JSON-LD</h3>
@@ -268,16 +213,6 @@
       way to specify the ActivityPub ID of an object on the current page.</p>
       <p>Consumers need to parse the HTML page, and the embedded
       JSON-LD, to extract the ActivityPub object ID.</p>
-      <section>
-        <h4>Embedded JSON-LD failure</h4>
-        <p>Complicated structures for the <code>url</code> property
-        may make it hard to confirm that the object's URL is the
-        same as the current page's.</p>
-        <p>Embedded JSON-LD is very popular for embedding <a href=
-        "https://schema.org/">Schema.org</a> metadata. This can
-        lead to false positives when looking for ActivityPub
-        objects.</p>
-      </section>
     </section>
   </section>
   <section id="url-to-activitypub">
@@ -329,58 +264,6 @@
         HTTP/1.1 303 See Other
         Location: https://mixed.example/different/path/to/note-1.jsonld
       </pre>
-      <section>
-        <h4>Content negotiation failure</h4>
-        <p>If the server does not support content negotiation, it
-        may respond with a <code>406 Not Acceptable</code> status
-        code.</p>
-        <pre>
-          HTTP/1.1 406 Not Acceptable
-          Content-Type: text/plain
-
-          No representation matching this request could be found.
-        </pre>
-        <p>Less compliant servers may ignore the
-        <code>Accept</code> header altogether and return the HTML
-        content regardless:</p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: text/html
-
-          &lt;html&gt;
-          &lt;head&gt;
-          &lt;title&gt;Note 1&lt;/title&gt;
-          &lt;/head&gt;
-          &lt;body&gt;
-          &lt;p&gt;This is a note.&lt;/p&gt;
-        </pre>
-        <p>A more difficult failure mode to detect arises when the
-        server does not support ActivityPub, but does support
-        content negotiation for another [[JSON]] format. Such a server
-        returns a <code>200 OK</code> status code with a JSON
-        object that does not use JSON-LD:</p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: application/json
-
-          {
-            "property": "value",
-            "otherProperty": "otherValue"
-          }
-        </pre>
-        <p>Similarly, when the server supports JSON-LD but does not return an Activity Streams Document:</p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: application/ld+json
-
-          {
-            "@context": "https://schema.org",
-            "@type": "ImageObject",
-            "@id": "https://example.com/photos/sunset.jpg",
-            "name": "Sunset over the harbor"
-          }
-        </pre>
-      </section>
     </section>
     <section id="url-to-activitypub-link-header">
       <h3>HTTP Link header</h3>
@@ -428,23 +311,6 @@
       &lt;head&gt;
       ...
       </pre>
-      <section>
-        <h4>Link header failure</h4>
-        <p>Some servers may return the full body of the HTML
-        document in response to a <code>HEAD</code> request,
-        without including a <code>Link</code> header.</p>
-        <pre class="HTTP">
-        HTTP/1.1 200 OK
-        Content-type: text/html
-
-        &lt;html&gt;
-        &lt;head&gt;
-        ...
-        </pre>
-        <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
-        property might not contain an ActivityPub object, but some
-        other JSON or JSON-LD object.</p>
-      </section>
     </section>
     <section id="url-to-activitypub-webfinger">
       <h3>WebFinger</h3>
@@ -495,18 +361,6 @@
       <code>application/activity+json</code>, an
       ActivityPub-compatible media type. The <code>href</code>
       property of this link is the <code>id</code> of the ActivityPub object that represents the same resource as the HTML page.</p>
-      <section>
-        <h4>WebFinger failure</h4>
-        <p>Not all WebFinger-aware servers return JRD documents for
-        <code>https</code> URLs. Others might only return JRD
-        documents for URLs that represent actors, such as
-        registered users.</p>
-        <p>As with other link-relation-based discovery mechanisms,
-        like the HTTP Link header or the &lt;link&gt; element, a
-        JSON or JSON-LD media type in the link's <code>type</code>
-        property might not contain an ActivityPub object, but some
-        other JSON or JSON-LD object.</p>
-      </section>
     </section>
   </section>
   <section id="id-to-html">
@@ -554,32 +408,6 @@
           Location: https://mixed.example/different/path/to/note-1.html
         </pre>
       </section>
-      <section>
-        <h4>Content negotiation failure</h4>
-        <p>If the server does not support content negotiation, it
-        may respond with a <code>406 Not Acceptable</code> status
-        code.</p>
-        <pre>
-          HTTP/1.1 406 Not Acceptable
-          Content-Type: text/plain
-
-          No representation matching this request could be found.
-        </pre>
-        <p>Less compliant servers may ignore the
-        <code>Accept</code> header altogether and return the
-        JSON-LD content regardless:</p>
-        <pre class="HTTP">
-          HTTP/1.1 200 OK
-          Content-Type: application/activity+json
-
-          {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": "https://mixed.example/some/path/to/note-1",
-            "type": "Note",
-            "content": "This is a note."
-          }
-        </pre>
-      </section>
     </section>
     <section id="id-to-http-link-header">
       <h3>HTTP Link header</h3>
@@ -611,12 +439,6 @@
         Content-Type: application/activity+json
         Link: &lt;https://html.example/profiles/person-1.html&gt;; rel="alternate"; type="text/html"
       </pre>
-      </section>
-      <section>
-        <h4>HTTP Link header failure</h4>
-        <p>Some non-compliant HTTP servers will send the full body
-        of the resource in the response to the <code>HEAD</code>
-        request.</p>
       </section>
     </section>
     <section id="id-to-html-webfinger">
@@ -729,13 +551,6 @@
         relationship identifies an HTML page for the
         <code>Person</code> object.</p>
       </section>
-      <section>
-        <h4>WebFinger failure</h4>
-        <p>Some servers may not return JRD documents for
-        <code>https</code> URLs. Others might only return JRD
-        documents for URLs that represent actors, such as
-        registered users.</p>
-      </section>
     </section>
   </section>
   <section id="activitypub-to-html">
@@ -824,25 +639,6 @@
         }
         </pre>
       </section>
-      <section>
-        <h4><code>url</code> property failure</h4>
-        <p>When the <code>url</code> property is only a string, it
-        may not represent an HTML page. Especially for objects with
-        binary content types, like <code>Image</code>,
-        <code>Video</code>, and <code>Audio</code>, the
-        <code>url</code> property is often used for the URL of the
-        respective binary representation of the object.</p>
-        <p>The <code>mediaType</code> of <code>Link</code>-type
-        objects in the <code>url</code> property is not always
-        defined, and when it is defined, it is not always
-        "text/html".</p>
-        <p>The property is defined only for representations of the
-        current object. However, the <code>Link</code>-type object
-        can have a link relation property, <code>rel</code>.
-        Publishers may misuse the <code>url</code> property to
-        including links that aren't a representation of the object,
-        but instead a related object, like "next" or "author".</p>
-      </section>
     </section>
   </section>
   <section id="url-to-author-activitypub">
@@ -910,15 +706,6 @@
         </pre>
         <p>
           The acct: URI may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the ActivityPub resource for the author.</p>
-      </section>
-      <section>
-        <h4>Link header failure</h4>
-        <p>Some non-compliant publishers will respond to a
-        <code>HEAD</code> request with the full body of the HTML
-        document.</p>
-        <p>A Link header with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the header's <code>type</code>
-        property might not contain an ActivityPub object, but some
-        other JSON or JSON-LD object.</p>
       </section>
     </section>
   </section>
@@ -993,16 +780,6 @@
           &lt;/html&gt;
         </pre>
         <p>A consumer could try to use <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially discover the ActivityPub ID of the author from the acct: URI.</p>
-      </section>
-      <section>
-        <h4>Link element failure</h4>
-        <p>Some servers may include a &lt;link&gt; element with an
-        <code>author</code> relation and with a JSON type or
-        JSON-LD type that does not link to an ActivityPub
-        resource.</p>
-        <p>A link element with an ActivityPub-compatible media type, such as JSON or JSON-LD, in the element's <code>type</code>
-        property might not refer to an ActivityPub object, but some
-        other JSON or JSON-LD object.</p>
       </section>
     </section>
     <section id="html-to-author-activitypub-fediverse-creator">
@@ -1094,13 +871,6 @@
         property is the author of the document. (Note that
         OpenGraph Protocol uses the [[html-rdfa]]
         <code>property</code> attribute for metadata, not the <code>name</code> property from HTML.)</p>
-      </section>
-      <section>
-        <h4>OpenGraph Protocol failure</h4>
-        <p>The OpenGraph Protocol is not widely used for
-        identifying authors of documents. When it is used, the
-        profile page may not support discovery of an ActivityPub
-        object.</p>
       </section>
     </section>
   </section>
