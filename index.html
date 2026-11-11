@@ -313,19 +313,11 @@
   </section>
   <section id="activitypub-to-html">
     <h2>ActivityPub object to HTML Document</h2>
-    <p>These techniques require the ActivityPub object's ID as
-    input. Often, the object's ID is obtained either as a <code>"@type": "@id"</code> property
-    of another ActivityPub object, or from the <code>id</code>
-    property of the ActivityPub JSON-LD document.</p>
-    <p>If these techniques aren't successful, the consumer can use
-    the URL to fetch the ActivityPub JSON-LD document, and then use
-    a discovery technique that takes a document as input.</p>
+    <p>Publishers of ActivityPub objects can declare a connection with an HTML document that is an alternate representation of the resource.</p>
     <section id="id-to-html-content-negotiation">
       <h3>Content negotiation</h3>
-      <p>It's possible for the HTML and JSON-LD representations of
-      an object to be found at the same URL.</p>
-      <section>
-        <h4>Examples</h4>
+      <p>Publishers SHOULD support proactive negotiation <a href="#url-to-activitypub-content-negotiation">as described for HTML to ActivityPub discovery</a>.</p>
+      <aside class="example">
         <p>Given the URL for an ActivityPub object, such as
         <code>https://mixed.example/some/path/to/note-1</code>, a
         consumer could attempt to retrieve the corresponding HTML
@@ -348,6 +340,8 @@
           &lt;body&gt;
           &lt;p&gt;This is a note.&lt;/p&gt;
         </pre>
+      </aside>
+      <aside class="example">
         <p>Alternately, the server may respond with a <code>303
         See Other</code> to indicate the location of the
         HTML representation.</p>
@@ -355,23 +349,67 @@
           HTTP/1.1 303 See Other
           Location: https://mixed.example/different/path/to/note-1.html
         </pre>
-      </section>
+      </aside>
+    </section>
+    <section id="activitypub-to-html-url">
+      <h3><code>url</code> property</h3>
+      <p>ActivityPub objects can have an optional <code>url</code>
+      property, which "[i]dentifies one or more links to
+      representations of the object."</p>
+      <p>ActivityPub object publishers SHOULD include a value for the <code>url</code> property for the object to identify the HTML document that is an alternate representation of the resource. The <code>url</code> property value SHOULD be an object with the <code>Link</code> object type. The link MUST have a <code>mediaType</code> property with value <code>text/html</code>. The link MUST have an <code>href</code> property with the HTML document URL as the value. The link MAY have a <code>rel</code> property with value <code>alternate</code>.</p>
+      <aside class="example">
+        <p>In this ActivityPub object, the <code>url</code> property is a
+        full <code>Link</code>-type object with
+        <code>mediaType</code> property equal to "text/html".</p>
+        <pre class="json">
+        {
+          "@context": "https://www.w3.org/ns/activitystreams",
+          "id": "https://ap.example/geo/place-17.jsonld",
+          "type": "Place",
+          "nameMap": {
+            "en": "Berlin"
+          },
+          "url": {
+            "type": "Link",
+            "mediaType": "text/html",
+            "href": "https://html.example/map/de/ber/ber.html"
+          }
+        }
+        </pre>
+      </aside>
+      <aside>
+        <p>In this ActivityPub object, the <code>url</code> property is
+        an array of <code>Link</code>-type objects with different
+        <code>mediaType</code> properties.</p>
+        <pre class="json">
+        {
+          "@context": "https://www.w3.org/ns/activitystreams",
+          "id": "https://ap.example/photos/gallery/image-3.jsonld",
+          "type": "Image",
+          "summary": "Jason and Carol at the lake house",
+          "url": [
+            {
+              "type": "Link",
+              "mediaType": "text/html",
+              "href": "https://html.example/gallery/3.html"
+            },
+            {
+              "type": "Link",
+              "mediaType": "image/webp",
+              "href": "https://upload.example/files/08/17/2021/lakehouse.webp"
+            }
+          ]
+        }
+        </pre>
+      </aside>
     </section>
     <section id="id-to-http-link-header">
       <h3>HTTP Link header</h3>
-      <p>It is possible to use the <code>Link</code> header to
-      identify an HTML page related to a given ActivityPub object. A <code>Link</code> header with the
-      <code>alternate</code> link relation and a <code>type</code>
-      equal to <code>text/html</code> indicates an HTML page
-      representing the same resource in an alternate format.</p>
-      <p>The advantage of this technique is that it does not
-      require downloading and parsing the JSON-LD content of the
-      Activity Streams Document. The <code>Link</code> header has fewer
-      options for formatting than other methods such as the
-      <code>url</code> property, for example, making it slightly
-      easier for consumers.</p>
-      <section>
-        <h4>Example</h4>
+      <p>Publishers MAY use the <code>Link</code> header in the HTTP response for an ActivityPub object to
+      identify an HTML page that is an alternate representation of the resource. The <code>Link</code> header <code>rel</code> parameter MUST be
+      <code>alternate</code>. The <code>type</code> parameter
+      MUST be <code>text/html</code>.</p>
+      <aside class="example">
         <p>Given an ActivityPub object at
         <code>https://ap.example/some/path/person-1.jsonld</code>,
         a consumer could use a <code>HEAD</code> HTTP request to
@@ -387,56 +425,15 @@
         Content-Type: application/activity+json
         Link: &lt;https://html.example/profiles/person-1.html&gt;; rel="alternate"; type="text/html"
       </pre>
-      </section>
+      </aside>
     </section>
     <section id="id-to-html-webfinger">
       <h3>WebFinger</h3>
-      <p>The WebFinger protocol can be used to find an HTML page
-      related to an ActivityPub object in a number of ways.</p>
-      <p>The consumer can identify the resource for a WebFinger
-      query in two ways. First, the <code>id</code> property,
-      usually an <code>https</code> URL, can be passed as the
-      <code>resource</code> parameter for the WebFinger query.
-      Alternately, if the ActivityPub object is an <a href=
-      "https://www.w3.org/TR/activitypub/#actors">actor</a>, an
-      <code>acct</code> URI in the format
-      <code>acct:username@domain.example</code> can be constructed
-      using the technique for <a href=
-      "https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#reverse-discovery">
-      WebFinger reverse discovery</a>. This <code>acct</code> URI
-      can be used as the <code>resource</code> parameter for the
-      Webfinger query.</p>
-      <p>The publisher can provide a link to the HTML
-      representation of the object in the JRD output of the
-      WebFinger query in at least three ways.</p>
-      <ul>
-        <li>The <code>links</code> property of the output
-        object can contain a link object with a <code>rel</code>
-        property set to <code>alternate</code> and the
-        <code>type</code> property set to <code>text/html</code>. If
-        such a link exists, its <code>href</code> property is the URL
-        of the related HTML page.</li>
-        <li>The <code>links</code> property of the output
-        object can contain a link object with a <code>rel</code>
-        property set to <code>self</code> and the
-        <code>type</code> property set to <code>text/html</code>. If
-        such a link exists, its <code>href</code> property is the URL
-        of the related HTML page.</li>
-        <li>The <code>links</code> property of the JRD document may include a link object with a <code>rel</code> property
-        set to <code>http://webfinger.net/rel/profile-page</code>.
-        This is defined to be "the main home/profile page that a
-        human should visit when getting info about that webfinger
-        account" (<a href=
-        "https://webfinger.net/rel/">https://webfinger.net/rel/</a>).
-        It is not guaranteed to be HTML, but a <code>type</code>
-        property can further define that. Per the definition, "it's
-        likely text/html if it's for users."</li>
-      </ul>
-      <p>An advantage of using WebFinger for discovery is that it
-      is widely implemented by ActivityPub publishers to enable
-      using <code>acct</code> URLs as identities.</p>
-      <section>
-        <h4>Examples</h4>
+      <p>Publishers MAY identify the HTML representation of the resource in the Webfinger output for an ActivityPub object identifier.</p>
+      <p>Publishers SHOULD include a link object in the <code>links</code> property of the output with a <code>rel</code> property set to <code>alternate</code>, the <code>type</code> property set to <code>text/html</code>, and the <code>href</code> property set to the URL of the related HTML page.</p>
+      <p>Publishers MAY may include a link object in the <code>links</code> property of the output with a <code>rel</code> property
+      set to <code>http://webfinger.net/rel/profile-page</code> and the <code>href</code> property set to the URL of the related HTML page. The link's <code>type</code> property MAY be set to <code>text/html</code>.</p>
+      <aside class="example">
         <p>Given an ActivityPub <code>Place</code> object at
         <code>https://ap.example/geo/place-7.jsonld</code>, a
         consumer could use a Webfinger query to find the HTML page
@@ -460,12 +457,8 @@
             ]
           }
         </pre>
-        <p>In this example, the <code>links</code> property of the
-        JRD document contains a single link object with a <code>rel</code>
-        property set to <code>alternate</code> and a
-        <code>type</code> property set to <code>text/html</code>.
-        The <code>href</code> property of this object is the URL of
-        the HTML page representing the object.</p>
+      </aside>
+      <aside class="example">
         <p>Alternately, given an ActivityPub <code>Person</code>
         object at
         <code>https://ap.example/profiles/person-19.jsonld</code> whose <code>preferredUsername</code> is <code>person-19</code>,
@@ -498,84 +491,7 @@
         <code>http://webfinger.net/rel/profile-page</code>
         relationship identifies an HTML page for the
         <code>Person</code> object.</p>
-      </section>
-    </section>
-    <section id="activitypub-to-html-url">
-      <h3><code>url</code> property</h3>
-      <p>ActivityPub objects can have an optional <code>url</code>
-      property, which "[i]dentifies one or more links to
-      representations of the object." The <code>url</code> property is the preferred
-      way to indicate an HTML page representing an ActivityPub
-      object.</p>
-      <p>As with many Activity Vocabulary properties, this can have
-      several formats:</p>
-      <ul>
-        <li>A string. In this case, the string is the URL
-        itself.</li>
-        <li>A <code>Link</code> object. This structure is used to
-        provide additional information about the link, including
-        the <code>mediaType</code>. For the HTML
-        representation of the same resource, the <code>mediaType</code> property will be
-        "text/html". The <code>href</code> property of the
-        <code>Link</code> object is the URL.</li>
-        <li>An array: One or more strings and/or <code>Link</code>
-        objects.</li>
-      </ul>
-      <section>
-        <h4>Examples</h4>
-        <p>In this example, the <code>url</code> property is only a
-        string.</p>
-        <pre class="HTTP">
-        {
-          "@context": "https://www.w3.org/ns/activitystreams",
-          "id": "https://ap.example/some/path/person-1.jsonld",
-          "type": "Person",
-          "name": "Person One",
-          "url": "https://html.example/profile/person-1.html"
-        }
-        </pre>
-        <p>In the next example, the <code>url</code> property is a
-        full <code>Link</code>-type object with
-        <code>mediaType</code> property equal to "text/html".</p>
-        <pre class="HTTP">
-        {
-          "@context": "https://www.w3.org/ns/activitystreams",
-          "id": "https://ap.example/geo/place-17.jsonld",
-          "type": "Place",
-          "nameMap": {
-            "en": "Berlin"
-          },
-          "url": {
-            "type": "Link",
-            "mediaType": "text/html",
-            "href": "https://html.example/map/de/ber/ber.html"
-          }
-        }
-        </pre>
-        <p>In this final example, the <code>url</code> property is
-        an array of <code>Link</code>-type objects with different
-        <code>mediaType</code> properties.</p>
-        <pre class="HTTP">
-        {
-          "@context": "https://www.w3.org/ns/activitystreams",
-          "id": "https://ap.example/photos/gallery/image-3.jsonld",
-          "type": "Image",
-          "summary": "Jason and Carol at the lake house",
-          "url": [
-            {
-              "type": "Link",
-              "mediaType": "text/html",
-              "href": "https://html.example/gallery/3.html"
-            },
-            {
-              "type": "Link",
-              "mediaType": "image/webp",
-              "href": "https://upload.example/files/08/17/2021/lakehouse.webp"
-            }
-          ]
-        }
-        </pre>
-      </section>
+      </aside>
     </section>
   </section>
   <section id="html-to-author-activitypub">
