@@ -214,13 +214,6 @@
       <p>Consumers need to parse the HTML page, and the embedded
       JSON-LD, to extract the ActivityPub object ID.</p>
     </section>
-  </section>
-  <section id="url-to-activitypub">
-    <h2>Resource URL to ActivityPub object</h2>
-    <p>These discovery techniques require an URL as input.
-    Consumers may start with URLs if they are extracting links from
-    RSS feeds or microblogging content, or when converting from
-    other social networking platform content.</p>
     <section id="url-to-activitypub-content-negotiation">
       <h3>Content negotiation</h3>
       <p><a href=
@@ -363,8 +356,8 @@
       property of this link is the <code>id</code> of the ActivityPub object that represents the same resource as the HTML page.</p>
     </section>
   </section>
-  <section id="id-to-html">
-    <h2>ActivityPub ID to HTML Document</h2>
+  <section id="activitypub-to-html">
+    <h2>ActivityPub object to HTML Document</h2>
     <p>These techniques require the ActivityPub object's ID as
     input. Often, the object's ID is obtained either as a <code>"@type": "@id"</code> property
     of another ActivityPub object, or from the <code>id</code>
@@ -552,17 +545,6 @@
         <code>Person</code> object.</p>
       </section>
     </section>
-  </section>
-  <section id="activitypub-to-html">
-    <h2>ActivityPub object to HTML document</h2>
-    <p>These techniques require the ActivityPub object as
-    the input for the process. The object can be obtained through
-    delivery via the ActivityPub protocol, or through the
-    ActivityPub API, or by other means.</p>
-    <p>If none of these techniques are successful, the consumer can
-    obtain the URL of the object from the <code>id</code> property,
-    and then try one or more of the techniques that require an
-    URL.</p>
     <section id="activitypub-to-html-url">
       <h3><code>url</code> property</h3>
       <p>ActivityPub objects can have an optional <code>url</code>
@@ -641,11 +623,10 @@
       </section>
     </section>
   </section>
-  <section id="url-to-author-activitypub">
-    <h2>Resource URL to author ActivityPub object</h2>
+  <section id="html-to-author-activitypub">
+    <h2>HTML document to author ActivityPub object</h2>
     <p>This section describes techniques for discovering an
-    ActivityPub author object using the HTML representation's URL
-    as an input. The HTML representation's URL may come from
+    ActivityPub author object using the HTML document. The HTML representation's URL may come from
     ActivityPub properties, links in other content, or by other
     means.</p>
     <p>If these techniques do not succeed, consumers can fetch the
@@ -708,17 +689,6 @@
           The acct: URI may be tried with <a href="https://www.w3.org/community/reports/socialcg/CG-FINAL-apwf-20240608/#forward-discovery">WebFinger forward discovery</a> to potentially obtain the ActivityPub resource for the author.</p>
       </section>
     </section>
-  </section>
-  <section id="html-to-author-activitypub">
-    <h2>HTML document to author ActivityPub object</h2>
-    <p>These techniques require the contents of the HTML
-    representation. This could already be available in a browser
-    environment, or through other means.</p>
-    <p>If these techniques don't succeed, it's sometimes possible
-    to obtain the URL of the document through the environment, for
-    example, using the <code>document.location</code> property in a
-    browser JavaScript program. Consumers can then try techniques
-    that use the URL as input.</p>
     <section id="html-to-author-activitypub-link-element">
       <h3>HTML &lt;link&gt; element</h3>
       <p>The ActivityPub id of the author of an object represented
